@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -6,12 +6,13 @@ import { Character } from './component/Character';
 import { CraftEquipment } from './CraftEquipment';
 import { ItemStorage } from './ItemStorage';
 import StatusBox from './component/status/Status';
+import { AppContext } from './context/AppContext';
 
 function App() {
   return (
     <div className='App'>
       <header className='App-header'>
-        RO Dmg Calculator
+        RO Calculator
       </header>
       <body className='App-body container'>
         <div className='row'>

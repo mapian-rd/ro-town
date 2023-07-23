@@ -107,7 +107,7 @@ button {
   line-height: 22px;
   display: flex;
   flex-direction: column;
-  align-items: start;
+  align-items: flex-start;
   justify-content: center;
   font-weight: bold;
   color: var(--status-name);
@@ -118,8 +118,8 @@ button {
   line-height: 22px;
   display: flex;
   flex-direction: column;
-  align-items: start;
-  justify-content: right;
+  align-items: flex-start;
+  justify-content: flex-end;
   font-weight: bold;
   color: var(--status-name);
 }
@@ -129,7 +129,7 @@ button {
   line-height: 2px;
   display: flex;
   flex-direction: column;
-  align-items: end;
+  align-items: flex-end;
   justify-content: center;
 }
 

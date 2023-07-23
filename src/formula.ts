@@ -1,11 +1,15 @@
 export function statusAtk(baseLv: number, isRange: boolean, finalStr: number, finalDex: number, finalLuk: number): number {
     let mainStatus = finalStr
-    // if (type == bow)
-    return Math.floor(baseLv / 4)
+    let subStatus = finalDex
+    if (isRange) {
+        mainStatus = finalDex
+        subStatus = finalStr
+    }
+    return Math.floor(baseLv / 4 + mainStatus + subStatus / 5 + finalLuk / 3);
 }
 
 export function statusMATK(baseLv: number, finalInt: number, finalDex: number, finalLuk: number): number {
-    return Math.floor(baseLv / 4) + finalInt + Math.floor(finalInt / 2) + Math.floor(finalDex / 5) + Math.floor(finalLuk / 3)
+    return Math.floor(baseLv / 4 + finalInt + finalInt / 2 + finalDex / 5 + finalLuk / 3);
 }
 
 export function varianceMATK(weaponMATK: number, refineMATK: number, weaponLevel: number): number {

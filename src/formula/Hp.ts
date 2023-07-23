@@ -5,7 +5,7 @@ export function calHp(
     HP_MOD_A: number,
     HP_MOD_B: number
 ): number {
-    var MAX_HP = JOB_HP;
+    let MAX_HP = JOB_HP;
 
     MAX_HP = Math.floor(MAX_HP * (1 + VIT * 0.01) * TRANS_MOD);
 

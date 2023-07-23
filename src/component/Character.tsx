@@ -102,7 +102,7 @@ export function Character() {
                         <p className="d-flex">
                             SP
                             <span className="mx-1">
-                                {CharacterModel.calHp(context.character)} / {CharacterModel.calHp(context.character)}
+                                {CharacterModel.calSp(context.character)} / {CharacterModel.calSp(context.character)}
                             </span>
                         </p>
                     </div>

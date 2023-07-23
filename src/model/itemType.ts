@@ -16,3 +16,7 @@ export class WeaponType extends ItemType {
         this.isRange = isRange
     }
 }
+
+export class Shield extends ItemType {
+    
+}

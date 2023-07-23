@@ -1,4 +1,6 @@
+import { Bow, OneHandedStaff } from "../constraint/itemType";
 import { Str, Agi, Vit, Int, Dex, Luk } from "../constraint/status"
+import { ItemType, WeaponType } from "./itemType";
 import { StatusType } from "./status"
 
 export abstract class JobClass {
@@ -9,7 +11,7 @@ export abstract class JobClass {
     vitBonus: number[] = []
     intBonus: number[] = []
     dexBonus: number[] = []
-    lukBpnus: number[] = []
+    lukBonus: number[] = []
     lvMin: number = 1;
     lvMax: number = 99;
     jobMax: number = 10;
@@ -17,6 +19,14 @@ export abstract class JobClass {
     hpJobA: number = 0;
     hpJobB: number = 5;
     baseHps?: number[];
+
+    baseSp: number = 10;
+    spJob: number = 1;
+    baseSps?: number[];
+
+    baseAspd: number = 156;
+    weaponPenalty: Map<WeaponType, number> = new Map([[OneHandedStaff, -25]])
+    shieldPenalty: number = -10;
 
     getBonus(jobLv: number, status: StatusType): number {
         switch (status) {
@@ -31,7 +41,8 @@ export abstract class JobClass {
             case Dex:
                 return this.findBonus(jobLv, this.dexBonus)
             case Luk:
-                return this.findBonus(jobLv, this.lukBpnus)
+                console.log(this.lukBonus)
+                return this.findBonus(jobLv, this.lukBonus)
             default:
                 break
         }
@@ -48,5 +59,9 @@ export abstract class JobClass {
             bonus += 1
         }
         return bonus
+    }
+
+    getWeaponPenalty(type: WeaponType): number {
+        return this.weaponPenalty.get(type) ?? 0
     }
 }

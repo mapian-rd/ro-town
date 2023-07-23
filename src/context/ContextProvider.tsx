@@ -1,25 +1,31 @@
-import { useState } from "react";
-import { Agi } from "../constraint/status";
+import { useEffect, useState } from "react";
 import { CharacterModel } from "../model/character";
-import { StatusType } from "../model/status";
+import CharacterAttribute from "../model/CharacterAttribute";
 import { Storage } from "../model/storage";
 import { AppApiContext } from "./AppApiContext";
-import { AppState, initState, AppContext } from "./AppContext";
+import { AppContext } from "./AppContext";
 
 interface Props {
   children: React.ReactNode;
 }
 
 export const ContextProvider = (props: Props): JSX.Element => {
-  const [character, setCharacter] = useState<CharacterModel>(initState.character);
-  const [storage, setStorage] = useState<Storage>(initState.storage);
+  const [character, setCharacter] = useState<CharacterModel>(new CharacterModel());
+  const [storage, setStorage] = useState<Storage>(new Storage([]));
+  const [attribute, setAttribute] = useState<CharacterAttribute>(new CharacterAttribute())
   const app = {
     character,
-    storage
+    storage,
+    characterAttribute: attribute
   }
+
+  useEffect(() => {
+    setAttribute({})
+  }, [character])
+
   const api = {
     updateCharacter: (newState: Partial<CharacterModel>) => {
-      setCharacter({...character, ...newState});
+      setCharacter({ ...character, ...newState });
       console.log(character)
     }
   }
