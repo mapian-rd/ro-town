@@ -1,0 +1,16 @@
+import { AttributeType } from "../model/attributeType"
+
+export const Atk = new AttributeType("ATK")
+export const Matk = new AttributeType("ATK")
+export const Int = new AttributeType("INT")
+export const Dex = new AttributeType("DEX")
+export const Luk = new AttributeType("LUK")
+export const Hit = new AttributeType("Hit")
+export const Critical = new AttributeType("Critical")
+export const Flee = new AttributeType("Flee")
+export const Hp = new AttributeType("Hp")
+export const HpPercent = new AttributeType("Hp%")
+export const MonMedPhyDmg = new AttributeType("Monster Mediem Size Physical Damage")
+export const MonLarPhyDmg = new AttributeType("Monster Large Size Physical Damage")
+export const MonMedPhyRed = new AttributeType("Monster Medium Size Physical Reduction")
+export const MonLarPhyRed = new AttributeType("Monster Large Size Physical Reduction")
