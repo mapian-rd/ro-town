@@ -10,6 +10,7 @@ interface BoxProps {
     description?: any[];
     imgSrc?: string;
     option?: string[];
+    cardSlot?: number;
     card?: number[];
     enchant?: Item[];
     onClick?: () => void;
@@ -27,11 +28,18 @@ export default function ItemBox(props: BoxProps) {
     })
 
     const cardView: JSX.Element[] = Array(4).fill(0).map((_, index) => {
-        console.log("cardView")
+        console.log("cardView", props.cardSlot)
         if (props.card) {
             if (props.card.length > index) {
                 return (
-                    <img src="4140.png" alt="card" />
+                    <img src={process.env.PUBLIC_URL + "/4140.png"} alt="card" />
+                )
+            }
+        }
+        if (props.cardSlot) {
+            if (props.cardSlot > index) {
+                return (
+                    <img src={process.env.PUBLIC_URL + "/nocard.png"} alt="card" />
                 )
             }
         }
@@ -44,7 +52,7 @@ export default function ItemBox(props: BoxProps) {
             }
         }
         return (
-            <img src="nocard.png" alt="card" />
+            <img src={process.env.PUBLIC_URL + "/none.png"} alt="card" />
         )
     })
 

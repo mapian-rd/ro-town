@@ -34,7 +34,7 @@ export function EqiupmentCol(props: EquipmentColProps) {
             <div className="col-5 equipment-col">
                 <div className="row">
                     <div className="col-4 my-2">
-                        <img className="w-100" src="./item_invert.png" alt="Item" />
+                        <img className="w-100" src={process.env.PUBLIC_URL + "/item_invert.png"} alt="Item" />
                     </div>
                     <div className="col px-1 equipment-no">
                         {props.type.hint ?? ""}

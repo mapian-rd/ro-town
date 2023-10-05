@@ -31,6 +31,7 @@ export default function ItemDescription(props: Props) {
                 imgSrc={`https://www.divine-pride.net/img/items/collection/thROG/${props.item1.itemId}`}
                 title={props.item1.craftName}
                 description={description1}
+                cardSlot={props.item1.cardList.length}
                 card={props.item1.cardList.flatMap(item => item ?? [])}
                 enchant={props.item1.enchantList.flatMap(option => enchantDatabase.find(data => data.id === option) ?? [])}
                 option={option}
