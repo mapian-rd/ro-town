@@ -1,16 +1,34 @@
 import { createContext } from "react";
-import { CharacterModel } from "../model/character";
-import CharacterAttribute from "../model/CharacterAttribute";
-import { Storage } from "../model/storage";
+import { CalculatedAttribute } from "../data/model/CalculatedAttribute";
+import { CombatStatus } from "../data/model/CombatStatus";
+import { Monster, MonsterId } from "../data/model/monster";
+import { ActiveSkill } from "../data/model/skill";
+import { Storage } from "../data/model/storage";
+import { Character } from "../data/model/Characterv2";
+import { JobClass } from "../data/model/class";
+import { CraftEqiupment } from "../data/model/CraftEquipment";
 
 interface State {
     updateState: (newState: Partial<State>) => void;
 }
 
+export enum ViewState {
+    Normal, MoreStatus, Storage, AddItem
+}
+
 export interface AppState {
-    character: CharacterModel;
+    viewState: ViewState;
+    viewItem: CraftEqiupment | undefined;
+    dragItem: CraftEqiupment | undefined;
+
+    character: Character;
     storage: Storage;
-    characterAttribute: CharacterAttribute;
+    calculatedAttribute: CalculatedAttribute;
+    monsterId?: MonsterId;
+    monster?: Monster;
+    skill?: ActiveSkill;
+    skillLevel?: number;
+    combatStatus: CombatStatus;
 }
 
 export const AppContext = createContext<AppState>({} as AppState)
