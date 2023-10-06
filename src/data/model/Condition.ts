@@ -16,16 +16,16 @@ export class NumberCondition {
     static check(condition: NumberCondition, number: number): boolean {
         switch(condition.symbol) {
             case Symbol.gte:
-                if (number <= condition.number) return false
+                if (number >= condition.number) return true
                 break;
             case Symbol.eq:
-                if (number !== condition.number) return false
+                if (number === condition.number) return true
                 break;
             case Symbol.lte:
-                if (number >= condition.number) return false
+                if (number <= condition.number) return true
                 break;
         }
-        return true;
+        return false;
     }
 }
 

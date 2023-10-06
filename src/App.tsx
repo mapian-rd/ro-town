@@ -299,7 +299,7 @@ function App() {
           </div>
 
           <div className={'col-md-4 pt-4 d-flex flex-column h-100' + (showItemInfo ? '' : ' d-none')}>
-            <ItemDescription item1={context.viewItem} />
+            <ItemDescription item1={context.viewItem} character={context.character} />
           </div>
         </div>
       </body>

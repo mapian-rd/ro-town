@@ -1,13 +1,16 @@
 import { useContext, useEffect, useState } from "react";
+import { attributeList } from "../data/constraint/attributeType";
 import { enchantDatabase, optionDatabase } from "../data/database/item";
 import { ItemDescriptionSearch } from "../data/DividePride";
-import { CraftEqiupment } from "../data/model/CraftEquipment";
+import { Character } from "../data/model/Characterv2";
+import { checkCraft, CraftEqiupment, sumCraft } from "../data/model/CraftEquipment";
 import { Item, Named } from "../data/model/Itemv2";
 import ItemBox from "./ItemBox";
 
 interface Props {
     item1?: Named;
     item2?: Named;
+    character? : Character;
 }
 
 export default function ItemDescription(props: Props) {
@@ -16,9 +19,11 @@ export default function ItemDescription(props: Props) {
     const [item2, setItem2] = useState<JSX.Element>()
     const [description1, setDescription1] = useState<JSX.Element[]>()
     const [description2, setDescription2] = useState<JSX.Element[]>()
+    const [attribute1, setAttribute1] = useState<JSX.Element[]>()
+    const [attribute2, setAttribute2] = useState<JSX.Element[]>()
     // const [optionName, setOptionNam
 
-    function getItemBox(item: Named): JSX.Element {
+    function getItemBox(item: Named, description: JSX.Element[]): JSX.Element {
         if (CraftEqiupment.is(item)) {
             const option = item.optionList.flatMap(option => optionDatabase.find(data => {
                 return data.id === option
@@ -28,7 +33,7 @@ export default function ItemDescription(props: Props) {
                     key={'item1'}
                     imgSrc={`https://www.divine-pride.net/img/items/collection/thROG/${Item.getImgId(item.itemId, item.item?.imgId)}`}
                     title={item.name}
-                    description={description1}
+                    description={description}
                     cardSlot={item.cardList.length}
                     card={item.cardList.flatMap(item => item ?? [])}
                     enchant={item.enchantList.flatMap(option => enchantDatabase.find(data => data.id === option) ?? [])}
@@ -43,12 +48,34 @@ export default function ItemDescription(props: Props) {
                     key={'item1'}
                     imgSrc={`https://static.divine-pride.net/images/items/item/${Item.getImgId(item.id, item.imgId)}.png`}
                     title={item.name}
-                    description={description1}
+                    description={description}
                 >
                 </ItemBox>
             )
         }
         return (<span></span>)
+    }
+
+    function getAttribute(item: Named): JSX.Element[] {
+        if (CraftEqiupment.is(item)) {
+            sumCraft(item)
+            let attributeSum = item.sumAttributeList ?? []
+            if (props.character) {
+                attributeSum = checkCraft(item, props.character)
+            }
+            console.log("checkAttribute attributeSum", attributeSum)
+            return attributeSum.flatMap((attribute) => {
+                const attributeItem = attributeList.get(attribute.type)
+                return <p className="App-link">{attributeItem?.name} = {attribute.formulaText}</p>
+            })
+        }
+        if (Item.is(item)) {
+            return (item.attributeList ?? []).flatMap((attribute) => {
+                const attributeItem = attributeList.get(attribute.type)
+                return <p className="App-link">{attributeItem?.name} = {attribute.formulaText}</p>
+            })
+        }
+        return []
     }
 
     async function getDescription(item: Named): Promise<JSX.Element[]> {
@@ -80,7 +107,8 @@ export default function ItemDescription(props: Props) {
     useEffect(() => {
         console.log("useEffect item1")
         if (props.item1) {
-            setItem1(getItemBox(props.item1))
+            setAttribute1(getAttribute(props.item1))
+            setItem1(getItemBox(props.item1, []))
             getDescription(props.item1)
                 .then(description => setDescription1(description))
         } else {
@@ -90,15 +118,16 @@ export default function ItemDescription(props: Props) {
 
     useEffect(() => {
         if (props.item1) {
-            setItem1(getItemBox(props.item1))
+            setItem1(getItemBox(props.item1, [...description1 ?? [], ...attribute1 ?? []]))
         } else {
             setItem1(undefined)
         }
-    }, [description1])
+    }, [description1, attribute1])
 
     useEffect(() => {
         if (props.item2) {
-            setItem2(getItemBox(props.item2))
+            setAttribute2(getAttribute(props.item2))
+            setItem2(getItemBox(props.item2, []))
             getDescription(props.item2)
                 .then(description => setDescription2(description))
         } else {
@@ -108,7 +137,7 @@ export default function ItemDescription(props: Props) {
 
     useEffect(() => {
         if (props.item2) {
-            setItem2(getItemBox(props.item2))
+            setItem2(getItemBox(props.item2, [...description2 ?? [], ...attribute2 ?? []]))
         } else {
             setItem2(undefined)
         }

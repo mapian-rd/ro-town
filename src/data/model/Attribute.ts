@@ -30,34 +30,37 @@ export class Attribute {
         if (!attribute.condition) return true;
         console.log("checkAttribute class", attribute.condition.class)
         if (attribute.condition.class) {
-            if(attribute.condition.class !== character.clazz.enum) return false;
+            if (attribute.condition.class !== character.clazz.enum) return false;
         }
         console.log("checkAttribute itemList", attribute.condition.itemList)
         if (attribute.condition.itemList) {
-            attribute.condition.itemList.forEach(condition => {
+            for (let i = 0; i < attribute.condition.itemList.length; i++) {
+                const condition = attribute.condition.itemList[i]
                 const equipmentList = Array.from(character.equipmentMap.values());
                 const item = equipmentList.find(item => item?.id === condition.itemId);
                 if (!item) return false;
                 const result = NumberCondition.check(condition, item.refineLevel);
                 if (!result) return false;
-            })
+            }
         }
         if (attribute.condition.skillList) {
-            attribute.condition.skillList.forEach(condition => {
+            for (let i = 0; i < attribute.condition.skillList.length; i++) {
+                const condition = attribute.condition.skillList[i]
                 const activeSkill = character.clazz.activeSkill.find(skill => skill.enum === condition.skill)
                 const buffSkill = character.clazz.buffSkill.find(skill => skill.enum === condition.skill)
                 const passiveSkill = character.clazz.passiveSkill.find(skill => skill.enum === condition.skill)
                 if (!activeSkill && !buffSkill && !passiveSkill) {
                     return false
                 }
-            })
+            }
         }
         console.log("checkAttribute statusList", attribute.condition.statusList)
         if (attribute.condition.statusList) {
-            attribute.condition.statusList.forEach(condition => {
+            for (let i = 0; i < attribute.condition.statusList.length; i++) {
+                const condition = attribute.condition.statusList[i]
                 const result = NumberCondition.check(condition, Status.get(character.status, condition.statusType))
                 if (!result) return false;
-            })
+            }
         }
         console.log("checkAttribute baseLv", attribute.condition.baseLv)
         if (attribute.condition.baseLv) {
@@ -68,13 +71,20 @@ export class Attribute {
     }
 
     static check(craftEqiupment: CraftEqiupment, attribute: Attribute, character: Character): boolean {
+        console.log("checkAttribute", craftEqiupment, attribute, character)
         if (!attribute.condition) return true;
         if (!this.checkAttribute(attribute, character)) return false
         if (attribute.condition.refireList) {
-            attribute.condition.refireList.forEach(condition => {
+            console.log("checkAttribute refireList")
+            for (let i = 0; i < attribute.condition.refireList.length; i++) {
+                const condition = attribute.condition.refireList[i]
                 const result = NumberCondition.check(condition, craftEqiupment.refineLevel);
-                if (!result) return false;
-            })
+                console.log("checkAttribute refireList", condition, craftEqiupment.refineLevel, result)
+                if (!result) {
+                    console.log("checkAttribute return false")
+                    return false;
+                }
+            }
         }
         return true
     }

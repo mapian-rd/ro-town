@@ -66,6 +66,8 @@ export function sumCraft(item: CraftEqiupment) {
 
 export function checkCraft(item: CraftEqiupment, character: Character): AttributeName[] {
     if (!item.sumAttributeList) return []
-    return item.sumAttributeList.filter(attribute => Attribute.check(item, attribute, character))
+    return item.sumAttributeList.filter(attribute => {
+        return Attribute.check(item, attribute, character)
+    })
 
 }
