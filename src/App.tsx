@@ -199,7 +199,7 @@ function App() {
       </header>
       <body className='App-body container mb-0 vh-100 py-2'>
         <div className='row h-100'>
-          <div className={'col-md-4' + (showCharacter ? '' : ' d-none')}>
+          <div className={'col-md-4 h-100' + (showCharacter ? '' : ' d-none')}>
             <button>Save</button>
             <button>Load</button>
             <Character />
@@ -207,10 +207,12 @@ function App() {
             <Equipment title='General Equipment' type={eqipmentTypes} />
             <Equipment title='Special Equipment' type={spEqipmentTypes} />
           </div>
-          <div className={'col-md-4 pt-4 d-flex flex-column' + (showPet ? '' : ' d-none')} >
+          <div className={'col-md-4 pt-4 d-flex flex-column mh-0 h-100' + (showPet ? '' : ' d-none')} >
             <Pet />
-            <ItemBuff title='Item Buff' list={[...ownItemBuff, ...itemBuff]} handleBuffChange={handleItemBuffChange} />
-            <ItemBuff title='Skill Buff' list={[...ownSkillBuff, ...skillbuff]} handleBuffChange={handleSkillBuffChange} />
+            <div className='flex-grow-1 mh-0'>
+              <ItemBuff title='Item Buff' list={[...ownItemBuff, ...itemBuff]} handleBuffChange={handleItemBuffChange} />
+              <ItemBuff title='Skill Buff' list={[...ownSkillBuff, ...skillbuff]} handleBuffChange={handleSkillBuffChange} />
+            </div>
           </div>
 
           <div className={'col-md-4 d-flex flex-column h-100' + (showStorage ? '' : ' d-none')}>
@@ -242,7 +244,7 @@ function App() {
             />
           </div>
 
-          <div className={'col-md-4 pt-4 d-flex flex-column' + (showItemInfo ? '' : ' d-none')}>
+          <div className={'col-md-4 pt-4 d-flex flex-column h-100' + (showItemInfo ? '' : ' d-none')}>
             <ItemDescription item1={context.viewItem} />
           </div>
         </div>

@@ -39,7 +39,7 @@ export default function ItemBuff(props: Props) {
         )
     })
     return (
-        <Box className="flex-grow-1" title={props.title} searchable overflow>
+        <Box className="h-50" title={props.title} searchable overflow>
             <div className="mh-0">
                 {itemList}
             </div>

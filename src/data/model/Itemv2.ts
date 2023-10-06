@@ -6,6 +6,7 @@ export class Item {
     name: string
     type: ItemTypeEnum
     attributeList: Attribute[]
+    imgId?: number
 
     constructor(id: number, name: string, type: ItemTypeEnum, attributeList: Attribute[]) {
         this.id = id

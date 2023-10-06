@@ -70,7 +70,7 @@ export default function MoreStatus(prop: MoreStatusProps) {
     })
 
     return (
-        <Box title="More Status" className="flex-fill" overflow>
+        <Box title="More Status" overflow>
             <div className="mh-0" >
             <div className="row" key="skill-title">
                     <div className="col text-decoration-underline">

@@ -259,10 +259,19 @@ button {
   min-height: 0;
 }
 
+.tooltip {
+  max-width: 50vw;
+}
+
 .tooltip-inner {
-  white-space: pre;
+  white-space: break-spaces;
+  word-break: normal;
   max-width: none !important;
   text-align: start !important;
+}
+
+.tooltip-content {
+  white-space: pre-line;
 }
 
 p {

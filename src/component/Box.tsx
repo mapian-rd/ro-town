@@ -3,7 +3,7 @@ import React, { ReactNode } from "react";
 
 interface BoxProps {
     children: ReactNode;
-    className?: string | undefined;
+    className?: string;
     title?: string;
     titleEdiable?: boolean;
     buttonText?: string;
@@ -15,7 +15,7 @@ interface BoxProps {
 
 export default function Box(props: BoxProps) {
     return (
-        <div className={"mh-0 d-flex flex-column mb-3 " + props.className ?? ""}>
+        <div className={"mh-0 d-flex flex-column pb-3 w-100 " + props.className ?? ""}>
             <div className="box-header d-flex">
                 {props.titleEdiable ? (
                     <input className="title-input fw-bold mx-2" type="text" value={props.title} onChange={props.onChangeTitle}/>

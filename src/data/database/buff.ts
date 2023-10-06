@@ -122,4 +122,23 @@ export const itemBuffDatabase: Item[] = [
             },
         ]
     },
+    {
+        id: 10,
+        name: "Size +101%",
+        type: ItemTypeEnum.Buff,
+        attributeList: [
+            {
+                type: AttributeTypeEnum.PhysicalLarge,
+                formulaText: "101"
+            },
+            {
+                type: AttributeTypeEnum.PhysicalMed,
+                formulaText: "101"
+            },
+            {
+                type: AttributeTypeEnum.PhysicalSmall,
+                formulaText: "101"
+            },
+        ]
+    },
 ]

@@ -72,8 +72,8 @@ export default function Storage() {
     }, [context.storage])
 
     return (
-        <div className="d-flex flex-column flex-grow-1 h-100" onDrop={onDrop} onDragOver={allowDrop}>
-            <Box className="flex-grow-1 h-100" searchable>
+        <div className="d-flex flex-column flex-grow-1 h-100 mh-0" onDrop={onDrop} onDragOver={allowDrop}>
+            <Box className="flex-grow-1 h-100" searchable overflow>
                 <div className="mh-0" >
                     {list}
                 </div>

@@ -57,7 +57,7 @@ export default function ItemBox(props: BoxProps) {
     })
 
     return (
-        <div className={"d-flex flex-column position-relative mb-3 h-100 " + props.className ?? ""}>
+        <div className={"d-flex flex-column position-relative pb-3 h-100 " + props.className ?? ""}>
             <div className="itembox-header d-flex">
                 <span className="offset-4 jc-center text-break">{props.title}</span>
                 {props.buttonText ? (
