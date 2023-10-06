@@ -367,7 +367,7 @@ export const itemDatabase: Equipment[] = [
             },
             {
                 type: AttributeTypeEnum.SkillDmg,
-                formulaText: "<S$name.Lv> * <dex/5>",
+                formulaText: "<S$5033.Lv> * <dex/5>",
                 skill: SkillEnum.PickyPeck,
             },
             {

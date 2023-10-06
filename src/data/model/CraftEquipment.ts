@@ -1,5 +1,5 @@
 import { ItemType } from "./itemType";
-import { Attribute } from "./Attribute";
+import { Attribute, AttributeName } from "./Attribute";
 import { Equipment, Item } from "./Itemv2";
 import { Character } from "./Characterv2";
 import { cardDatabase, enchantDatabase, itemDatabase, optionDatabase } from "../database/item";
@@ -19,7 +19,7 @@ export class CraftEqiupment implements Craftable {
 
     // runtime data
     item?: Equipment;
-    sumAttributeList?: Attribute[];
+    sumAttributeList?: AttributeName[];
 
     constructor(equipment: Equipment, refineLevel: number) {
         this.itemId = equipment.id
@@ -33,14 +33,38 @@ export class CraftEqiupment implements Craftable {
 
 export function sumCraft(item: CraftEqiupment) {
     item.item = itemDatabase.find(data => data.id === item.itemId)
-    const itemAttributeList = item.item?.attributeList ?? []
-    const cardAttributeList = item.cardList.filter(item => item).flatMap(item => cardDatabase.find(card => card.id === item)?.attributeList ?? [])
-    const enchantAttributeList: Attribute[] = item.enchantList.filter(item => item).flatMap(item => enchantDatabase.find(enchant => enchant.id === item)?.attributeList ?? [])
-    const optionAttributeList: Attribute[] = item.optionList.filter(item => item).flatMap(item => optionDatabase.find(option => option.id === item)?.attributeList ?? [])
+    const itemBase = item.item
+    let itemAttributeList: AttributeName[] = []
+    if (itemBase) {
+        itemAttributeList = itemBase.attributeList.map(attribute => {
+            return { ...attribute, name: itemBase.name }
+        })
+    }
+    const cardAttributeList: AttributeName[] = item.cardList.flatMap(item => {
+        const card = cardDatabase.find(card => card.id === item)
+        if (!card) return []
+        return card.attributeList.map(attribute => {
+            return { ...attribute, name: card.name }
+        })
+    })
+    const enchantAttributeList: AttributeName[] = item.enchantList.flatMap(item => {
+        const enchant = enchantDatabase.find(enchant => enchant.id === item)
+        if (!enchant) return []
+        return enchant.attributeList.map(attribute => {
+            return { ...attribute, name: enchant.name }
+        })
+    })
+    const optionAttributeList: AttributeName[] = item.optionList.flatMap(item => {
+        const option = optionDatabase.find(option => option.id === item)
+        if (!option) return []
+        return option.attributeList.map(attribute => {
+            return { ...attribute, name: option.name }
+        })
+    })
     item.sumAttributeList = [...itemAttributeList, ...cardAttributeList, ...enchantAttributeList, ...optionAttributeList]
 }
 
-export function checkCraft(item: CraftEqiupment, character: Character): Attribute[] {
+export function checkCraft(item: CraftEqiupment, character: Character): AttributeName[] {
     if (!item.sumAttributeList) return []
     return item.sumAttributeList.filter(attribute => Attribute.check(item, attribute, character))
 

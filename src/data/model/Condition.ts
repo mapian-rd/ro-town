@@ -29,13 +29,8 @@ export class NumberCondition {
     }
 }
 
-export class SkillCondition extends NumberCondition {
+export interface SkillCondition extends NumberCondition {
     skill: SkillEnum
-
-    constructor(skill: SkillEnum, symbol: Symbol, number: number) {
-        super(number, symbol)
-        this.skill = skill
-    }
 }
 
 export class StatusCondition extends NumberCondition {

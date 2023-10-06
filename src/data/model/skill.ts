@@ -13,6 +13,7 @@ export interface Skill {
     id: number;
     name: string;
     enum: SkillEnum;
+    maxLv: number;
 }
 
 
@@ -20,6 +21,7 @@ export class ActiveSkill implements Skill {
     id: number = -1;
     name: string = "";
     enum: SkillEnum = SkillEnum.NormalAttack;
+    maxLv: number = 1;
     percent: number[] = [];
     vct: number[] = [];
     fct: number[] = [];
@@ -35,6 +37,7 @@ export class PassiveSkill implements Skill {
     id: number = -1;
     name: string = "";
     enum: SkillEnum = SkillEnum.NormalAttack;
+    maxLv: number = 1;
     attributeList: Attribute[] = [];
 }
 

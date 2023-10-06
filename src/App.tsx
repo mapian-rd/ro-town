@@ -96,29 +96,29 @@ function App() {
     }
   })
 
-    const itemBuffList = [...itemBuffDatabase]
-    context.character.itemBuff.forEach(item => {
-      const found = itemBuffList.findIndex(skill => skill.id === item.id)
-      if (found !== -1) {
-        itemBuffList.splice(found, 1)
-      }
-    })
-    const ownItemBuff = context.character.itemBuff.map(item => {
-      return {
-        id: item.id,
-        name: item.name,
-        imgSrc: `https://static.divine-pride.net/images/items/${item.id}.png`,
-        isActive: item.isActive,
-      }
-    })
-    const itemBuff = itemBuffList.map(item => {
-      return {
-        id: item.id,
-        name: item.name,
-        imgSrc: `https://static.divine-pride.net/images/items/${item.id}.png`,
-        isActive: false,
-      }
-    })
+  const itemBuffList = [...itemBuffDatabase]
+  context.character.itemBuff.forEach(item => {
+    const found = itemBuffList.findIndex(skill => skill.id === item.id)
+    if (found !== -1) {
+      itemBuffList.splice(found, 1)
+    }
+  })
+  const ownItemBuff = context.character.itemBuff.map(item => {
+    return {
+      id: item.id,
+      name: item.name,
+      imgSrc: `https://static.divine-pride.net/images/items/${item.id}.png`,
+      isActive: item.isActive,
+    }
+  })
+  const itemBuff = itemBuffList.map(item => {
+    return {
+      id: item.id,
+      name: item.name,
+      imgSrc: `https://static.divine-pride.net/images/items/${item.id}.png`,
+      isActive: false,
+    }
+  })
 
   function onDrop(event: React.DragEvent<HTMLDivElement>) {
     console.log("onDrop")
@@ -236,7 +236,10 @@ function App() {
 
           <div className={'col-md-4 d-flex flex-column h-100 align-items-start' + (showMoreStatus ? '' : ' d-none')}>
             <button onClick={() => api.setViewState(ViewState.Normal)}>Back</button>
-            <MoreStatus final={context.calculatedAttribute.finalAttributeList} />
+            <MoreStatus
+              final={context.calculatedAttribute.finalAttributeList}
+              skillDmg={context.calculatedAttribute.skillAttributeList}
+            />
           </div>
 
           <div className={'col-md-4 pt-4 d-flex flex-column' + (showItemInfo ? '' : ' d-none')}>

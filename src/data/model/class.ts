@@ -36,7 +36,12 @@ export abstract class JobClass {
     shieldPenalty: number = -10;
 
     activeSkill: ActiveSkill[] = []
+    buffSkill: PassiveSkill[] = []
     passiveSkill: PassiveSkill[] = []
+
+    getSkill() {
+        return [...this.activeSkill, ...this.buffSkill, ...this.passiveSkill]
+    }
 
     static getBonus(clazz: JobClass, jobLv: number, status: AttributeTypeEnum): number {
         switch (status) {

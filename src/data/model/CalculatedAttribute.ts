@@ -1,6 +1,7 @@
-import { Attribute } from "./Attribute";
+import { Attribute, AttributeName } from "./Attribute";
 import { AttributeTypeEnum } from "./attributeType";
 import { DescriptionNumber, FormulaString } from "./Formula";
+import { SkillEnum } from "./skill";
 import { Status } from "./status";
 
 export class CalculatedAttribute {
@@ -38,11 +39,13 @@ export class CalculatedAttribute {
 
     remainStatusPoint: number = 0
 
-    checkedAttributeList: Map<string, Attribute[]> = new Map()
+    checkedAttributeList: Map<string, AttributeName[]> = new Map()
     formulaList: Map<AttributeTypeEnum, FormulaString[]> = new Map()
+    skillFormulaList: Map<SkillEnum, FormulaString[]> = new Map()
     rawAttributeList: Map<AttributeTypeEnum, DescriptionNumber> = new Map()
     calRawCall: boolean = false
     finalAttributeList: Map<AttributeTypeEnum, DescriptionNumber> = new Map()
+    skillAttributeList: Map<SkillEnum, DescriptionNumber> = new Map()
     calFinalCall: boolean = false
     statusAtk: number = 0
     statusMatk: number = 0

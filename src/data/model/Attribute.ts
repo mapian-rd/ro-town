@@ -44,7 +44,12 @@ export class Attribute {
         }
         if (attribute.condition.skillList) {
             attribute.condition.skillList.forEach(condition => {
-                if (character.clazz.activeSkill.findIndex(skill => skill.id === condition.skill) === -1) return false
+                const activeSkill = character.clazz.activeSkill.find(skill => skill.enum === condition.skill)
+                const buffSkill = character.clazz.buffSkill.find(skill => skill.enum === condition.skill)
+                const passiveSkill = character.clazz.passiveSkill.find(skill => skill.enum === condition.skill)
+                if (!activeSkill && !buffSkill && !passiveSkill) {
+                    return false
+                }
             })
         }
         console.log("checkAttribute statusList", attribute.condition.statusList)
@@ -73,4 +78,8 @@ export class Attribute {
         }
         return true
     }
+}
+
+export interface AttributeName extends Attribute {
+    name: string
 }

@@ -4,7 +4,7 @@ import { Character } from "./Characterv2";
 import { CraftEqiupment } from "./CraftEquipment";
 import { EquipmentSlot } from "./EquipmentSlot";
 import { Item } from "./Itemv2";
-import { ActiveSkill, Skill } from "./skill";
+import { ActiveSkill, PassiveSkill, Skill, SkillEnum } from "./skill";
 import { Status } from "./status";
 let stringMath = require('string-math');
 
@@ -35,20 +35,20 @@ function getParameter(text: string, equipmentMap: Map<EquipmentSlot, CraftEqiupm
         if (item) {
             const step = Number.parseInt(text.charAt(text.length - 1))
             return Math.floor(item.refineLevel / step).toString()
-        } else {
-            return "0"
         }
+        return "0"
     }
     if (text.includes("S$")) {
+        console.log("skill")
         const dotIndex = text.indexOf(".Lv")
-        const id = text.substring(2, dotIndex - 1)
+        const id = text.substring(3, dotIndex)
         const item = skill.find(item => item?.id === Number.parseInt(id))
+        console.log("skill", id, item)
         if (item) {
-            const step = Number.parseInt(text.charAt(text.length - 1))
-            return Math.floor(item.id / step).toString()
-        } else {
-            return "0"
+            return item.maxLv.toString()
         }
+        console.log("skill 0")
+        return "0"
     }
     if (text.includes("BaseLv")) {
         const slash = text.indexOf("/")
@@ -136,18 +136,21 @@ export class FormulaString {
     id: string;
     name: string;
     max?: string;
+    skill?: SkillEnum;
 
-    constructor(id: string, text: string, name: string, max?: string) {
+    constructor(id: string, text: string, name: string, max?: string, skill?: SkillEnum) {
         this.id = id;
         this.text = text;
         this.name = name;
         this.max = max;
+        this.skill = skill;
     }
 }
 
 export class DescriptionNumber {
     number: number;
     description: string;
+    name?: string;
 
     min?: number
     max?: number

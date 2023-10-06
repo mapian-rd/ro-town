@@ -250,7 +250,7 @@ export const ContextProvider = (props: Props): JSX.Element => {
           if (!oldValue) {
             oldValue = []
           }
-          cal.formulaList.set(attribute.type, [...oldValue, new FormulaString(equipment.craftId, attribute.formulaText, equipment.craftName!, attribute.max)])
+          cal.formulaList.set(attribute.type, [...oldValue, new FormulaString(equipment.craftId, attribute.formulaText, attribute.name, attribute.max, attribute.skill)])
         })
       }
     })
@@ -260,6 +260,9 @@ export const ContextProvider = (props: Props): JSX.Element => {
     console.log("ispet", character.pet)
     if (character.pet) {
       const petAttributes = [...character.pet?.attributeList ?? [], ...Pet.findPetAttribute(character.pet, character.petFriendly ?? friendly)]
+        .map(attribute => {
+          return { ...attribute, name: character.pet!.name }
+        })
       const check = petAttributes.filter(attribute => Attribute.checkAttribute(attribute, character))
       cal.checkedAttributeList.set("pet", check)
 
@@ -268,13 +271,18 @@ export const ContextProvider = (props: Props): JSX.Element => {
         if (!oldValue) {
           oldValue = []
         }
-        cal.formulaList.set(attribute.type, [...oldValue, new FormulaString("pet", attribute.formulaText, character.pet?.name ?? "pet")])
+        cal.formulaList.set(attribute.type, [...oldValue, new FormulaString("pet", attribute.formulaText, attribute.name, attribute.max, attribute.skill)])
       })
     }
 
     const itemBuffAttributes = character.itemBuff
       .filter(item => item.isActive)
-      .flatMap(item => item.attributeList)
+      .flatMap(item => {
+        return item.attributeList.map(attribute => {
+          return { ...attribute, name: item.name }
+        })
+      })
+
     const checkItemBuff = itemBuffAttributes.filter(attribute => Attribute.checkAttribute(attribute, character))
     cal.checkedAttributeList.set("itemBuff", checkItemBuff)
     checkItemBuff.forEach(attribute => {
@@ -282,12 +290,16 @@ export const ContextProvider = (props: Props): JSX.Element => {
       if (!oldValue) {
         oldValue = []
       }
-      cal.formulaList.set(attribute.type, [...oldValue, new FormulaString("itemBuff", attribute.formulaText, "itemBuff")])
+      cal.formulaList.set(attribute.type, [...oldValue, new FormulaString("itemBuff", attribute.formulaText, attribute.name, attribute.max, attribute.skill)])
     })
 
     const skillBuffAttributes = character.skillBuff
       .filter(item => item.isActive)
-      .flatMap(item => item.attributeList)
+      .flatMap(item => {
+        return item.attributeList.map(attribute => {
+          return { ...attribute, name: item.name }
+        })
+      })
     const checkSkillBuff = skillBuffAttributes.filter(attribute => Attribute.checkAttribute(attribute, character))
     cal.checkedAttributeList.set("itemBuff", checkSkillBuff)
     checkSkillBuff.forEach(attribute => {
@@ -295,16 +307,40 @@ export const ContextProvider = (props: Props): JSX.Element => {
       if (!oldValue) {
         oldValue = []
       }
-      cal.formulaList.set(attribute.type, [...oldValue, new FormulaString("skillBuff", attribute.formulaText, "skillBuff")])
+      cal.formulaList.set(attribute.type, [...oldValue, new FormulaString("skillBuff", attribute.formulaText, attribute.name, attribute.max, attribute.skill)])
     })
 
     cal.rawAttributeList.clear()
+    cal.skillFormulaList.clear()
     console.log("formulaList size", cal.formulaList.size)
     cal.formulaList.forEach((formula, attributeType) => {
-      const number = calString(formula, character.equipmentMap, character.status, character.skillBuff, character.baseLv)
-      console.log("raw", attributeType, number)
-      cal.rawAttributeList.set(attributeType, number)
+      if (attributeType === AttributeTypeEnum.SkillDmg) {
+        formula.forEach(f => {
+          if (f.skill) {
+            let oldValue = cal.skillFormulaList.get(f.skill)
+            if (!oldValue) {
+              oldValue = []
+            }
+            cal.skillFormulaList.set(f.skill, [...oldValue, f])
+          }
+        })
+      } else {
+        const number = calString(formula, character.equipmentMap, character.status, character.clazz.getSkill(), character.baseLv)
+        console.log("raw", attributeType, number)
+        cal.rawAttributeList.set(attributeType, number)
+      }
     })
+
+    cal.skillAttributeList.clear()
+    cal.skillFormulaList.forEach((value, key) => {
+      const number = calString(value, character.equipmentMap, character.status, character.clazz.getSkill(), character.baseLv)
+      const skill = character.clazz.activeSkill.find(item => item.enum === key)
+      if (skill) {
+        number.name = skill.name
+      }
+      cal.skillAttributeList.set(key, number)
+    })
+
     cal.calRawCall = !cal.calRawCall
   }
 
@@ -326,7 +362,7 @@ export const ContextProvider = (props: Props): JSX.Element => {
       cal.finalAttributeList.set(attributeType, number)
     })
 
-    
+
     const str = cal.finalAttributeList.get(AttributeTypeEnum.Str) ?? new DescriptionNumber(1, "1(status)")
     const agi = cal.finalAttributeList.get(AttributeTypeEnum.Agi) ?? new DescriptionNumber(1, "1(status)")
     const vit = cal.finalAttributeList.get(AttributeTypeEnum.Vit) ?? new DescriptionNumber(1, "1(status)")
@@ -488,6 +524,7 @@ export const ContextProvider = (props: Props): JSX.Element => {
         || attributeType === AttributeTypeEnum.AspdPercent
         || attributeType === AttributeTypeEnum.SoftDefPercent
         || attributeType === AttributeTypeEnum.SoftMdefPercent
+        || attributeType === AttributeTypeEnum.SkillDmg
       ) {
         number.number = -1
       }
@@ -622,12 +659,12 @@ export const ContextProvider = (props: Props): JSX.Element => {
           if (type.equipSlotType) {
             const slot = type.equipSlot[0]
             console.log("equip slot", slot)
-              const old = character.equipmentMap.get(slot)
-              if (old) {
-                const oldElement = document.getElementById("storage" + old.craftId)
-                oldElement?.classList.remove("storage-equiped")
-              }
-              character.equipmentMap.set(slot, item)
+            const old = character.equipmentMap.get(slot)
+            if (old) {
+              const oldElement = document.getElementById("storage" + old.craftId)
+              oldElement?.classList.remove("storage-equiped")
+            }
+            character.equipmentMap.set(slot, item)
           } else {
             type.equipSlot.forEach(slot => {
               console.log("equip slot", slot)
@@ -639,7 +676,7 @@ export const ContextProvider = (props: Props): JSX.Element => {
               character.equipmentMap.set(slot, item)
             })
           }
-          
+
           setCharacter({ ...character });
           const element = document.getElementById("storage" + item.craftId)
           if (element) {
