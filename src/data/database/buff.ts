@@ -8,7 +8,7 @@ export const skillBuffDatabase: PassiveSkill[] = [
 
 export const itemBuffDatabase: Item[] = [
     {
-        id: 1,
+        id: "atk75",
         name: "ATK +75",
         type: ItemTypeEnum.Buff,
         attributeList: [
@@ -19,7 +19,7 @@ export const itemBuffDatabase: Item[] = [
         ]
     },
     {
-        id: 2,
+        id: "atkp5",
         name: "ATK% +5%",
         type: ItemTypeEnum.Buff,
         attributeList: [
@@ -30,7 +30,7 @@ export const itemBuffDatabase: Item[] = [
         ]
     },
     {
-        id: 3,
+        id: "rangep5",
         name: "Range% +12%",
         type: ItemTypeEnum.Buff,
         attributeList: [
@@ -41,7 +41,7 @@ export const itemBuffDatabase: Item[] = [
         ]
     },
     {
-        id: 4,
+        id: "atk1000",
         name: "ATK +1000",
         type: ItemTypeEnum.Buff,
         attributeList: [
@@ -52,7 +52,7 @@ export const itemBuffDatabase: Item[] = [
         ]
     },
     {
-        id: 5,
+        id: "skildmgp120",
         name: "Skill dmg 120%",
         type: ItemTypeEnum.Buff,
         attributeList: [
@@ -63,7 +63,7 @@ export const itemBuffDatabase: Item[] = [
         ]
     },
     {
-        id: 6,
+        id: "allsize10",
         name: "All Size + 10%",
         type: ItemTypeEnum.Buff,
         attributeList: [
@@ -82,7 +82,7 @@ export const itemBuffDatabase: Item[] = [
         ]
     },
     {
-        id: 7,
+        id: "atk100-2",
         name: "ATK +100",
         type: ItemTypeEnum.Buff,
         attributeList: [
@@ -93,7 +93,7 @@ export const itemBuffDatabase: Item[] = [
         ]
     },
     {
-        id: 8,
+        id: "atkp99",
         name: "ATK% +99%",
         type: ItemTypeEnum.Buff,
         attributeList: [
@@ -104,7 +104,7 @@ export const itemBuffDatabase: Item[] = [
         ]
     },
     {
-        id: 9,
+        id: "allsize101",
         name: "Size +101%",
         type: ItemTypeEnum.Buff,
         attributeList: [
@@ -123,7 +123,7 @@ export const itemBuffDatabase: Item[] = [
         ]
     },
     {
-        id: 10,
+        id: "allsize101-2",
         name: "Size +101%",
         type: ItemTypeEnum.Buff,
         attributeList: [

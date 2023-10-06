@@ -5,7 +5,7 @@ import { ActiveSkill, SkillEnum } from "../model/skill"
 import { OneHandedStaff } from "./itemType"
 
 const normalAttack: ActiveSkill = {
-    id: 0,
+    id: "normal",
     enum: SkillEnum.NormalAttack,
     name: "Normal Attack",
     maxLv: 1,
@@ -20,7 +20,7 @@ const normalAttack: ActiveSkill = {
 }
 
 const normalRangeAttack: ActiveSkill = {
-    id: 1,
+    id: "range",
     enum: SkillEnum.NormalRangeAttack,
     name: "Normal Attack (Range)",
     maxLv: 1,
@@ -99,7 +99,7 @@ export class Doram extends JobClass {
         normalAttack,
         normalRangeAttack,
         {
-            id: 5033,
+            id: "5033",
             enum: SkillEnum.PickyPeck,
             name: "Picky Peck",
             maxLv: 5,
@@ -113,7 +113,7 @@ export class Doram extends JobClass {
             isRange: true,
         },
         {
-            id: 5036,
+            id: "5036",
             enum: SkillEnum.LunaticCarrotBeat,
             name: "Lunatic Carrot Beat",
             maxLv: 5,
@@ -129,7 +129,7 @@ export class Doram extends JobClass {
     ];
     passiveSkill = [
         {
-            id: 5031,
+            id: "5031",
             enum: SkillEnum.PowerofLife,
             name: "Power of Life",
             maxLv: 5,
@@ -153,7 +153,7 @@ export class Doram extends JobClass {
             ],
         },
         {
-            id: 5035,
+            id: "5035",
             enum: SkillEnum.ArclouseDash,
             name: "Arclouse Dash",
             maxLv: 5,

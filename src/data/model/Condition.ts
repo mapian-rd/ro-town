@@ -43,9 +43,9 @@ export class StatusCondition extends NumberCondition {
 }
 
 export class ItemCondition extends NumberCondition {
-    itemId: number
+    itemId: string
 
-    constructor(itemId: number, symbol: Symbol = Symbol.gte, refine: number = 0) {
+    constructor(itemId: string, symbol: Symbol = Symbol.gte, refine: number = 0) {
         super(refine, symbol)
         this.itemId = itemId
     }

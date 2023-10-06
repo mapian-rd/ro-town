@@ -1,18 +1,35 @@
 import { Attribute } from "./Attribute"
 import { ItemType, ItemTypeEnum } from "./itemType"
 
-export class Item {
-    id: number
+export interface Named {
+    id: string;
+    name?: string;
+}
+
+export class Item implements Named {
+    id: string
     name: string
     type: ItemTypeEnum
     attributeList: Attribute[]
     imgId?: number
 
-    constructor(id: number, name: string, type: ItemTypeEnum, attributeList: Attribute[]) {
+    constructor(id: string, name: string, type: ItemTypeEnum, attributeList: Attribute[]) {
         this.id = id
         this.name = name
         this.type = type
         this.attributeList = attributeList
+    }
+
+    static is(item: Named): item is Item {
+        return (item as Item).type !== undefined
+    }
+
+    static getImgId(id: string, imgId?: number): number {
+        if (imgId) return imgId
+        if (!Number.isNaN(id)) {
+            return Number.parseInt(id)
+        }
+        return -1
     }
 }
 

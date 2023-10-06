@@ -10,15 +10,16 @@ export enum SkillEnum {
 }
 
 export interface Skill {
-    id: number;
+    id: string;
     name: string;
     enum: SkillEnum;
     maxLv: number;
+    imgId?: number;
 }
 
 
 export class ActiveSkill implements Skill {
-    id: number = -1;
+    id: string = "-1";
     name: string = "";
     enum: SkillEnum = SkillEnum.NormalAttack;
     maxLv: number = 1;
@@ -34,10 +35,11 @@ export class ActiveSkill implements Skill {
 }
 
 export class PassiveSkill implements Skill {
-    id: number = -1;
+    id: string = "-1";
     name: string = "";
     enum: SkillEnum = SkillEnum.NormalAttack;
     maxLv: number = 1;
+    imgId?: number;
     attributeList: Attribute[] = [];
 }
 

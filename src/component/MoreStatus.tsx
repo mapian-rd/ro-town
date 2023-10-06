@@ -72,31 +72,31 @@ export default function MoreStatus(prop: MoreStatusProps) {
     return (
         <Box title="More Status" overflow>
             <div className="mh-0" >
-            <div className="row" key="skill-title">
+            <div className="row">
                     <div className="col text-decoration-underline">
                         Status
                     </div>
                 </div>
                 {statusList}
-                <div className="row" key="skill-title">
+                <div className="row">
                     <div className="col text-decoration-underline">
                         SkillDmg
                     </div>
                 </div>
                 {skillDmgList}
-                <div className="row" key="skill-title">
+                <div className="row">
                     <div className="col text-decoration-underline">
                         Physical
                     </div>
                 </div>
                 {physicalAttributeComList}
-                <div className="row" key="skill-title">
+                <div className="row">
                     <div className="col text-decoration-underline">
                         Magical
                     </div>
                 </div>
                 {magicalAttributeComList}
-                <div className="row" key="skill-title">
+                <div className="row">
                     <div className="col text-decoration-underline">
                         Other
                     </div>

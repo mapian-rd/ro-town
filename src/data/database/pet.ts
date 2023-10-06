@@ -6,7 +6,7 @@ import { Pet } from "../model/Petv2";
 
 export const petList: Pet[] = [
     {
-        id: -1,
+        id: "-1",
         imageId: -1,
         name: "None",
         petAttribute: [],
@@ -15,7 +15,7 @@ export const petList: Pet[] = [
         attributeList: [],
     },
     {
-        id: 9001,
+        id: "9001",
         imageId: 1002,
         name: "Poring",
         petAttribute: [
@@ -46,7 +46,7 @@ export const petList: Pet[] = [
         attributeList: [],
     },
     {
-        id: 9017,
+        id: "9017",
         imageId: 1023,
         name: "Orc Warrior",
         petAttribute: [

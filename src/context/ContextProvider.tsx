@@ -26,6 +26,7 @@ import { EquipmentSlot } from "../data/model/EquipmentSlot";
 import { ExportData } from "../data/model/Exportable";
 import { FormulaString, calString, DescriptionNumber } from "../data/model/Formula";
 import { WeaponType, Shield, ItemTypeEnum, itemTypeList } from "../data/model/itemType";
+import { Item, Named } from "../data/model/Itemv2";
 import { Monster, MonsterId } from "../data/model/monster";
 import { Pet, PetFriendly } from "../data/model/Petv2";
 import { ActiveSkill } from "../data/model/skill";
@@ -72,10 +73,11 @@ export const ContextProvider = (props: Props): JSX.Element => {
   console.log("ContextProvider")
 
   const [viewState, setViewState] = useState<ViewState>(ViewState.Normal);
-  const [viewItem, setViewItem] = useState<CraftEqiupment>();
+  const [viewItem, setViewItem] = useState<Named>();
   const [dragItem, setDragItem] = useState<CraftEqiupment>();
 
   const [storage, setStorage] = useState<Storage>(data.storage);
+  const [buffStorage, setBuffStorage] = useState<Item[]>(data.buffStorage);
   const [character, setCharacter] = useState<Character>(CharacterExport.getCharacter(data.character, storage));
   const [cal, setAttribute] = useState<CalculatedAttribute>(new CalculatedAttribute())
   const [monsterId, setMonsterId] = useState<MonsterId>(MonsterList.find(monster => monster.id === data.monsterId) ?? MonsterList[0]);
@@ -99,6 +101,7 @@ export const ContextProvider = (props: Props): JSX.Element => {
     dragItem,
     character,
     storage,
+    buffStorage,
     calculatedAttribute: cal,
     monsterId,
     monster,
@@ -110,6 +113,7 @@ export const ContextProvider = (props: Props): JSX.Element => {
   function setCookie() {
     console.log("setCookie")
     data.storage = storage
+    data.buffStorage = buffStorage
     console.log("setCookie", character.clazz)
     data.character = CharacterExport.getExport(character)
     console.log("setCookie", data.character.clazz.toString())
@@ -223,7 +227,7 @@ export const ContextProvider = (props: Props): JSX.Element => {
       if (left.item?.type === ItemTypeEnum.Shield) {
         cal.shieldPenalty = character.clazz.shieldPenalty
       } else {
-        if (left.craftId !== rWeapon?.craftId) {
+        if (left.id !== rWeapon?.id) {
           cal.lWeaponAtk = left.item!.atk ?? 0
           cal.lWeaponMatk = left.item?.matk ?? 0
           cal.lRefineAtk = refineATK(left, AttributeTypeEnum.Atk)
@@ -243,14 +247,14 @@ export const ContextProvider = (props: Props): JSX.Element => {
       console.log("calEquipment equipment", equipment)
       if (equipment) {
         const check = checkCraft(equipment, character)
-        cal.checkedAttributeList.set(equipment.craftId, check)
+        cal.checkedAttributeList.set(equipment.id, check)
 
         check.forEach(attribute => {
           let oldValue = cal.formulaList.get(attribute.type)
           if (!oldValue) {
             oldValue = []
           }
-          cal.formulaList.set(attribute.type, [...oldValue, new FormulaString(equipment.craftId, attribute.formulaText, attribute.name, attribute.max, attribute.skill)])
+          cal.formulaList.set(attribute.type, [...oldValue, new FormulaString(equipment.id, attribute.formulaText, attribute.name, attribute.max, attribute.skill)])
         })
       }
     })
@@ -608,20 +612,28 @@ export const ContextProvider = (props: Props): JSX.Element => {
       }
       setViewState(state)
     },
-    setViewItem: (item: CraftEqiupment | undefined) => {
+    setViewItem: (item: Named | undefined) => {
+      console.log("setViewItem" , item)
+      setViewItem(item)
       const oldElement = document.getElementsByClassName("rounded select-ed")
       Array.from(oldElement).forEach(element => {
         element.classList.remove("rounded")
         element.classList.remove("select-ed")
       });
       if (!item) return
-      const element = document.getElementById('storage' + item.craftId)
+      let element
+      let equipment
+      if (item as CraftEqiupment) {
+        console.log("CraftEqiupment")
+        element = document.getElementById('storage-' + item.id)
+        equipment = document.getElementById('equipment-' + item.id)
+      }
+
       if (element) {
         element.classList.add("rounded")
         element.classList.add("select-ed")
       }
 
-      const equipment = document.getElementById('equipment-' + item.craftId)
       if (equipment) {
         equipment.classList.add("rounded")
         equipment.classList.add("select-ed")
@@ -646,7 +658,7 @@ export const ContextProvider = (props: Props): JSX.Element => {
     equip: (item: CraftEqiupment) => {
       console.log("equip")
       const equiped = Array.from(character.equipmentMap).find(([key, value]) => {
-        return item.craftId === value?.craftId
+        return item.id === value?.id
       })
       console.log("equip", equiped)
       if (equiped) return
@@ -661,7 +673,7 @@ export const ContextProvider = (props: Props): JSX.Element => {
             console.log("equip slot", slot)
             const old = character.equipmentMap.get(slot)
             if (old) {
-              const oldElement = document.getElementById("storage" + old.craftId)
+              const oldElement = document.getElementById("storage-" + old.id)
               oldElement?.classList.remove("storage-equiped")
             }
             character.equipmentMap.set(slot, item)
@@ -670,7 +682,7 @@ export const ContextProvider = (props: Props): JSX.Element => {
               console.log("equip slot", slot)
               const old = character.equipmentMap.get(slot)
               if (old) {
-                const oldElement = document.getElementById("storage" + old.craftId)
+                const oldElement = document.getElementById("storage-" + old.id)
                 oldElement?.classList.remove("storage-equiped")
               }
               character.equipmentMap.set(slot, item)
@@ -678,7 +690,7 @@ export const ContextProvider = (props: Props): JSX.Element => {
           }
 
           setCharacter({ ...character });
-          const element = document.getElementById("storage" + item.craftId)
+          const element = document.getElementById("storage-" + item.id)
           if (element) {
             element.classList.add("storage-equiped")
           }
@@ -688,13 +700,13 @@ export const ContextProvider = (props: Props): JSX.Element => {
     unequip: (item: CraftEqiupment) => {
       let isChange = false
       Array.from(character.equipmentMap).forEach(([key, value]) => {
-        if (item.craftId === value?.craftId) {
+        if (item.id === value?.id) {
           character.equipmentMap.set(key, undefined)
           isChange = true
         }
       })
       if (isChange) {
-        const element = document.getElementById("storage" + item.craftId)
+        const element = document.getElementById("storage-" + item.id)
         if (element) {
           element.classList.remove("storage-equiped")
         }

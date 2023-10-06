@@ -111,7 +111,7 @@ export default function AddItem() {
     };
 
     function handleRefineChange(event: React.ChangeEvent<HTMLInputElement>) {
-        console.log("handleRefineChange", craftEquipment?.craftId, craftEquipment?.refineLevel)
+        console.log("handleRefineChange", craftEquipment?.id, craftEquipment?.refineLevel)
         if (!craftEquipment) return
         let { value, min, max } = event.target;
         let newValue = checkMinMax(Number(value), Number(min), Number(max));
@@ -150,7 +150,9 @@ export default function AddItem() {
 
             const value = await Promise.all(craftEquipment.cardList.flatMap(card => {
                 if (!card) return []
-                return CardPrefixSearch(card)
+                const id = Number.parseInt(card)
+                if (isNaN(id)) return []
+                return CardPrefixSearch(id)
             }))
             value.sort()
             let cardTextMap: Map<string, number> = new Map()
@@ -176,7 +178,7 @@ export default function AddItem() {
                 optionText += ` [${fillOptionList.length}Option]`
             }
 
-            craftEquipment.craftName = refineText + cardText + item?.name + optionText
+            craftEquipment.name = refineText + cardText + item?.name + optionText
             api.addItem(craftEquipment)
             setType(undefined);
             setItem(undefined);

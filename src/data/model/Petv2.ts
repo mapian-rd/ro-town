@@ -1,6 +1,5 @@
 import { Attribute } from "./Attribute";
 import { AttributeType, AttributeTypeEnum } from "./attributeType";
-import { Craftable } from "./CraftEquipment";
 import { ItemTypeEnum } from "./itemType";
 import { Item } from "./Itemv2";
 
@@ -16,7 +15,7 @@ export class Pet extends Item {
     imageId!: number;
     petAttribute: PetAttribute[];
     description: string;
-    constructor(id: number, name: string, attribures: Attribute[], petAttribute: PetAttribute[], description: string) {
+    constructor(id: string, name: string, attribures: Attribute[], petAttribute: PetAttribute[], description: string) {
         super(id, name, ItemTypeEnum.Pet, attribures);
         this.petAttribute = petAttribute;
         this.description = description;

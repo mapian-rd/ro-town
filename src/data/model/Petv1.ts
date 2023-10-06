@@ -1,6 +1,5 @@
 import { PetItemType } from "../constraint/itemType";
 import { AttributeType, AttributeTypeEnum } from "./attributeType";
-import { Craftable } from "./CraftEquipment";
 import { Attribute, Combo, Item } from "./Itemv1";
 
 export class PetAttribute extends Attribute {

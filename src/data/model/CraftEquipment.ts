@@ -1,21 +1,17 @@
 import { ItemType } from "./itemType";
 import { Attribute, AttributeName } from "./Attribute";
-import { Equipment, Item } from "./Itemv2";
+import { Equipment, Item, Named } from "./Itemv2";
 import { Character } from "./Characterv2";
 import { cardDatabase, enchantDatabase, itemDatabase, optionDatabase } from "../database/item";
 
-export interface Craftable {
-    craftId: string;
-}
-
-export class CraftEqiupment implements Craftable {
-    itemId: number;
-    craftId: string;
-    craftName?: string;
+export class CraftEqiupment implements Named {
+    itemId: string;
+    id: string;
+    name?: string;
     refineLevel: number;
-    cardList: (number | undefined)[];
-    enchantList: (number | undefined)[];
-    optionList: (number | undefined)[];
+    cardList: (string | undefined)[];
+    enchantList: (string | undefined)[];
+    optionList: (string | undefined)[];
 
     // runtime data
     item?: Equipment;
@@ -23,11 +19,15 @@ export class CraftEqiupment implements Craftable {
 
     constructor(equipment: Equipment, refineLevel: number) {
         this.itemId = equipment.id
-        this.craftId = crypto.randomUUID();
+        this.id = crypto.randomUUID();
         this.refineLevel = refineLevel;
-        this.cardList = Array<number | undefined>(equipment.cardSlot ?? 0).fill(undefined);
-        this.enchantList = Array<number | undefined>(equipment.enchantSlot ?? 0).fill(undefined);
-        this.optionList = Array<number | undefined>(equipment.optionSlot ?? 0).fill(undefined);
+        this.cardList = Array<string | undefined>(equipment.cardSlot ?? 0).fill(undefined);
+        this.enchantList = Array<string | undefined>(equipment.enchantSlot ?? 0).fill(undefined);
+        this.optionList = Array<string | undefined>(equipment.optionSlot ?? 0).fill(undefined);
+    }
+
+    static is(item: Named): item is CraftEqiupment {
+        return (item as CraftEqiupment).refineLevel !== undefined
     }
 }
 

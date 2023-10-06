@@ -1,5 +1,6 @@
 import { EquipableType } from "../../data/model/itemType";
 import { CraftEqiupment } from "../../data/model/CraftEquipment";
+import { Item } from "../../data/model/Itemv2";
 
 interface EquipmentColProps {
     type: EquipableType;
@@ -13,7 +14,7 @@ export function EqiupmentCol(props: EquipmentColProps) {
     if (props.equipment) {
         element = (
             <div
-                id={"equipment-" + props.equipment.craftId}
+                id={"equipment-" + props.equipment.id}
                 className="col-5 equipment-col"
                 draggable
                 onDragStart={(event) => (props.onDrag && props.equipment) ? props.onDrag(event, props.equipment) : undefined}
@@ -21,10 +22,10 @@ export function EqiupmentCol(props: EquipmentColProps) {
             >
                 <div className="row">
                     <div className="col-4 my-2 pe-0">
-                        <img className="h-100" src={`https://static.divine-pride.net/images/items/item/${props.equipment.itemId}.png`} alt="Item" />
+                        <img className="h-100" src={`https://static.divine-pride.net/images/items/item/${Item.getImgId(props.equipment.itemId, props.equipment.item?.imgId)}.png`} alt="Item" />
                     </div>
                     <div className="col px-1 equipment-ed">
-                        {props.equipment.craftName}
+                        {props.equipment.name}
                     </div>
                 </div>
             </div>

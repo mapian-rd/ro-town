@@ -4,13 +4,14 @@ import { CalculatedAttribute } from "../data/model/CalculatedAttribute";
 import { Character } from "../data/model/Characterv2";
 import { CraftEqiupment } from "../data/model/CraftEquipment";
 import { DescriptionNumber } from "../data/model/Formula";
+import { Item, Named } from "../data/model/Itemv2";
 import { Monster, MonsterId } from "../data/model/monster";
 import { ActiveSkill } from "../data/model/skill";
 import { ViewState } from "./AppContext";
 
 export interface AppApi {
     setViewState: (state: ViewState) => void;
-    setViewItem: (item: CraftEqiupment) => void;
+    setViewItem: (item: Named) => void;
     setDragItem: (item: CraftEqiupment) => void;
     updateCharacter: (newState: Partial<Character>) => void;
     setMonsterId: (newMonsterId: MonsterId) => void;

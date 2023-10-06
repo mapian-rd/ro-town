@@ -11,17 +11,17 @@ interface BoxProps {
     imgSrc?: string;
     option?: string[];
     cardSlot?: number;
-    card?: number[];
+    card?: string[];
     enchant?: Item[];
     onClick?: () => void;
 }
 
 export default function ItemBox(props: BoxProps) {
 
-    const optionView = (props.option ?? []).map(option => {
+    const optionView = (props.option ?? []).map((option,index) => {
         console.log("optionView")
         return (
-            <div className="itembox-card mt-1">
+            <div className="itembox-card mt-1" key={index}>
                 {option}
             </div>
         )
@@ -32,14 +32,14 @@ export default function ItemBox(props: BoxProps) {
         if (props.card) {
             if (props.card.length > index) {
                 return (
-                    <img src={process.env.PUBLIC_URL + "/4140.png"} alt="card" />
+                    <img src={process.env.PUBLIC_URL + "/4140.png"} alt="card" key={index} />
                 )
             }
         }
         if (props.cardSlot) {
             if (props.cardSlot > index) {
                 return (
-                    <img src={process.env.PUBLIC_URL + "/nocard.png"} alt="card" />
+                    <img src={process.env.PUBLIC_URL + "/nocard.png"} alt="card" key={index} />
                 )
             }
         }
@@ -47,12 +47,12 @@ export default function ItemBox(props: BoxProps) {
             const enchantIndex = Math.abs(index - 3)
             if (props.enchant.length > enchantIndex) {
                 return (
-                    <img src={`https://www.divine-pride.net/img/items/item/thROG/${props.enchant[enchantIndex].id}`} alt="enchant" />
+                    <img src={`https://www.divine-pride.net/img/items/item/thROG/${props.enchant[enchantIndex].id}`} alt="enchant" key={index} />
                 )
             }
         }
         return (
-            <img src={process.env.PUBLIC_URL + "/none.png"} alt="card" />
+            <img src={process.env.PUBLIC_URL + "/none.png"} alt="card" key={index} />
         )
     })
 

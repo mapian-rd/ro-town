@@ -36,7 +36,7 @@ export class Attribute {
         if (attribute.condition.itemList) {
             attribute.condition.itemList.forEach(condition => {
                 const equipmentList = Array.from(character.equipmentMap.values());
-                const item = equipmentList.find(item => item?.itemId === condition.itemId);
+                const item = equipmentList.find(item => item?.id === condition.itemId);
                 if (!item) return false;
                 const result = NumberCondition.check(condition, item.refineLevel);
                 if (!result) return false;

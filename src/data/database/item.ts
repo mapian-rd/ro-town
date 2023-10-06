@@ -8,7 +8,7 @@ import { Symbol } from "../model/Symbol";
 
 export const cardDatabase: Item[] = [
     {
-        id: 27361,
+        id: "27361",
         name: "Corrupted Wanderer Card",
         type: ItemTypeEnum.CardWeapon,
         attributeList: [
@@ -23,7 +23,7 @@ export const cardDatabase: Item[] = [
         ],
     },
     {
-        id: 4608,
+        id: "4608",
         name: "White Knight Card",
         type: ItemTypeEnum.CardWeapon,
         attributeList: [
@@ -76,7 +76,7 @@ export const cardDatabase: Item[] = [
         // ]
     },
     {
-        id: 27103,
+        id: "27103",
         name: "Living Dead Card",
         type: ItemTypeEnum.Enchant,
         attributeList: [
@@ -90,7 +90,7 @@ export const cardDatabase: Item[] = [
 
 export const enchantDatabase: Item[] = [
     {
-        id: 29534,
+        id: "29534",
         name: "Modification Orb (ATK)",
         type: ItemTypeEnum.Enchant,
         attributeList: [
@@ -128,7 +128,7 @@ export const enchantDatabase: Item[] = [
 
 export const optionDatabase: Item[] = [
     {
-        id: -1,
+        id: "physGhost15",
         name: "เพิ่ม Phycal Damage ต่อศัตรูธาตุ Ghost 15%",
         type: ItemTypeEnum.Enchant,
         attributeList: [
@@ -142,7 +142,7 @@ export const optionDatabase: Item[] = [
 
 export const itemDatabase: Equipment[] = [
     {
-        id: 26155,
+        id: "26155",
         name: "Meowmeow Foxtail [2]",
         type: ItemTypeEnum.OneHandRod,
         equipmentLevel: 4,
@@ -183,7 +183,7 @@ export const itemDatabase: Equipment[] = [
         ],
     },
     {
-        id: 19296,
+        id: "19296",
         name: "Fancy Feather Hat",
         type: ItemTypeEnum.Upper,
         equipmentLevel: 1,
@@ -256,7 +256,7 @@ export const itemDatabase: Equipment[] = [
         ]
     },
     {
-        id: 26111,
+        id: "26111",
         name: "Metal Foxtail",
         type: ItemTypeEnum.OneHandRod,
         equipmentLevel: 3,
@@ -297,7 +297,7 @@ export const itemDatabase: Equipment[] = [
         ],
     },
     {
-        id: 15376,
+        id: "15376",
         name: "Illusion Armor A-type",
         type: ItemTypeEnum.Armor,
         equipmentLevel: 1,
@@ -331,7 +331,7 @@ export const itemDatabase: Equipment[] = [
                 condition: {
                     itemList: [
                         {
-                            itemId: 20933,
+                            itemId: "20933",
                             number: 0,
                             symbol: Symbol.gte,
                         }
@@ -344,7 +344,7 @@ export const itemDatabase: Equipment[] = [
                 condition: {
                     itemList: [
                         {
-                            itemId: 20934,
+                            itemId: "20934",
                             number: 0,
                             symbol: Symbol.gte,
                         }
@@ -354,7 +354,7 @@ export const itemDatabase: Equipment[] = [
         ],
     },
     {
-        id: 490392,
+        id: "490392",
         name: "Scarlet Worm Charm",
         type: ItemTypeEnum.Accessery,
         equipmentLevel: 1,
@@ -457,7 +457,7 @@ export const itemDatabase: Equipment[] = [
         ],
     },
     {
-        id: 1244,
+        id: "1244",
         name: "Holy Dagger",
         type: ItemTypeEnum.Dagger,
         equipmentLevel: 4,

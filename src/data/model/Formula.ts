@@ -31,7 +31,7 @@ function getParameter(text: string, equipmentMap: Map<EquipmentSlot, CraftEqiupm
     if (text.includes("I$")) {
         const dotIndex = text.indexOf(".Rf/")
         const id = text.substring(2, dotIndex - 1)
-        const item = Array.from(equipmentMap.values()).find(item => item?.itemId === Number.parseInt(id))
+        const item = Array.from(equipmentMap.values()).find(item => item?.id === id)
         if (item) {
             const step = Number.parseInt(text.charAt(text.length - 1))
             return Math.floor(item.refineLevel / step).toString()
@@ -42,7 +42,7 @@ function getParameter(text: string, equipmentMap: Map<EquipmentSlot, CraftEqiupm
         console.log("skill")
         const dotIndex = text.indexOf(".Lv")
         const id = text.substring(3, dotIndex)
-        const item = skill.find(item => item?.id === Number.parseInt(id))
+        const item = skill.find(item => item?.id === id)
         console.log("skill", id, item)
         if (item) {
             return item.maxLv.toString()
@@ -87,7 +87,7 @@ export function calString(array: FormulaString[], equipmentMap: Map<EquipmentSlo
     let description = ""
     console.log("calString", array)
     array.forEach(item => {
-        const craftEqiupment = Array.from(equipmentMap.values()).find(equipment => equipment?.craftId === item.id)
+        const craftEqiupment = Array.from(equipmentMap.values()).find(equipment => equipment?.id === item.id)
         const text = Array.from(item.text.matchAll(/(<([^<>]*)>)?([^<]*)/g)).flatMap(item => {
             let s = ""
             if (item[1] && item[1] !== "") {

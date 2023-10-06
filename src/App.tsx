@@ -12,7 +12,7 @@ import { armor, armorShadow, earringShadow, garment, garmentCostume, lAccessery,
 import { EquipableType } from './data/model/itemType';
 import classNames from 'classnames';
 import Pet from './component/Pet';
-import ItemBuff from './component/ItemBuff';
+import ItemBuff from './component/buff/ItemBuff';
 import Monster from './component/Monster';
 import { Combat } from './component/Combat';
 import { EquipmentSlot } from "./data/model/EquipmentSlot";
@@ -25,6 +25,7 @@ import { PassiveSkill, Skill } from './data/model/skill';
 import { Item } from './data/model/Itemv2';
 import { itemDatabase } from './data/database/item';
 import { itemBuffDatabase, skillBuffDatabase } from './data/database/buff';
+import BuffStorage from './component/buff/BuffStorage';
 
 export const optionStyle = {
   container: ({ data, isDisabled, isFocused, isSelected }: any) =>
@@ -59,6 +60,7 @@ function App() {
   console.log("App")
   const context = useContext(AppContext);
   const api = useContext(AppApiContext);
+  console.log("App", context.viewItem)
 
   const [showCharacter, setShowCharacter] = useState<boolean>(true)
   const [showPet, setShowPet] = useState<boolean>(true)
@@ -67,6 +69,8 @@ function App() {
   const [showStorage, setShowStorage] = useState<boolean>(false)
   const [showAddItem, setShowAddItem] = useState<boolean>(false)
   const [showItemInfo, setShowItemInfo] = useState<boolean>(false)
+  const [showBuffStorage, setShowBuffStorage] = useState<boolean>(false)
+  const [showAddBuff, setShowAddBuff] = useState<boolean>(false)
 
   const passiveSkillList = context.character.clazz.passiveSkill ?? []
 
@@ -80,18 +84,24 @@ function App() {
     console.log("findIndex", skillList)
   })
   const ownSkillBuff = context.character.skillBuff.map(item => {
+    const imgId = Item.getImgId(item.id, item.imgId)
+    let imgSrc
+    if (imgId !== -1) {
+      imgSrc = `https://static.divine-pride.net/images/skill/${imgId}.png`
+    }
     return {
       id: item.id,
       name: item.name,
-      imgSrc: `https://static.divine-pride.net/images/skill/${item.id}.png`,
+      imgSrc: imgSrc,
       isActive: item.isActive,
     }
   })
   const skillbuff = skillList.map(item => {
+    const imgId = Item.getImgId(item.id, item.imgId)
     return {
       id: item.id,
       name: item.name,
-      imgSrc: `https://static.divine-pride.net/images/skill/${item.id}.png`,
+      imgSrc: `https://static.divine-pride.net/images/skill/${imgId}.png`,
       isActive: false,
     }
   })
@@ -103,20 +113,14 @@ function App() {
       itemBuffList.splice(found, 1)
     }
   })
+  console.log("App", context.character.itemBuff)
   const ownItemBuff = context.character.itemBuff.map(item => {
+    const imgId = Item.getImgId(item.id, item.imgId)
     return {
       id: item.id,
       name: item.name,
-      imgSrc: `https://static.divine-pride.net/images/items/${item.id}.png`,
+      imgSrc: `https://static.divine-pride.net/images/items/item/${imgId}.png`,
       isActive: item.isActive,
-    }
-  })
-  const itemBuff = itemBuffList.map(item => {
-    return {
-      id: item.id,
-      name: item.name,
-      imgSrc: `https://static.divine-pride.net/images/items/${item.id}.png`,
-      isActive: false,
     }
   })
 
@@ -134,7 +138,7 @@ function App() {
     event.preventDefault();
   }
 
-  function handleItemBuffChange(event: React.ChangeEvent<HTMLInputElement>, id: number) {
+  function handleItemBuffChange(event: React.ChangeEvent<HTMLInputElement>, id: string) {
     let { checked } = event.target;
     const item = context.character.itemBuff.find(item => item.id === id)
     if (item) {
@@ -149,7 +153,7 @@ function App() {
     api.updateCharacter({ itemBuff: context.character.itemBuff });
   };
 
-  function handleSkillBuffChange(event: React.ChangeEvent<HTMLInputElement>, id: number) {
+  function handleSkillBuffChange(event: React.ChangeEvent<HTMLInputElement>, id: string) {
     let { checked } = event.target;
     const item = context.character.skillBuff.find(item => item.id === id)
     if (item) {
@@ -165,6 +169,25 @@ function App() {
     api.updateCharacter({ skillBuff: context.character.skillBuff });
   };
 
+  function addClick(list: Item[], found: boolean, id: string) {
+    if (found) {
+      const item = list.findIndex(item => item.id === id)
+      if (item !== -1) {
+        context.character.itemBuff.splice(item, 1)
+      }
+    } else {
+      const newItem = [...context.buffStorage ?? [], ...itemBuffDatabase].find(item => item.id === id)
+      if (newItem) {
+        context.character.itemBuff.push({ ...newItem, isActive: false })
+      }
+    }
+    api.updateCharacter({ itemBuff: context.character.itemBuff });
+  }
+
+  function onBuffClick(item: Item) {
+    api.setViewItem(item)
+  }
+
   useEffect(() => {
     setShowCharacter(false)
     setShowPet(false)
@@ -173,6 +196,7 @@ function App() {
     setShowStorage(false)
     setShowAddItem(false)
     setShowItemInfo(false)
+    setShowBuffStorage(false)
     if (context.viewState === ViewState.MoreStatus) {
       setShowCharacter(true)
       setShowPet(true)
@@ -184,6 +208,10 @@ function App() {
     } else if (context.viewState === ViewState.AddItem) {
       setShowStorage(true)
       setShowAddItem(true)
+      setShowItemInfo(true)
+    } else if (context.viewState === ViewState.BuffStorage) {
+      setShowPet(true)
+      setShowBuffStorage(true)
       setShowItemInfo(true)
     } else {
       setShowCharacter(true)
@@ -210,8 +238,17 @@ function App() {
           <div className={'col-md-4 pt-4 d-flex flex-column mh-0 h-100' + (showPet ? '' : ' d-none')} >
             <Pet />
             <div className='flex-grow-1 mh-0'>
-              <ItemBuff title='Item Buff' list={[...ownItemBuff, ...itemBuff]} handleBuffChange={handleItemBuffChange} />
-              <ItemBuff title='Skill Buff' list={[...ownSkillBuff, ...skillbuff]} handleBuffChange={handleSkillBuffChange} />
+              <ItemBuff
+                title='Item Buff'
+                list={ownItemBuff}
+                handleBuffChange={handleItemBuffChange}
+                onClick={() => api.setViewState(ViewState.BuffStorage)}
+              />
+              <ItemBuff
+                title='Skill Buff'
+                list={[...ownSkillBuff, ...skillbuff]}
+                handleBuffChange={handleSkillBuffChange}
+              />
             </div>
           </div>
 
@@ -225,6 +262,23 @@ function App() {
               </div>
             </div>
             <Storage />
+          </div>
+
+          <div className={'col-md-4 d-flex flex-column h-100' + (showBuffStorage ? '' : ' d-none')}>
+            <div className='row'>
+              <div className='col'>
+                <button onClick={() => api.setViewState(showAddBuff ? ViewState.BuffStorage : ViewState.Normal)}>Back</button>
+              </div>
+              <div className={'col-auto' + (showAddBuff ? ' d-none' : '')}>
+                <button onClick={() => api.setViewState(ViewState.AddBuff)}>Add Custom Item</button>
+              </div>
+            </div>
+            <BuffStorage
+              list={context.character.itemBuff}
+              storage={[...context.buffStorage ?? [], ...itemBuffDatabase]}
+              addClick={addClick}
+              onClick={onBuffClick}
+            />
           </div>
 
           <div className={'col-md-4  h-100' + (showAddItem ? '' : ' d-none')}>

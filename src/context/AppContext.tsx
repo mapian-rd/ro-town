@@ -7,22 +7,24 @@ import { Storage } from "../data/model/storage";
 import { Character } from "../data/model/Characterv2";
 import { JobClass } from "../data/model/class";
 import { CraftEqiupment } from "../data/model/CraftEquipment";
+import { Item, Named } from "../data/model/Itemv2";
 
 interface State {
     updateState: (newState: Partial<State>) => void;
 }
 
 export enum ViewState {
-    Normal, MoreStatus, Storage, AddItem
+    Normal, MoreStatus, Storage, AddItem, BuffStorage, AddBuff
 }
 
 export interface AppState {
     viewState: ViewState;
-    viewItem: CraftEqiupment | undefined;
+    viewItem: Named | undefined;
     dragItem: CraftEqiupment | undefined;
 
     character: Character;
     storage: Storage;
+    buffStorage: Item[];
     calculatedAttribute: CalculatedAttribute;
     monsterId?: MonsterId;
     monster?: Monster;

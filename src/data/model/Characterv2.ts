@@ -4,7 +4,7 @@ import { itemBuffDatabase, skillBuffDatabase } from "../database/buff"
 import { petList } from "../database/pet"
 import { ItemBuff, SkillBuff } from "./Buff"
 import { JobClass, JobClassEnum } from "./class"
-import { Craftable, CraftEqiupment } from "./CraftEquipment"
+import { CraftEqiupment } from "./CraftEquipment"
 import { EquipmentSlot } from "./EquipmentSlot"
 import { Exportable } from "./Exportable"
 import { Item } from "./Itemv2"
@@ -25,10 +25,10 @@ export class CharacterExport implements Exportable {
     dex: number = 1
     luk: number = 1
     equipmentMap: Map<EquipmentSlot, string | undefined> = new Map()
-    pet?: number;
+    pet?: string;
     petFriendly?: PetFriendlyEnum;
-    itemBuff: Map<number, boolean> = new Map()
-    skillBuff: Map<number, boolean> = new Map()
+    itemBuff: Map<string, boolean> = new Map()
+    skillBuff: Map<string, boolean> = new Map()
 
     static getCharacter(cExport: CharacterExport, storage: Storage): Character {
         const character = new Character()
@@ -38,7 +38,7 @@ export class CharacterExport implements Exportable {
         character.jobLv = cExport.jobLv
         character.status = new Status(cExport.str, cExport.agi, cExport.vit, cExport.int, cExport.dex, cExport.luk)
         character.equipmentMap = new Map(Array.from(cExport.equipmentMap).map(([key, value]) => {
-            return [key, storage.items.find(item => item.craftId === value)]
+            return [key, storage.items.find(item => item.id === value)]
         }))
         character.pet = petList.find(pet => pet.id === cExport.pet)
         character.petFriendly = Array.from(petFriendlyList).find(([key, value]) => key === cExport.petFriendly)?.[1]
@@ -86,7 +86,7 @@ export class CharacterExport implements Exportable {
         cExport.dex = character.status.dex
         cExport.luk = character.status.luk
         cExport.equipmentMap = new Map(Array.from(character.equipmentMap).map(([key, value]) => {
-            return [key, value?.craftId]
+            return [key, value?.id]
         }))
         cExport.pet = character.pet?.id
         cExport.petFriendly = Array.from(petFriendlyList).find(([key, value]) => value.name === character.petFriendly?.name)?.[0]

@@ -18,7 +18,7 @@ export function Equipment(props: EquipmentProps) {
     const api = useContext(AppApiContext);
 
     function onClick(item: CraftEqiupment) {
-        console.log("onClick", item.craftId)
+        console.log("onClick", item.id)
         if (context.viewState === ViewState.Storage) {
             api.setViewItem(item)
         }

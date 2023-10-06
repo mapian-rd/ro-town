@@ -139,7 +139,7 @@ body {
   border: none;
   border-color: transparent !important;
   box-shadow: none !important;
-  background-color: transparent !important;
+  background-color: var(--white);
   color: var(--black) !important;
 }
 
@@ -147,7 +147,7 @@ body {
   border: 2px solid var(--link) !important;
   border-color: var(--link) !important;
   box-shadow: none !important;
-  background-color: transparent !important;
+  background-color: var(--white);
   color: var(--black) !important;
 }
 
