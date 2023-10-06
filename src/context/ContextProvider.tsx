@@ -623,10 +623,12 @@ export const ContextProvider = (props: Props): JSX.Element => {
       if (!item) return
       let element
       let equipment
-      if (item as CraftEqiupment) {
+      if (CraftEqiupment.is(item)) {
         console.log("CraftEqiupment")
         element = document.getElementById('storage-' + item.id)
         equipment = document.getElementById('equipment-' + item.id)
+      } else if (Item.is(item)) {
+        element = document.getElementById('buffStorage-' + item.id)
       }
 
       if (element) {

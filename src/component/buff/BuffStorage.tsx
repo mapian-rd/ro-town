@@ -66,7 +66,7 @@ export default function BuffStorage(props: Props) {
                 <div className="p-1" key={'buffStorage-' + item.id} onClick={() => onClick(item)}>
                     <div
                         id={'buffStorage-' + item.id}
-                        className={((props.viewId === item.id.toString() || props.viewId === item.id) ? 'row storage-item rounded select-ed' : 'row')}
+                        className={(props.viewId === item.id) ? 'row storage-item rounded select-ed' : 'row'}
                     >
                         <div className="col-auto">
                             <img className="w-100 my-2" src={`https://static.divine-pride.net/images/items/item/${Item.getImgId(item.id, item.imgId)}.png`} alt="Item" />
