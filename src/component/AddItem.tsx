@@ -171,6 +171,11 @@ export default function AddItem() {
                 }
                 cardText += `${key} `
             })
+            let cardSlotText = ""
+            if (craftEquipment.cardList.length > 0) {
+                cardSlotText = ` [${craftEquipment.cardList.length}]`
+            }
+
 
             let optionText = ""
             let fillOptionList = craftEquipment.optionList.flatMap(item => item ?? [])
@@ -178,7 +183,7 @@ export default function AddItem() {
                 optionText += ` [${fillOptionList.length}Option]`
             }
 
-            craftEquipment.name = refineText + cardText + item?.name + optionText
+            craftEquipment.name = refineText + cardText + item?.name + cardSlotText + optionText
             api.addItem(craftEquipment)
             setType(undefined);
             setItem(undefined);
