@@ -51,7 +51,7 @@ export default function BuffStorage(props: Props) {
             return true
         })
         setFilteredItemList(itemList)
-    }, [filterName])
+    }, [filterName, props.storage])
 
     useEffect(() => {
         console.log("BuffStorage useEffect")

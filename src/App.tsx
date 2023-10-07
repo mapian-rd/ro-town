@@ -26,6 +26,7 @@ import { Item } from './data/model/Itemv2';
 import { itemDatabase } from './data/database/item';
 import { itemBuffDatabase, skillBuffDatabase } from './data/database/buff';
 import BuffStorage from './component/buff/BuffStorage';
+import AddBuff from './component/buff/AddBuff';
 
 export const optionStyle = {
   container: ({ data, isDisabled, isFocused, isSelected }: any) =>
@@ -195,6 +196,7 @@ function App() {
     setShowMoreStatus(false)
     setShowStorage(false)
     setShowAddItem(false)
+    setShowAddBuff(false)
     setShowItemInfo(false)
     setShowBuffStorage(false)
     if (context.viewState === ViewState.MoreStatus) {
@@ -212,6 +214,10 @@ function App() {
     } else if (context.viewState === ViewState.BuffStorage) {
       setShowPet(true)
       setShowBuffStorage(true)
+      setShowItemInfo(true)
+    } else if (context.viewState === ViewState.AddBuff) {
+      setShowBuffStorage(true)
+      setShowAddBuff(true)
       setShowItemInfo(true)
     } else {
       setShowCharacter(true)
@@ -283,6 +289,10 @@ function App() {
 
           <div className={'col-md-4  h-100' + (showAddItem ? '' : ' d-none')}>
             <AddItem />
+          </div>
+
+          <div className={'col-md-4  h-100' + (showAddBuff ? '' : ' d-none')}>
+            <AddBuff />
           </div>
 
           <div className={'col-md-4 pt-4 d-flex flex-column h-100' + (showCombat ? '' : ' d-none')}>

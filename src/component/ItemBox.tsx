@@ -79,7 +79,7 @@ export default function ItemBox(props: BoxProps) {
                 {cardView}
             </div>
             <div className="itembox-image col-3 position-absolute w-30 m-3 top-0 start-0">
-                <img className="w-100 my-2" src={props.imgSrc} alt="Monster" />
+                <img className="w-100 my-2" src={props.imgSrc} alt="Item" />
             </div>
         </div>
     );

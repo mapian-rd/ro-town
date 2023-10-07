@@ -46,7 +46,7 @@ export default function ItemDescription(props: Props) {
             return (
                 <ItemBox
                     key={'item1'}
-                    imgSrc={`https://static.divine-pride.net/images/items/item/${Item.getImgId(item.id, item.imgId)}.png`}
+                    imgSrc={`https://www.divine-pride.net/img/items/collection/thROG/${Item.getImgId(item.id, item.imgId)}`}
                     title={item.name}
                     description={description}
                 >

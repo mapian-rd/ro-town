@@ -602,7 +602,7 @@ export const ContextProvider = (props: Props): JSX.Element => {
 
   useEffect(() => {
     setCookie()
-  }, [character, storage, monsterId, skill, skillLevel])
+  }, [character, storage, buffStorage, monsterId, skill, skillLevel])
 
   const api = {
     setViewState: (state: ViewState) => {
@@ -613,7 +613,7 @@ export const ContextProvider = (props: Props): JSX.Element => {
       setViewState(state)
     },
     setViewItem: (item: Named | undefined) => {
-      console.log("setViewItem" , item)
+      console.log("setViewItem", item)
       setViewItem(item)
       const oldElement = document.getElementsByClassName("rounded select-ed")
       Array.from(oldElement).forEach(element => {
@@ -656,6 +656,10 @@ export const ContextProvider = (props: Props): JSX.Element => {
     addItem: (item: CraftEqiupment) => {
       storage.items.push(item)
       setStorage({ ...storage })
+    },
+    addBuff: (item: Item) => {
+      console.log("saveClick addBuff", item)
+      setBuffStorage([...buffStorage, item])
     },
     equip: (item: CraftEqiupment) => {
       console.log("equip")

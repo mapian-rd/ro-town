@@ -20,6 +20,7 @@ export interface AppApi {
     getRaw(type: AttributeTypeEnum): DescriptionNumber;
     getFinal(type: AttributeTypeEnum): DescriptionNumber;
     addItem: (item: CraftEqiupment) => void;
+    addBuff: (item: Item) => void;
     equip:(item: CraftEqiupment) => void;
     unequip:(item: CraftEqiupment) => void;
 }
