@@ -18,7 +18,7 @@ interface BoxProps {
 
 export default function ItemBox(props: BoxProps) {
 
-    const optionView = (props.option ?? []).map((option,index) => {
+    const optionView = (props.option ?? []).map((option, index) => {
         console.log("optionView")
         return (
             <div className="itembox-card mt-1" key={index}>
@@ -47,7 +47,7 @@ export default function ItemBox(props: BoxProps) {
             const enchantIndex = Math.abs(index - 3)
             if (props.enchant.length > enchantIndex) {
                 return (
-                    <img src={`https://www.divine-pride.net/img/items/item/thROG/${props.enchant[enchantIndex].id}`} alt="enchant" key={index} />
+                    <img src={`https://static.divine-pride.net/images/items/item/${props.enchant[enchantIndex].id}.png`} alt="enchant" key={index} />
                 )
             }
         }
@@ -79,7 +79,10 @@ export default function ItemBox(props: BoxProps) {
                 {cardView}
             </div>
             <div className="itembox-image col-3 position-absolute w-30 m-3 top-0 start-0">
-                <img className="w-100 my-2" src={props.imgSrc} alt="Item" />
+                <img className="w-100 my-2" src={props.imgSrc} alt="Item" onError={({ currentTarget }) => {
+                    currentTarget.onerror = null
+                    currentTarget.src = process.env.PUBLIC_URL + "/noitem.png"
+                }} />
             </div>
         </div>
     );
