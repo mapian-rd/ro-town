@@ -36,7 +36,7 @@ import { getMinMaxOverRefine, getMinMaxVarianceTK, overRefineWeapon, refineTK, s
 import { AppApiContext } from "./AppApiContext";
 import { AppContext, ViewState } from "./AppContext";
 
-function replacer(key: string, value: any) {
+export function replacer(key: string, value: any) {
   if (value instanceof Map) {
     return {
       dataType: 'Map',
@@ -46,7 +46,7 @@ function replacer(key: string, value: any) {
   return value;
 }
 
-function reviver(key: string, value: any) {
+export function reviver(key: string, value: any) {
   console.log("dataType: ", value)
   if (typeof value === 'object' && value !== null) {
     if (value.dataType === 'Map') {
@@ -82,7 +82,7 @@ export const ContextProvider = (props: Props): JSX.Element => {
   const [cal, setAttribute] = useState<CalculatedAttribute>(new CalculatedAttribute())
   const [monsterId, setMonsterId] = useState<MonsterId>(MonsterList.find(monster => monster.id === data.monsterId) ?? MonsterList[0]);
   const [monster, setMonster] = useState<Monster>()
-  const [skill, setSkill] = useState<ActiveSkill>(character.clazz.activeSkill.find(skill => skill.name === data.skillName) ?? character.clazz.activeSkill[0]);
+  const [skill, setSkill] = useState<ActiveSkill>(character.clazz.activeSkill.find(skill => skill.enum === data.skill) ?? character.clazz.activeSkill[0]);
   /**
    * Start from 1
    */
@@ -118,7 +118,7 @@ export const ContextProvider = (props: Props): JSX.Element => {
     data.character = CharacterExport.getExport(character)
     console.log("setCookie", data.character.clazz.toString())
     data.monsterId = monsterId.id
-    data.skillName = skill.name
+    data.skill = skill.enum
     data.skillLevel = skillLevel
     localStorage.setItem("data", JSON.stringify(data, replacer))
   }

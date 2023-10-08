@@ -21,6 +21,11 @@ export function Character() {
     const [hp, setHp] = useState<DescriptionNumber>(new DescriptionNumber())
     const [sp, setSp] = useState<DescriptionNumber>(new DescriptionNumber())
 
+    function onChangeName(event: React.ChangeEvent<HTMLInputElement>) {
+        let { value } = event.target;
+        api.updateCharacter({ name: value })
+    }
+
     function handleLvChange(event: React.ChangeEvent<HTMLInputElement>) {
         let { value, min, max } = event.target;
         let newValue = checkMinMax(Number(value), Number(min), Number(max));
@@ -47,7 +52,7 @@ export function Character() {
     }, [context.calculatedAttribute])
 
     return (
-        <Box title={context.character.name} titleEdiable>
+        <Box title={context.character.name} titleEdiable onChangeTitle={onChangeName}>
             <div>
                 <div className="row mx-0 mb-2">
                     <div className="col-xl-2 px-0 d-flex">

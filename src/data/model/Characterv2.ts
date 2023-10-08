@@ -14,7 +14,7 @@ import { Status } from "./status"
 import { Storage } from "./storage"
 
 export class CharacterExport implements Exportable {
-    name: string = "Novice"
+    name: string = "Character1"
     clazz: JobClassEnum = JobClassEnum.Novice
     baseLv: number = 1
     jobLv: number = 1
@@ -104,7 +104,7 @@ export class CharacterExport implements Exportable {
 }
 
 export class Character {
-    name: string = "Novice"
+    name: string = "Character1"
     clazz: JobClass = noviceClass
     baseLv: number = 1
     jobLv: number = 1

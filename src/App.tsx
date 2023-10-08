@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useRef, ChangeEvent } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -27,6 +27,9 @@ import { itemDatabase } from './data/database/item';
 import { itemBuffDatabase, skillBuffDatabase } from './data/database/buff';
 import BuffStorage from './component/buff/BuffStorage';
 import AddBuff from './component/buff/AddBuff';
+import { CharacterExport } from './data/model/Characterv2';
+import { replacer } from './context/ContextProvider';
+import { ExportData } from './data/model/Exportable';
 
 export const optionStyle = {
   container: ({ data, isDisabled, isFocused, isSelected }: any) =>
@@ -57,6 +60,8 @@ const spEqipmentTypes: Map<EquipmentSlot, EquipableType> = new Map([
   [EquipmentSlot.garmentCostume, garmentCostume], [EquipmentSlot.shoesShadow, shoesShadow],
   [EquipmentSlot.earringShadow, earringShadow], [EquipmentSlot.pendantShadow, pendantShadow]])
 
+const fr = new FileReader()
+
 function App() {
   console.log("App")
   const context = useContext(AppContext);
@@ -72,6 +77,7 @@ function App() {
   const [showItemInfo, setShowItemInfo] = useState<boolean>(false)
   const [showBuffStorage, setShowBuffStorage] = useState<boolean>(false)
   const [showAddBuff, setShowAddBuff] = useState<boolean>(false)
+  const inputFile = useRef<HTMLInputElement | null>(null)
 
   const passiveSkillList = context.character.clazz.passiveSkill ?? []
 
@@ -124,6 +130,35 @@ function App() {
       isActive: item.isActive,
     }
   })
+
+  function onSaveClick() {
+    const element = document.createElement("a");
+    const data = ExportData.getExportData(context)
+    console.log("onSaveClick", data)
+    const textFile = new Blob([JSON.stringify(data, replacer)], { type: 'text/plain' });
+    console.log("onSaveClick", textFile)
+    element.href = URL.createObjectURL(textFile);
+    element.download = context.character.name + ".json";
+    document.body.appendChild(element);
+    element.click();
+  }
+
+  function onLoadClick() {
+    inputFile.current?.click()
+  }
+
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+
+      fr.onloadend = (event) => {
+        if (fr.result) {
+          localStorage.setItem("data", fr.result.toString())
+          window.location.reload();
+        }
+      }
+      fr.readAsText(e.target.files[0])
+    }
+  };
 
   function onDrop(event: React.DragEvent<HTMLDivElement>) {
     console.log("onDrop")
@@ -234,8 +269,9 @@ function App() {
       <body className='App-body container mb-0 vh-100 py-2'>
         <div className='row h-100'>
           <div className={'col-md-4 h-100' + (showCharacter ? '' : ' d-none')}>
-            <button>Save</button>
-            <button>Load</button>
+            <button onClick={onSaveClick}>Import</button>
+            <input type='file' id='file' ref={inputFile} style={{ display: 'none' }} accept=".json" onChange={handleFileChange} />
+            <button onClick={onLoadClick}>Export</button>
             <Character />
             <StatusBox />
             <Equipment title='General Equipment' type={eqipmentTypes} />

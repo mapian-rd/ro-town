@@ -21,8 +21,8 @@ export interface AppApi {
     getFinal(type: AttributeTypeEnum): DescriptionNumber;
     addItem: (item: CraftEqiupment) => void;
     addBuff: (item: Item) => void;
-    equip:(item: CraftEqiupment) => void;
-    unequip:(item: CraftEqiupment) => void;
+    equip: (item: CraftEqiupment) => void;
+    unequip: (item: CraftEqiupment) => void;
 }
 
 export const AppApiContext = createContext<AppApi>({} as AppApi)
