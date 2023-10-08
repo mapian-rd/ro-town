@@ -66,6 +66,10 @@ export default function Storage() {
         }
     }
 
+    function onDeleteClick(id: string) {
+        api.deleteItemStorage(id)
+    }
+
     useEffect(() => {
         console.log("Storage useEffect", filterName, filterType)
         let itemList = context.storage.items.filter(item => {
@@ -95,17 +99,23 @@ export default function Storage() {
             console.log("Storage", item, item.id, item.name, context.viewItem)
 
             return (
-                <div className="p-1" key={'storage-' + item.id} onClick={() => onClick(item)}>
-                    <div
-                        id={'storage-' + item.id}
-                        className={(context.viewItem?.id === item.id ? 'row storage-item rounded select-ed' : 'row') + (found ? ' storage-equiped' : '')}
-                        draggable
-                        onDragStart={event => onDrag(event, item)}>
-                        <div className="col-auto">
-                            <img className="w-100 my-2" src={`https://static.divine-pride.net/images/items/item/${Item.getImgId(item.itemId, item.item?.imgId)}.png`} alt="Item" />
-                        </div>
-                        <div className={'col ps-0 d-flex align-items-center text-break'}>
-                            {item.name}
+                <div className="row p-1" key={'storage-' + item.id}>
+                    <div className="col-auto">
+                        <button onClick={() => onDeleteClick(item.id)}>-</button>
+                    </div>
+                    <div className="col">
+                        <div
+                            id={'storage-' + item.id}
+                            className={(context.viewItem?.id === item.id ? 'row storage-item rounded select-ed' : 'row') + (found ? ' storage-equiped' : '')}
+                            draggable
+                            onClick={() => onClick(item)}
+                            onDragStart={event => onDrag(event, item)}>
+                            <div className="col-auto">
+                                <img className="w-100 my-2" src={`https://static.divine-pride.net/images/items/item/${Item.getImgId(item.itemId, item.item?.imgId)}.png`} alt="Item" />
+                            </div>
+                            <div className={'col ps-0 d-flex align-items-center text-break'}>
+                                {item.name}
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -271,8 +271,16 @@ export function finalPhysicalDmg(
     console.log("getFinalDmg darkClawM:", darkClawM)
     return [finalAtk]
         .map(value => value + (value * mulAP / 100))
-        .map(value => value + Math.floor(value * rangeMulAP / 100))
-        .map(value => value * (skillP / 100 + powerThrustAP / 100)) // check la no floor
+        .map(value => {
+            const add = Math.floor(value * rangeMulAP / 100)
+            console.log("getFinalDmg rangeMulAP add:", add)
+            return value + add
+        })
+        .map(value => {
+            const mul = skillP / 100 + powerThrustAP / 100
+            console.log("getFinalDmg skillP", value, mul)
+            return value * mul
+        }) // check la no floor
         .map(value => value + (value * elementDmgMulAP / 100))
         .map(value => Math.floor(value * hardDefRM))
         .map(value => value - softDef)

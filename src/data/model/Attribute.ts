@@ -37,9 +37,15 @@ export class Attribute {
             for (let i = 0; i < attribute.condition.itemList.length; i++) {
                 const condition = attribute.condition.itemList[i]
                 const equipmentList = Array.from(character.equipmentMap.values());
-                const item = equipmentList.find(item => item?.id === condition.itemId);
+                const item = equipmentList.find(item => {
+                    if (!item) return false
+                    return CraftEqiupment.getIdList(item).includes(condition.itemId) 
+                }
+                );
                 if (!item) return false;
+                console.log("checkAttribute item check 123", item.refineLevel)
                 const result = NumberCondition.check(condition, item.refineLevel);
+                console.log("checkAttribute item result", result)
                 if (!result) return false;
             }
         }

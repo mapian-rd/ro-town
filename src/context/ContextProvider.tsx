@@ -247,6 +247,7 @@ export const ContextProvider = (props: Props): JSX.Element => {
       console.log("calEquipment equipment", equipment)
       if (equipment) {
         const check = checkCraft(equipment, character)
+        console.log("calEquipment checkCraft", check)
         cal.checkedAttributeList.set(equipment.id, check)
 
         check.forEach(attribute => {
@@ -380,9 +381,20 @@ export const ContextProvider = (props: Props): JSX.Element => {
     // statusMatk
     cal.statusMatk = statusMATK(character.baseLv, int.number, dex.number, luk.number)
 
+    const physicalAllSize = cal.rawAttributeList.get(AttributeTypeEnum.PhysicalAllSize)
+    const physicalAllProperty = cal.rawAttributeList.get(AttributeTypeEnum.PhysicalAllProperty)
+    const physicalAllRace = cal.rawAttributeList.get(AttributeTypeEnum.PhysicalAllRace)
+    const physicalAllClass = cal.rawAttributeList.get(AttributeTypeEnum.PhysicalAllClass)
+    const magicAllSize = cal.rawAttributeList.get(AttributeTypeEnum.MagicAllSize)
+    const magicAllProperty = cal.rawAttributeList.get(AttributeTypeEnum.MagicAllProperty)
+    const magicAllRace = cal.rawAttributeList.get(AttributeTypeEnum.MagicAllRace)
+    const magicAllClass = cal.rawAttributeList.get(AttributeTypeEnum.MagicAllClass)
+    const magicAllElement = cal.rawAttributeList.get(AttributeTypeEnum.MagicAllElement)
+    console.log("final magicAllElement", magicAllElement)
+
     attributeList.forEach((value, attributeType) => {
       console.log("attributeList.forEach", attributeType)
-      const raw = cal.rawAttributeList.get(attributeType)
+      const raw = cal.rawAttributeList.get(attributeType) ?? new DescriptionNumber()
       const number = new DescriptionNumber(raw?.number, raw?.description)
       if (Array.from(StatusTypeList.keys()).includes(attributeType)) {
         return
@@ -401,23 +413,34 @@ export const ContextProvider = (props: Props): JSX.Element => {
         const minMaxVariancetk = getMinMaxVarianceTK(cal.rVarianceAtk)
         const minMaxOverRefine = getMinMaxOverRefine(cal.isWeaponRange, cal.rOverRefine)
         number.number = cal.rWeaponAtk
-        number.description = `${cal.rWeaponAtk}(baseWeaponAtk)`
+        number.description = `${cal.rWeaponAtk}(rightWeapon)`
         number.plus(cal.statusBonus, "statusBonus", 1)
-        number.plus(cal.rRefineAtk, "refineAtk", 1)
-        number.variance(minMaxVariancetk[0], minMaxVariancetk[1], "varianceAtk", 1)
+        number.plus(cal.rRefineAtk, "refine", 1)
+        number.variance(minMaxVariancetk[0], minMaxVariancetk[1], "variance", 1)
         number.variance(minMaxOverRefine[0], minMaxOverRefine[1], "overRefineVariance", 1)
-        // } else if (attributeType === AttributeTypeEnum.Matk) {
-        // const int = cal.finalAttributeList.get(AttributeTypeEnum.Int) ?? new DescriptionNumber(1, "1(status)")
-        // const dex = cal.finalAttributeList.get(AttributeTypeEnum.Dex) ?? new DescriptionNumber(1, "1(status)")
-        // const luk = cal.finalAttributeList.get(AttributeTypeEnum.Luk) ?? new DescriptionNumber(1, "1(status)")
-        // cal.statusMatk = statusMATK(character.baseLv, int.number, dex.number, luk.number)
-
-        // number.plus(cal.refineMatk, "refineMatk", 0)
-        // number.plus(cal.weaponMatk, "weaponMatk", 0)
-        // number.plus(cal.statusMatk, "statusMatk", 0)
+      } else if (attributeType === AttributeTypeEnum.StatusMatk) {
+        number.number = cal.statusMatk
+        number.description = ""
+        number.line(character.baseLv, "baseLv", 1)
+        number.linePlus(int, getAttributeType(AttributeTypeEnum.Int).name, 1)
+        number.linePlus(dex, getAttributeType(AttributeTypeEnum.Dex).name, 1)
+        number.linePlus(luk, getAttributeType(AttributeTypeEnum.Luk).name, 1)
+      } else if (attributeType === AttributeTypeEnum.WeaponMatk) {
+        const rMinMaxVariancetk = getMinMaxVarianceTK(cal.rVarianceMatk)
+        const lMinMaxVariancetk = getMinMaxVarianceTK(cal.lVarianceMatk)
+        const rMinMaxOverRefine = getMinMaxOverRefine(cal.isWeaponRange, cal.rOverRefine)
+        const lMinMaxOverRefine = getMinMaxOverRefine(cal.isWeaponRange, cal.lOverRefine)
+        number.number = cal.rWeaponMatk
+        number.description = `${cal.rWeaponMatk}(rightWeapon)`
+        number.plus(cal.rRefineAtk, "rightRefine", 1)
+        number.variance(rMinMaxVariancetk[0], rMinMaxVariancetk[1], "rightVariance", 1)
+        number.variance(rMinMaxOverRefine[0], rMinMaxOverRefine[1], "rightOverRefine", 1)
+        number.plus(cal.lWeaponMatk, "leftWeapon", 1)
+        number.plus(cal.lRefineMatk, "leftRefine", 1)
+        number.variance(lMinMaxVariancetk[0], lMinMaxVariancetk[1], "leftVariance", 1)
+        number.variance(lMinMaxOverRefine[0], lMinMaxOverRefine[1], "leftOverRefine", 1)
       } else if (attributeType === AttributeTypeEnum.Hp) {
         const isTrans = character.clazz.isTrans ? 1.25 : 1
-        const raw = cal.rawAttributeList.get(attributeType) ?? new DescriptionNumber()
         const percent = cal.rawAttributeList.get(AttributeTypeEnum.HpPercent) ?? new DescriptionNumber()
         const final = calHp(
           cal.jobHp,
@@ -435,7 +458,6 @@ export const ContextProvider = (props: Props): JSX.Element => {
         number.linePlus(percent, getAttributeType(AttributeTypeEnum.HpPercent).name, 1)
       } else if (attributeType === AttributeTypeEnum.Sp) {
         const isTrans = character.clazz.isTrans ? 1.25 : 1
-        const raw = cal.rawAttributeList.get(attributeType) ?? new DescriptionNumber()
         const percent = cal.rawAttributeList.get(AttributeTypeEnum.SpPercent) ?? new DescriptionNumber()
         const final = calHp(
           cal.jobSp,
@@ -453,7 +475,6 @@ export const ContextProvider = (props: Props): JSX.Element => {
         number.linePlus(percent, getAttributeType(AttributeTypeEnum.SpPercent).name, 1)
       } else if (attributeType === AttributeTypeEnum.Hit) {
         const baseLv = character.baseLv
-        const raw = cal.rawAttributeList.get(attributeType) ?? new DescriptionNumber()
         const final = calHit(character.baseLv, dex.number, luk.number, raw.number)
         console.log(final)
         number.number = final
@@ -463,7 +484,6 @@ export const ContextProvider = (props: Props): JSX.Element => {
         number.linePlus(luk, getAttributeType(AttributeTypeEnum.Luk).name, 1)
         number.linePlus(raw, getAttributeType(attributeType).name, 1)
       } else if (attributeType === AttributeTypeEnum.Critical) {
-        const raw = cal.rawAttributeList.get(attributeType) ?? new DescriptionNumber()
         const final = calCrit(luk.number, raw.number)
         number.number = final
         number.description = ""
@@ -471,7 +491,6 @@ export const ContextProvider = (props: Props): JSX.Element => {
         number.linePlus(raw, getAttributeType(attributeType).name, 1)
       } else if (attributeType === AttributeTypeEnum.Flee) {
         const baseLv = character.baseLv
-        const raw = cal.rawAttributeList.get(attributeType) ?? new DescriptionNumber()
         const final = calFlee(baseLv, agi.number, luk.number, raw.number)
         number.number = final
         number.description = ""
@@ -482,7 +501,6 @@ export const ContextProvider = (props: Props): JSX.Element => {
       } else if (attributeType === AttributeTypeEnum.Aspd) {
         const baseAspd = character.clazz.baseAspd
         const percent = cal.rawAttributeList.get(AttributeTypeEnum.AspdPercent) ?? new DescriptionNumber()
-        const raw = cal.rawAttributeList.get(attributeType) ?? new DescriptionNumber()
         const final = calAspd(
           baseAspd,
           agi.number,
@@ -503,7 +521,6 @@ export const ContextProvider = (props: Props): JSX.Element => {
         number.line(cal.shieldPenalty, "shieldPenalty", 1)
       } else if (attributeType === AttributeTypeEnum.SoftDef) {
         const baseLv = character.baseLv
-        const raw = cal.rawAttributeList.get(attributeType) ?? new DescriptionNumber()
         const percent = cal.rawAttributeList.get(AttributeTypeEnum.SoftDefPercent) ?? new DescriptionNumber()
         const final = calSoftDef(vit.number, agi.number, character.baseLv, raw.number, percent.number)
         number.number = final
@@ -515,7 +532,6 @@ export const ContextProvider = (props: Props): JSX.Element => {
         number.linePlus(percent, getAttributeType(AttributeTypeEnum.SoftDefPercent).name, 1)
       } else if (attributeType === AttributeTypeEnum.SoftMdef) {
         const baseLv = character.baseLv
-        const raw = cal.rawAttributeList.get(attributeType) ?? new DescriptionNumber()
         const percent = cal.rawAttributeList.get(AttributeTypeEnum.SoftMdefPercent) ?? new DescriptionNumber()
         const final = calSoftMdef(int.number, vit.number, dex.number, baseLv, raw.number, percent.number)
         number.number = final
@@ -526,6 +542,96 @@ export const ContextProvider = (props: Props): JSX.Element => {
         number.line(baseLv, "baseLv", 1)
         number.linePlus(raw, getAttributeType(attributeType).name, 1)
         number.linePlus(percent, getAttributeType(AttributeTypeEnum.SoftMdefPercent).name, 1)
+      } else if (attributeType === AttributeTypeEnum.PhysicalSmall
+        || attributeType === AttributeTypeEnum.PhysicalMed
+        || attributeType === AttributeTypeEnum.PhysicalLarge) {
+        if (physicalAllSize) {
+          number.plusNumber(physicalAllSize, 1)
+        }
+      } else if (attributeType === AttributeTypeEnum.PhysicalNeutral
+        || attributeType === AttributeTypeEnum.PhysicalWater
+        || attributeType === AttributeTypeEnum.PhysicalEarth
+        || attributeType === AttributeTypeEnum.PhysicalFire
+        || attributeType === AttributeTypeEnum.PhysicalWind
+        || attributeType === AttributeTypeEnum.PhysicalPoison
+        || attributeType === AttributeTypeEnum.PhysicalHoly
+        || attributeType === AttributeTypeEnum.PhysicalDark
+        || attributeType === AttributeTypeEnum.PhysicalGhost
+        || attributeType === AttributeTypeEnum.PhysicalUndead
+      ) {
+        if (physicalAllProperty) {
+          number.plusNumber(physicalAllProperty, 1)
+        }
+      } else if (attributeType === AttributeTypeEnum.PhysicalFormless
+        || attributeType === AttributeTypeEnum.PhysicalRaceUndead
+        || attributeType === AttributeTypeEnum.PhysicalBrute
+        || attributeType === AttributeTypeEnum.PhysicalPlant
+        || attributeType === AttributeTypeEnum.PhysicalInsect
+        || attributeType === AttributeTypeEnum.PhysicalAngel
+        || attributeType === AttributeTypeEnum.PhysicalDemon
+        || attributeType === AttributeTypeEnum.PhysicalDemi
+      ) {
+        if (physicalAllRace) {
+          number.plusNumber(physicalAllRace, 1)
+        }
+      } else if (attributeType === AttributeTypeEnum.PhysicalBoss
+        || attributeType === AttributeTypeEnum.PhysicalMon
+      ) {
+        if (physicalAllClass) {
+          number.plusNumber(physicalAllClass, 1)
+        }
+      } else if (attributeType === AttributeTypeEnum.MagicSmall
+        || attributeType === AttributeTypeEnum.MagicMed
+        || attributeType === AttributeTypeEnum.MagicLarge) {
+        if (magicAllSize) {
+          number.plusNumber(magicAllSize, 1)
+        }
+      } else if (attributeType === AttributeTypeEnum.MagicNeutral
+        || attributeType === AttributeTypeEnum.MagicWater
+        || attributeType === AttributeTypeEnum.MagicEarth
+        || attributeType === AttributeTypeEnum.MagicFire
+        || attributeType === AttributeTypeEnum.MagicWind
+        || attributeType === AttributeTypeEnum.MagicPoison
+        || attributeType === AttributeTypeEnum.MagicHoly
+        || attributeType === AttributeTypeEnum.MagicDark
+        || attributeType === AttributeTypeEnum.MagicGhost
+        || attributeType === AttributeTypeEnum.MagicUndead
+      ) {
+        if (magicAllProperty) {
+          number.plusNumber(magicAllProperty, 1)
+        }
+      } else if (attributeType === AttributeTypeEnum.MagicFormless
+        || attributeType === AttributeTypeEnum.MagicRaceUndead
+        || attributeType === AttributeTypeEnum.MagicBrute
+        || attributeType === AttributeTypeEnum.MagicPlant
+        || attributeType === AttributeTypeEnum.MagicInsect
+        || attributeType === AttributeTypeEnum.MagicAngel
+        || attributeType === AttributeTypeEnum.MagicDemon
+        || attributeType === AttributeTypeEnum.MagicDemi
+      ) {
+        if (magicAllRace) {
+          number.plusNumber(magicAllRace, 1)
+        }
+      } else if (attributeType === AttributeTypeEnum.MagicBoss
+        || attributeType === AttributeTypeEnum.MagicMon
+      ) {
+        if (magicAllClass) {
+          number.plusNumber(magicAllClass, 1)
+        }
+      } else if (attributeType === AttributeTypeEnum.MagicSkillNeutral
+        || attributeType === AttributeTypeEnum.MagicSkillWater
+        || attributeType === AttributeTypeEnum.MagicSkillEarth
+        || attributeType === AttributeTypeEnum.MagicSkillFire
+        || attributeType === AttributeTypeEnum.MagicSkillWind
+        || attributeType === AttributeTypeEnum.MagicSkillPoison
+        || attributeType === AttributeTypeEnum.MagicSkillHoly
+        || attributeType === AttributeTypeEnum.MagicSkillDark
+        || attributeType === AttributeTypeEnum.MagicSkillGhost
+        || attributeType === AttributeTypeEnum.MagicSkillUndead
+      ) {
+        if (magicAllElement) {
+          number.plusNumber(magicAllElement, 1)
+        }
       } else if (attributeType === AttributeTypeEnum.HpPercent
         || attributeType === AttributeTypeEnum.SpPercent
         || attributeType === AttributeTypeEnum.AspdPercent
@@ -678,15 +784,25 @@ export const ContextProvider = (props: Props): JSX.Element => {
         console.log("equip type", type)
         if (type && type.equipSlot && type.equipSlot.length > 0) {
           if (type.equipSlotType) {
-            const slot = type.equipSlot[0]
-            console.log("equip slot", slot)
-            const old = character.equipmentMap.get(slot)
-            if (old) {
-              const oldElement = document.getElementById("storage-" + old.id)
-              oldElement?.classList.remove("storage-equiped")
+            // eqiup some available
+            // Find empty
+            let slot = type.equipSlot.find(slot => {
+              console.log("equip slot", slot)
+              const old = character.equipmentMap.get(slot)
+              return !old
+            })
+            if (slot === undefined) {
+              slot = type.equipSlot[0]
+              const old = character.equipmentMap.get(slot)
+              if (old) {
+                const oldElement = document.getElementById("storage-" + old.id)
+                oldElement?.classList.remove("storage-equiped")
+                character.equipmentMap.set(slot, item)
+              }
             }
             character.equipmentMap.set(slot, item)
           } else {
+            // eqiup all
             type.equipSlot.forEach(slot => {
               console.log("equip slot", slot)
               const old = character.equipmentMap.get(slot)
@@ -721,14 +837,20 @@ export const ContextProvider = (props: Props): JSX.Element => {
         }
         setCharacter({ ...character });
       }
+    },
+    deleteItemStorage: (id: string) => {
+      const index = storage.items.findIndex(item => item.id === id)
+      api.unequip(storage.items[index])
+      storage.items.splice(index, 1)
+      setStorage({ ...storage })
     }
   }
 
   return (
-    <AppContext.Provider value={app}>
+    <AppContext.Provider value={app} >
       <AppApiContext.Provider value={api}>
         {props.children}
       </AppApiContext.Provider>
-    </AppContext.Provider>
+    </AppContext.Provider >
   )
 }

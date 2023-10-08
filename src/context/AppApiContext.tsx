@@ -23,6 +23,7 @@ export interface AppApi {
     addBuff: (item: Item) => void;
     equip: (item: CraftEqiupment) => void;
     unequip: (item: CraftEqiupment) => void;
+    deleteItemStorage: (id: string) => void;
 }
 
 export const AppApiContext = createContext<AppApi>({} as AppApi)

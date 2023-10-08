@@ -5,8 +5,8 @@ import { ActiveSkill, SkillEnum } from "./skill";
 import { Symbol } from "./Symbol";
 
 export class NumberCondition {
-    number: number;
-    symbol: Symbol;
+    number?: number;
+    symbol?: Symbol;
 
     constructor(number: number = 0, symbol: Symbol = Symbol.gte) {
         this.number = number
@@ -14,7 +14,8 @@ export class NumberCondition {
     }
 
     static check(condition: NumberCondition, number: number): boolean {
-        switch(condition.symbol) {
+        if (condition.symbol === undefined || condition.number === undefined) return true
+        switch(condition.symbol as Symbol) {
             case Symbol.gte:
                 if (number >= condition.number) return true
                 break;

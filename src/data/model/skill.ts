@@ -5,7 +5,7 @@ import { Element } from "./Element";
 
 export enum SkillEnum {
     NormalAttack, NormalRangeAttack, 
-    PickyPeck, LunaticCarrotBeat,
+    PickyPeck, LunaticCarrotBeat, SilvervineStemSpear, CatnipMeteor,
     PowerofLife, ArclouseDash, Hiss, PowerOfFlock, SpiritOfSavage,
 }
 
@@ -30,7 +30,7 @@ export class ActiveSkill implements Skill {
     delay: number[] = [];
     hit: number[] = [];
     type: AttributeTypeEnum = AttributeTypeEnum.Atk
-    isRange: Boolean = false;
+    isRange?: Boolean = false;
     element?: Element = undefined;
 }
 

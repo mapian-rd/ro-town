@@ -40,7 +40,7 @@ export class CombatStatus {
         } else {
             attributeType = monster.size.magicAttributeType
         }
-        return cal.rawAttributeList.get(attributeType)?.number ?? 0
+        return cal.finalAttributeList.get(attributeType)?.number ?? 0
     }
 
     static getElementAddMulAP(
@@ -54,7 +54,7 @@ export class CombatStatus {
         } else {
             attributeType = monster.attribute.magicAttributeType
         }
-        return cal.rawAttributeList.get(attributeType)?.number ?? 0
+        return cal.finalAttributeList.get(attributeType)?.number ?? 0
     }
 
     static getRaceAddMulAP(
@@ -69,7 +69,7 @@ export class CombatStatus {
             attributeType = monster.race.magicAttributeType
         }
         console.log("finalDmg", attributeType)
-        return cal.rawAttributeList.get(attributeType)?.number ?? 0
+        return cal.finalAttributeList.get(attributeType)?.number ?? 0
     }
 
     static getClassAddMulAP(
@@ -83,7 +83,7 @@ export class CombatStatus {
         } else {
             attributeType = monster.isBoss ? AttributeTypeEnum.PhysicalBoss : AttributeTypeEnum.PhysicalMon
         }
-        return cal.rawAttributeList.get(attributeType)?.number ?? 0
+        return cal.finalAttributeList.get(attributeType)?.number ?? 0
     }
 
     static getStatustk(type: AttributeTypeEnum, cal: CalculatedAttribute): number {
@@ -115,11 +115,11 @@ export class CombatStatus {
         return 0
     }
 
-    static getHardefRM(type: AttributeTypeEnum, monster: Monster): number {
+    static getHardefRM(type: AttributeTypeEnum, hardDef: number): number {
         if (type === AttributeTypeEnum.Atk) {
-            return hardDefR(monster.hardDef)
+            return hardDefR(hardDef)
         } else {
-            return hardMdefR(monster.hardMdef)
+            return hardMdefR(hardDef)
         }
     }
 
@@ -258,43 +258,6 @@ export class CombatStatus {
         }
     }
 
-    // static finalDmg(combatStatus: CombatStatus, cal: CalculatedAttribute, monster: Monster, skill: ActiveSkill, skillLevel: number = 1): number[] {
-    //     console.log("useEffect finalDmg 4")
-    //     const type = skill.type
-    //     combatStatus.hit = skill.hit[skillLevel - 1]
-    //     console.log(`cal2 ${cal.statusAtk} type ${type}`)
-    //     const varinace = CombatStatus.getVariance(type, cal)
-    //     const statustk = CombatStatus.getStatustk(type, cal)
-    //     const refineBonus = CombatStatus.getRefineBous(type, cal)
-    //     const min = minMATK(statustk, varinace)
-    //     const max = maxMATK(statustk, varinace, refineBonus)
-    //     const range = [min, max]
-    //     console.log(`useEffect finalDmg 5 statustk: ${statustk} varinace: ${varinace} min: ${min}`)
-    //     const equipAtk = CombatStatus.getEqiupmenttk(type, cal)
-    //     console.log(`useEffect finalDmg 6 equipAtk: ${equipAtk}`)
-    //     const dmg = range.map(value => finalMATK(value, 1, equipAtk))
-    //         .map(final => {
-    //             console.log(`final: ${final}`)
-    //             return Math.floor(
-    //                 skillMagicDmg(
-    //                     final,
-    //                     skill.percent[skillLevel - 1] / combatStatus.hit,
-    //                     combatStatus.skillMod,
-    //                     combatStatus.multiple)
-    //             ) * combatStatus.hit
-    //         })
-    //         .map(skilldmg => {
-    //             console.log(`skilldmg: ${skilldmg}`)
-    //             return CombatStatus.getFinalDmg(type, skilldmg, monster)
-    //         })
-    //     console.log("useEffect finalDmg 3", dmg)
-    //     combatStatus.minDmg = dmg[0]
-    //     combatStatus.maxDmg = dmg[1]
-    //     combatStatus.minDmgph = combatStatus.minDmg / combatStatus.hit
-    //     combatStatus.maxDmgph = combatStatus.maxDmg / combatStatus.hit
-    //     return dmg
-    // }
-
     static finalDmg(
         combatStatus: CombatStatus,
         cal: CalculatedAttribute,
@@ -334,9 +297,11 @@ export class CombatStatus {
         const mulAP = CombatStatus.getMultiple(type, cal)
         const skillP = skill.percent[skillLevel - 1]
         const powerThrustAP: number = 0 // 25
-        const skillMulAP: number = cal.finalAttributeList.get(AttributeTypeEnum.SkillDmg)?.number ?? 0
+        const skillMulAP: number = cal.skillAttributeList.get(skill.enum)?.number ?? 0
         const elementDmgMulAP: number = 0
-        const hardefRM = CombatStatus.getHardefRM(type, monster)
+        const ignoreP: number = 0
+        const hardDef = monster.hardDef * (1 - ignoreP / 100)
+        const hardefRM = CombatStatus.getHardefRM(type, hardDef)
         const softef = CombatStatus.getSoftef(type, monster)
         let rangeMulAP = 0
         if (isSkillRange) {

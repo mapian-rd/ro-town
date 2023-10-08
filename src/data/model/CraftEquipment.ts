@@ -29,6 +29,15 @@ export class CraftEqiupment implements Named {
     static is(item: Named): item is CraftEqiupment {
         return (item as CraftEqiupment).refineLevel !== undefined
     }
+
+    static getIdList(item: CraftEqiupment): string[] {
+        return [
+            item.itemId,
+            ...item.cardList.flatMap(item => item ?? []),
+            ...item.enchantList.flatMap(item => item ?? []),
+            ...item.optionList.flatMap(item => item ?? [])
+        ]
+    }
 }
 
 export function sumCraft(item: CraftEqiupment) {
@@ -66,6 +75,7 @@ export function sumCraft(item: CraftEqiupment) {
 
 export function checkCraft(item: CraftEqiupment, character: Character): AttributeName[] {
     if (!item.sumAttributeList) return []
+    console.log("checkCraft", item.sumAttributeList)
     return item.sumAttributeList.filter(attribute => {
         return Attribute.check(item, attribute, character)
     })

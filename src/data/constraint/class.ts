@@ -1,7 +1,7 @@
 import { AttributeTypeEnum } from "../model/attributeType"
 import { JobClass, JobClassEnum } from "../model/class"
 import { ItemTypeEnum } from "../model/itemType"
-import { ActiveSkill, SkillEnum } from "../model/skill"
+import { ActiveSkill, PassiveSkill, SkillEnum } from "../model/skill"
 import { OneHandedStaff } from "./itemType"
 
 const normalAttack: ActiveSkill = {
@@ -125,6 +125,34 @@ export class Doram extends JobClass {
             hit: [1, 1, 1, 1, 1],
             type: AttributeTypeEnum.Atk,
             isRange: true,
+        },
+        {
+            id: "5045",
+            enum: SkillEnum.PowerOfFlock,
+            name: "Power Of Flock",
+            maxLv: 5,
+            percent: [0, 0, 0, 0, 0],
+            vct: [4, 3, 2, 1, 0],
+            fct: [1, 1, 1, 1, 1],
+            cooldown: [100, 100, 100, 100, 100],
+            delay: [1, 1, 1, 1, 1],
+            hit: [0, 0, 0, 0, 0],
+            type: AttributeTypeEnum.Debuff,
+            isRange: true,
+        },
+        {
+            id: "5046",
+            enum: SkillEnum.SpiritOfSavage,
+            name: "Sprit Of Savage",
+            maxLv: 5,
+            percent: [400, 550, 700, 850, 1000],
+            vct: [1, 1, 1, 1, 0],
+            fct: [2.5, 2, 1.5, 1, 0],
+            cooldown: [30, 28, 26, 24, 22],
+            delay: [1, 1, 1, 1, 1],
+            hit: [1, 1, 1, 1, 1],
+            type: AttributeTypeEnum.Atk,
+            isRange: true,
         }
     ];
     passiveSkill = [
@@ -165,6 +193,24 @@ export class Doram extends JobClass {
                 {
                     type: AttributeTypeEnum.Agi,
                     formulaText: "40",
+                },
+            ]
+        }
+    ]
+    buffSkill = [
+        {
+            id: "5047",
+            enum: SkillEnum.Hiss,
+            name: "Hiss",
+            maxLv: 5,
+            attributeList: [
+                {
+                    type: AttributeTypeEnum.PD,
+                    formulaText: "50",
+                },
+                {
+                    type: AttributeTypeEnum.MoveSpeed,
+                    formulaText: "1",
                 },
             ]
         }

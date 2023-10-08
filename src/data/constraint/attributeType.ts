@@ -65,6 +65,16 @@ export const magicalAttributeList: Map<AttributeTypeEnum, AttributeType> = new M
     [AttributeTypeEnum.MagicAngel, new AttributeType("Dmg to Race Angel")],
     [AttributeTypeEnum.MagicDemon, new AttributeType("Dmg to Race Demon")],
     [AttributeTypeEnum.MagicDemi, new AttributeType("Dmg to Race Demi")],
+    [AttributeTypeEnum.MagicSkillNeutral, new AttributeType("Element Neutral Dmg")],
+    [AttributeTypeEnum.MagicSkillWater, new AttributeType("Element Water Dmg")],
+    [AttributeTypeEnum.MagicSkillEarth, new AttributeType(" Element Earth Dmg")],
+    [AttributeTypeEnum.MagicSkillFire, new AttributeType(" Element Fire Dmg")],
+    [AttributeTypeEnum.MagicSkillWind, new AttributeType(" Element Wind Dmg")],
+    [AttributeTypeEnum.MagicSkillPoison, new AttributeType(" Element Poison Dmg")],
+    [AttributeTypeEnum.MagicSkillHoly, new AttributeType(" Element Holy Dmg")],
+    [AttributeTypeEnum.MagicSkillDark, new AttributeType(" Element Dark Dmg")],
+    [AttributeTypeEnum.MagicSkillGhost, new AttributeType(" Element Ghost Dmg")],
+    [AttributeTypeEnum.MagicSkillUndead, new AttributeType(" Element Undead Dmg")],
 ])
 
 export const otherAttributeList: Map<AttributeTypeEnum, AttributeType> = new Map([

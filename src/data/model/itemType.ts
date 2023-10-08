@@ -62,6 +62,7 @@ export const itemTypeList: Map<ItemTypeEnum, EquipableType> = new Map([
     [ItemTypeEnum.Fuuma, { name: "Fuuma", refineable: true, equipSlot: [EquipmentSlot.rWeapon] }],
     [ItemTypeEnum.Shield, { name: "Sheid", refineable: true, equipSlot: [EquipmentSlot.lWeapon] }],
     [ItemTypeEnum.Garment, { name: "Garment", refineable: true, equipSlot: [EquipmentSlot.garment] }],
+    [ItemTypeEnum.Shoes, { name: "Shoes", refineable: true, equipSlot: [EquipmentSlot.shoes] }],
     [ItemTypeEnum.Accessery, { name: "Accessery", equipSlot: [EquipmentSlot.rAccessery, EquipmentSlot.lAccessery], equipSlotType: true }],
     [ItemTypeEnum.AccesseryLeft, { name: "AccesseryLeft", equipSlot: [EquipmentSlot.lAccessery] }],
     [ItemTypeEnum.AccesseryRight, { name: "AccesseryRight", equipSlot: [EquipmentSlot.rAccessery] }],

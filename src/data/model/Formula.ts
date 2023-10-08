@@ -163,6 +163,19 @@ export class DescriptionNumber {
         }
     }
 
+    plusNumber(number: DescriptionNumber, index: number = 1) {
+        this.number += number.number
+        if (this.min && this.max) {
+            this.min += number.number
+            this.max += number.number
+        }
+        if (index === 0) {
+            this.description = number.description + " + " + this.description
+        } else {
+            this.description = this.description + " + " + number.description
+        }
+    }
+
     variance(min: number, max: number, name: string, index: number = 1) {
         if (!this.min) {
             this.min = this.number

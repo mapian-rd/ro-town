@@ -63,19 +63,28 @@ export default function BuffStorage(props: Props) {
             console.log("Storage", found)
 
             return (
-                <div className="p-1" key={'buffStorage-' + item.id} onClick={() => onClick(item)}>
+                <div className="p-1" key={'buffStorage-' + item.id}>
                     <div
                         id={'buffStorage-' + item.id}
                         className={(props.viewId === item.id) ? 'row storage-item rounded select-ed' : 'row'}
                     >
-                        <div className="col-auto">
-                            <img className="w-100 my-2" src={`https://static.divine-pride.net/images/items/item/${Item.getImgId(item.id, item.imgId)}.png`} alt="Item" />
+                        <div className="col" onClick={() => onClick(item)}>
+                            <div className="row">
+                                <div className="col-auto">
+                                    <img className="w-100 my-2" src={`https://static.divine-pride.net/images/items/item/${Item.getImgId(item.id, item.imgId)}.png`} alt="Item" />
+                                </div>
+                                <div className='col ps-0 d-flex align-items-center text-break'>
+                                    {item.name}
+                                </div>
+                            </div>
                         </div>
-                        <div className={'col ps-0 d-flex align-items-center text-break'}>
-                            {item.name}
-                        </div>
                         <div className="col-auto">
-                            <button onClick={() => props.addClick(props.list, found, item.id)}>{found ? "Remove" : "Add"}</button>
+                            <button
+                                className="h-100"
+                                onClick={() => props.addClick(props.list, found, item.id)}
+                            >
+                                {found ? "Remove" : "Add"}
+                            </button>
                         </div>
                     </div>
                 </div>
