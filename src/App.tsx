@@ -277,20 +277,31 @@ function App() {
             <Equipment title='General Equipment' type={eqipmentTypes} />
             <Equipment title='Special Equipment' type={spEqipmentTypes} />
           </div>
-          <div className={'col-md-4 pt-4 d-flex flex-column mh-0 h-100' + (showPet ? '' : ' d-none')} >
-            <Pet />
+          <div className={'col-md-4 d-flex flex-column mh-0 h-100' + (showPet ? '' : ' d-none')} >
+            <div className={'row' + (showBuffStorage ? '' : ' pt-4')}>
+              <div className={'col' + (showBuffStorage ? '' : ' d-none')}>
+                <button onClick={() => api.setViewState(ViewState.Normal)}>Back</button>
+              </div>
+            </div>
+            <div className={(showBuffStorage ? 'd-none' : '')}>
+              <Pet />
+            </div>
             <div className='flex-grow-1 mh-0'>
-              <ItemBuff
-                title='Item Buff'
-                list={ownItemBuff}
-                handleBuffChange={handleItemBuffChange}
-                onClick={() => api.setViewState(ViewState.BuffStorage)}
-              />
-              <ItemBuff
-                title='Skill Buff'
-                list={[...ownSkillBuff, ...skillbuff]}
-                handleBuffChange={handleSkillBuffChange}
-              />
+              <div className={(showBuffStorage ? 'h-100' : 'h-50')}>
+                <ItemBuff
+                  title='Item Buff'
+                  list={ownItemBuff}
+                  handleBuffChange={handleItemBuffChange}
+                  onClick={showBuffStorage ? undefined : () => api.setViewState(ViewState.BuffStorage)}
+                />
+              </div>
+              <div className={'h-50' + (showBuffStorage ? ' d-none' : '')}>
+                <ItemBuff
+                  title='Skill Buff'
+                  list={[...ownSkillBuff, ...skillbuff]}
+                  handleBuffChange={handleSkillBuffChange}
+                />
+              </div>
             </div>
           </div>
 
@@ -309,7 +320,7 @@ function App() {
           <div className={'col-md-4 d-flex flex-column h-100' + (showBuffStorage ? '' : ' d-none')}>
             <div className='row'>
               <div className='col'>
-                <button onClick={() => api.setViewState(showAddBuff ? ViewState.BuffStorage : ViewState.Normal)}>Back</button>
+                <button className={(showAddBuff ? '' : 'd-none')} onClick={() => api.setViewState(ViewState.BuffStorage)}>Back</button>
               </div>
               <div className={'col-auto' + (showAddBuff ? ' d-none' : '')}>
                 <button onClick={() => api.setViewState(ViewState.AddBuff)}>Add Custom Item</button>

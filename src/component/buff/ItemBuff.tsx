@@ -68,9 +68,9 @@ export default function ItemBuff(props: Props) {
 
     return (
         <Box
-            className="h-50"
+            className="h-100"
             title={props.title}
-            buttonText="Edit"
+            buttonText={props.onClick ? "Edit" : undefined}
             onClick={props.onClick}
             onSearchChange={onSearchChange}
             searchable
