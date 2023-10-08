@@ -133,7 +133,7 @@ export const optionDatabase: Item[] = [
         type: ItemTypeEnum.Enchant,
         attributeList: [
             {
-                type: AttributeTypeEnum.GhostPhyDmg,
+                type: AttributeTypeEnum.PhysicalGhost,
                 formulaText: "15",
             },
         ]

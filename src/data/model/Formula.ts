@@ -8,17 +8,6 @@ import { ActiveSkill, PassiveSkill, Skill, SkillEnum } from "./skill";
 import { Status } from "./status";
 let stringMath = require('string-math');
 
-
-export class Formula {
-    attribute: Map<AttributeType, FormulaString[]> = new Map()
-
-    constructor() {
-        attributeList.forEach(attributeType => {
-            this.attribute.set(attributeType, [])
-        })
-    }
-}
-
 function getParameter(text: string, equipmentMap: Map<EquipmentSlot, CraftEqiupment | undefined>, status: Status, skill: Skill[], baseLv: number, craftEqiupment?: CraftEqiupment): string {
     console.log("getParameter", text)
     if (craftEqiupment && text.includes("this.Rf")) {

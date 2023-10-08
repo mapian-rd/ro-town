@@ -384,6 +384,9 @@ export const ContextProvider = (props: Props): JSX.Element => {
       console.log("attributeList.forEach", attributeType)
       const raw = cal.rawAttributeList.get(attributeType)
       const number = new DescriptionNumber(raw?.number, raw?.description)
+      if (Array.from(StatusTypeList.keys()).includes(attributeType)) {
+        return
+      }
       if (attributeType === AttributeTypeEnum.Atk
         || attributeType === AttributeTypeEnum.Matk
       ) {

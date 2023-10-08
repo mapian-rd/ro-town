@@ -287,7 +287,7 @@ p {
 input {
   color: var(--link);
   border: none;
-  border-bottom: 2px solid transparent;
+  border-bottom: 2px solid var(--gray);
   background-color: transparent;
   height: 100%;
   /* resize: none; */

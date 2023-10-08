@@ -1,5 +1,9 @@
 export class AttributeType {
-    name: string
+    name: string;
+    /**
+     * default true
+     */
+    addAsCustom?: boolean;
     constructor(name: string) {
         this.name = name
     }
@@ -26,5 +30,4 @@ export enum AttributeTypeEnum {
     MagicNeutral, MagicWater, MagicEarth, MagicFire, MagicWind, MagicPoison, MagicHoly, MagicDark, MagicGhost, MagicUndead,
     MagicFormless, MagicRaceUndead, MagicBrute, MagicPlant, MagicInsect, MagicAngel, MagicDemon, MagicDemi,
     MagicBoss, MagicMon,
-    GhostPhyDmg,
 }

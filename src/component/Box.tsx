@@ -32,7 +32,7 @@ export default function Box(props: BoxProps) {
                             <input className="title-input fw-bold mx-2" type="text" value={props.title} onChange={props.onChangeTitle} />
                         ) : (
 
-                            <span className="fw-bold mx-2 jc-center">{props.title}</span>
+                            <span className="fw-bold mx-2 jc-center text-nowrap">{props.title}</span>
                         )}
                     </div>
                 ) : (

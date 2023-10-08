@@ -10,8 +10,8 @@ export const StatusTypeList: Map<AttributeTypeEnum, AttributeType> = new Map([
 ])
 
 export const physicalAttributeList: Map<AttributeTypeEnum, AttributeType> = new Map([
-    [AttributeTypeEnum.StatusAtk, new AttributeType("Status Atk")],
-    [AttributeTypeEnum.WeaponAtk, new AttributeType("Final Weapon Atk")],
+    [AttributeTypeEnum.StatusAtk, { name: "Status Atk", addAsCustom: false }],
+    [AttributeTypeEnum.WeaponAtk, { name: "Final Weapon Atk", addAsCustom: false }],
     [AttributeTypeEnum.Atk, new AttributeType("Equipment Atk")],
     [AttributeTypeEnum.AtkPercent, new AttributeType("Atk%")],
     [AttributeTypeEnum.MeleeMul, new AttributeType("Melee Multiple")],
@@ -40,8 +40,8 @@ export const physicalAttributeList: Map<AttributeTypeEnum, AttributeType> = new 
 ])
 
 export const magicalAttributeList: Map<AttributeTypeEnum, AttributeType> = new Map([
-    [AttributeTypeEnum.StatusMatk, new AttributeType("Status Matk")],
-    [AttributeTypeEnum.WeaponMatk, new AttributeType("Weapon Matk")],
+    [AttributeTypeEnum.StatusMatk, { name: "Status Matk", addAsCustom: false }],
+    [AttributeTypeEnum.WeaponMatk, { name: "Weapon Matk", addAsCustom: false }],
     [AttributeTypeEnum.Matk, new AttributeType("Equipment Matk")],
     [AttributeTypeEnum.MatkPercent, new AttributeType("MATK%")],
     [AttributeTypeEnum.MagicSmall, new AttributeType("Dmg to Small Size")],
@@ -68,6 +68,7 @@ export const magicalAttributeList: Map<AttributeTypeEnum, AttributeType> = new M
 ])
 
 export const otherAttributeList: Map<AttributeTypeEnum, AttributeType> = new Map([
+    [AttributeTypeEnum.SkillDmg, new AttributeType("Skill Dmg")],
     [AttributeTypeEnum.Hp, new AttributeType("Hp")],
     [AttributeTypeEnum.HpPercent, new AttributeType("Hp%")],
     [AttributeTypeEnum.Sp, new AttributeType("Sp")],
@@ -88,6 +89,7 @@ export const otherAttributeList: Map<AttributeTypeEnum, AttributeType> = new Map
 ])
 
 export const attributeList: Map<AttributeTypeEnum, AttributeType> = new Map([
+    ...Array.from(StatusTypeList),
     ...Array.from(physicalAttributeList),
     ...Array.from(magicalAttributeList),
     ...Array.from(otherAttributeList),
