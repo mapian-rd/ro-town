@@ -55,14 +55,20 @@ export default function ItemBuff(props: Props) {
     }
 
     useEffect(() => {
-        let itemList = props.list.filter(item => {
-            if (filterName) {
-                let result = item.name?.toLocaleLowerCase().includes(filterName)
-                    || item.id.toString().includes(filterName)
-                if (!result) return false
-            }
-            return true
-        })
+        let itemList = props.list
+            .filter(item => {
+                if (filterName) {
+                    let result = item.name?.toLocaleLowerCase().includes(filterName)
+                        || item.id.toString().includes(filterName)
+                    if (!result) return false
+                }
+                return true
+            })
+            .sort((a, b) => {
+                if (a.isActive) return -1
+                if (b.isActive) return 1
+                return 0
+            })
         setFilteredItemList(itemList)
     }, [filterName, props.list])
 

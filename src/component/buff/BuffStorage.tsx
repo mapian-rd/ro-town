@@ -35,7 +35,7 @@ export default function BuffStorage(props: Props) {
         const lower = value.toLocaleLowerCase()
         setFilterName(lower)
     }
-    
+
     function onDeleteClick(id: string) {
         if (props.onDeleteClick) {
             props.onDeleteClick(id)
@@ -45,16 +45,33 @@ export default function BuffStorage(props: Props) {
     useEffect(() => {
         console.log("Storage useEffect", filterName)
 
-        let itemList = props.storage.filter(item => {
-            if (filterName) {
-                let result = item.name?.toLocaleLowerCase().includes(filterName)
-                    || item.id.toString().includes(filterName)
-                if (!result) return false
-            }
-            return true
-        })
+        let itemList = props.storage
+            .filter(item => {
+                if (filterName) {
+                    let result = item.name?.toLocaleLowerCase().includes(filterName)
+                        || item.id.toString().includes(filterName)
+                    if (!result) return false
+                }
+                return true
+            })
+            .sort((a, b) => {
+                console.log("sort list", props.list)
+                for (let i = 0; i < props.list.length; i++) {
+                    const buff = props.list[i]
+                    if (buff.id === a.id) {
+                        console.log("found a", buff)
+                        return -1
+                    }
+                    if (buff.id === b.id) {
+                        console.log("found b", buff)
+                        return 1
+                    }
+                }
+                console.log("found 0", props.list)
+                return 0
+            })
         setFilteredItemList(itemList)
-    }, [filterName, props.storage])
+    }, [filterName, props.storage, props.list])
 
     useEffect(() => {
         console.log("BuffStorage useEffect")
@@ -65,9 +82,11 @@ export default function BuffStorage(props: Props) {
             }) !== -1
             console.log("Storage", found)
 
+            const inCommon = itemBuffDatabase.findIndex(buff => buff.id === item.id) !== -1
+
             return (
                 <div className="row p-1" key={'buffStorage-' + item.id}>
-                    <div className="col-auto">
+                    <div className={"col-auto" + (inCommon ? ' d-none' : '')}>
                         <button onClick={() => onDeleteClick(item.id)}>-</button>
                     </div>
                     <div className="col">
