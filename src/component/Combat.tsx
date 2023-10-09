@@ -105,40 +105,41 @@ export function Combat() {
                 <div className="col-6">
                     <div className="d-flex">
                         <span className="me-1 jc-center">Vct</span>
-                        <span className="w-100 text-end">6</span>
+                        <span className="w-100 text-end">{context.combatStatus.vct.toFixed(2)}</span>
                     </div>
                 </div>
                 <div className="col-6">
                     <div className="d-flex">
                         <span className="me-1 jc-center text-nowrap">Fct</span>
-                        <span className="w-100 text-end">6</span>
+                        <span className="w-100 text-end">{context.combatStatus.fct.toFixed(2)}</span>
                     </div>
                 </div>
 
                 <div className="col-6">
                     <div className="d-flex">
                         <span className="me-1 jc-center">Cooldown</span>
-                        <span className="w-100 text-end">6</span>
+                        <span className="w-100 text-end">{context.combatStatus.cooldown}</span>
                     </div>
                 </div>
                 <div className="col-6">
                     <div className="d-flex">
                         <span className="me-1 jc-center text-nowrap">Delay</span>
-                        <span className="w-100 text-end">6</span>
+                        <span className="w-100 text-end">{context.combatStatus.delay.toFixed(2)}</span>
                     </div>
                 </div>
                 <div className="d-flex">
-                    <span className="me-1 jc-center text-nowrap">sec/Hit (aspd)</span>
-                    <span className="w-100 text-end">6</span>
+                    <span className="me-1 jc-center text-nowrap">Second per Hit (aspd)</span>
+                    <span className="w-100 text-end">{context.combatStatus.secph.toFixed(2)}</span>
                 </div>
                 <div className="d-flex">
                     <span className="me-1 jc-center text-nowrap">Hit Ratio</span>
-                    <span className="w-100 text-end">60%</span>
+                    <span className="w-100 text-end">{context.combatStatus.hitRatio}%</span>
                 </div>
                 <div className="d-flex final-dps">
                     <span className="me-1 jc-center text-nowrap">Final Dps</span>
-                    <span className="w-100 text-end final-dps-value">9999990000000 (99000000000 x 5)</span>
+                    <span className="w-100 text-end final-dps-value">{context.combatStatus.final.toFixed(2)} ({context.combatStatus.finalph.toFixed(2)} x 5)</span>
                 </div>
+                <span className="text-end text-nowrap remark">* Ignore Ping & Computer Performance</span>
             </div>
         </Box>
     )

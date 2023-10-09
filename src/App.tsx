@@ -30,6 +30,7 @@ import AddBuff from './component/buff/AddBuff';
 import { CharacterExport } from './data/model/Characterv2';
 import { replacer } from './context/ContextProvider';
 import { ExportData } from './data/model/Exportable';
+import { AttributeTypeEnum } from './data/model/attributeType';
 
 export const optionStyle = {
   container: ({ data, isDisabled, isFocused, isSelected }: any) =>
@@ -356,7 +357,13 @@ function App() {
             <button onClick={() => api.setViewState(ViewState.Normal)}>Back</button>
             <MoreStatus
               final={context.calculatedAttribute.finalAttributeList}
+              baseSkillDmg={context.calculatedAttribute.baseSkillAttributeList}
               skillDmg={context.calculatedAttribute.skillAttributeList}
+              vct={context.calculatedAttribute.vctAttributeList}
+              allVct={api.getRaw(AttributeTypeEnum.VctPercent)}
+              fct={api.getRaw(AttributeTypeEnum.Fct)}
+              fctP={api.getFinal(AttributeTypeEnum.FctPercent)}
+              cooldown={context.calculatedAttribute.cooldownAttributeList}
             />
           </div>
 

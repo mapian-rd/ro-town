@@ -93,7 +93,7 @@ export class Doram extends JobClass {
         1002, 1020, 1038, 1056, 1074, 1082, 1090, 1098, 1106, 1114,
         1122, 1130, 1138, 1146, 1154, 1162, 1170, 1178, 1186, 1194,
         1202, 1210, 1218, 1226, 1234, 1242, 1250, 1258, 1266, 1274];
-    weaponPenalty = new Map([[ItemTypeEnum.OneHandRod, -20]])
+    weaponPenalty = new Map([[ItemTypeEnum.OneHandRod, -10]])
     shieldPenalty = -6;
     activeSkill = [
         normalAttack,

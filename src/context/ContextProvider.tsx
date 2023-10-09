@@ -318,6 +318,8 @@ export const ContextProvider = (props: Props): JSX.Element => {
     cal.rawAttributeList.clear()
     cal.skillFormulaList.clear()
     cal.baseSkillFormulaList.clear()
+    cal.vctFormulaList.clear()
+    cal.cooldownFormulaList.clear()
     console.log("formulaList size", cal.formulaList.size)
     cal.formulaList.forEach((formula, attributeType) => {
       if (attributeType === AttributeTypeEnum.SkillDmg) {
@@ -330,7 +332,7 @@ export const ContextProvider = (props: Props): JSX.Element => {
             cal.skillFormulaList.set(f.skill, [...oldValue, f])
           }
         })
-      } if (attributeType === AttributeTypeEnum.SkillBasePercent) {
+      } else if (attributeType === AttributeTypeEnum.SkillBasePercent) {
         formula.forEach(f => {
           if (f.skill) {
             let oldValue = cal.baseSkillFormulaList.get(f.skill)
@@ -340,12 +342,50 @@ export const ContextProvider = (props: Props): JSX.Element => {
             cal.baseSkillFormulaList.set(f.skill, [...oldValue, f])
           }
         })
+      } else if (attributeType === AttributeTypeEnum.VctPercent) {
+        let allFormula: FormulaString[] = []
+        formula.forEach(f => {
+          if (f.skill) {
+            let oldValue = cal.vctFormulaList.get(f.skill)
+            if (!oldValue) {
+              oldValue = []
+            }
+            cal.vctFormulaList.set(f.skill, [...oldValue, f])
+          } else {
+            allFormula.push(f)
+          }
+        })
+        const number = calString(allFormula, character.equipmentMap, character.status, character.clazz.getSkill(), character.baseLv)
+        console.log("VctPercent", allFormula, cal.vctFormulaList, number)
+        cal.rawAttributeList.set(attributeType, number)
+        console.log("vctPercent 6", cal.rawAttributeList.get(AttributeTypeEnum.VctPercent))
+      } else if (attributeType === AttributeTypeEnum.FctPercent) {
+        let max = 0
+        formula.forEach(f => {
+          const number = calString([f], character.equipmentMap, character.status, character.clazz.getSkill(), character.baseLv)
+          max = Math.max(max, number.number)
+        })
+        const number = calString(formula, character.equipmentMap, character.status, character.clazz.getSkill(), character.baseLv)
+        number.number = max
+        cal.rawAttributeList.set(attributeType, number)
+      } else if (attributeType === AttributeTypeEnum.Cooldown) {
+        formula.forEach(f => {
+          if (f.skill) {
+            let oldValue = cal.cooldownFormulaList.get(f.skill)
+            if (!oldValue) {
+              oldValue = []
+            }
+            cal.cooldownFormulaList.set(f.skill, [...oldValue, f])
+          }
+        })
       } else {
         const number = calString(formula, character.equipmentMap, character.status, character.clazz.getSkill(), character.baseLv)
         console.log("raw", attributeType, number)
         cal.rawAttributeList.set(attributeType, number)
       }
+      console.log("vctPercent 5", attributeType, cal.rawAttributeList.get(AttributeTypeEnum.VctPercent))
     })
+    console.log("vctPercent 4", cal.rawAttributeList.get(AttributeTypeEnum.VctPercent))
 
     cal.skillAttributeList.clear()
     cal.skillFormulaList.forEach((value, key) => {
@@ -365,12 +405,32 @@ export const ContextProvider = (props: Props): JSX.Element => {
       }
       cal.baseSkillAttributeList.set(key, number)
     })
+    cal.vctAttributeList.clear()
+    cal.vctFormulaList.forEach((value, key) => {
+      const number = calString(value, character.equipmentMap, character.status, character.clazz.getSkill(), character.baseLv)
+      const skill = character.clazz.activeSkill.find(item => item.enum === key)
+      if (skill) {
+        number.name = skill.name
+      }
+      cal.vctAttributeList.set(key, number)
+    })
+    cal.cooldownAttributeList.clear()
+    cal.cooldownFormulaList.forEach((value, key) => {
+      const number = calString(value, character.equipmentMap, character.status, character.clazz.getSkill(), character.baseLv)
+      const skill = character.clazz.activeSkill.find(item => item.enum === key)
+      if (skill) {
+        number.name = skill.name
+      }
+      cal.cooldownAttributeList.set(key, number)
+    })
+    console.log("vctPercent 3", cal.rawAttributeList.get(AttributeTypeEnum.VctPercent))
 
     cal.calRawCall = !cal.calRawCall
   }
 
   function calFinal(character: Character, cal: CalculatedAttribute) {
     console.log("calFinal")
+    console.log("vctPercent 2", cal.rawAttributeList.get(AttributeTypeEnum.VctPercent))
 
     // statusBonus
     cal.statusBonus = statusBonus(cal.rWeaponAtk, cal.isWeaponRange, character.status.str, character.status.dex)
@@ -530,7 +590,7 @@ export const ContextProvider = (props: Props): JSX.Element => {
           cal.weaponPenalty,
           cal.shieldPenalty
         )
-        number.number = final
+        number.number = Math.min(193, final)
         number.description = ""
         number.line(baseAspd, "baseAspd", 1)
         number.linePlus(agi, getAttributeType(AttributeTypeEnum.Agi).name, 1)
@@ -664,6 +724,7 @@ export const ContextProvider = (props: Props): JSX.Element => {
       console.log("final", attributeType, number)
       cal.finalAttributeList.set(attributeType, number)
     })
+    console.log("vctPercent 1", cal.rawAttributeList.get(AttributeTypeEnum.VctPercent))
     cal.calFinalCall = !cal.calFinalCall
   }
 

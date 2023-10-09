@@ -77,6 +77,10 @@ export const magicalAttributeList: Map<AttributeTypeEnum, AttributeType> = new M
     [AttributeTypeEnum.MagicSkillUndead, new AttributeType(" Element Undead Dmg")],
 ])
 
+export const calAttributeList:  Map<AttributeTypeEnum, AttributeType> = new Map([
+    [AttributeTypeEnum.FctPercent, new AttributeType("Fct Percent")],
+])
+
 export const otherAttributeList: Map<AttributeTypeEnum, AttributeType> = new Map([
     [AttributeTypeEnum.SkillBasePercent, new AttributeType("Skill Base Dmg Percent")],
     [AttributeTypeEnum.SkillDmg, new AttributeType("Skill Dmg")],
@@ -95,6 +99,7 @@ export const otherAttributeList: Map<AttributeTypeEnum, AttributeType> = new Map
     [AttributeTypeEnum.SoftDefPercent, new AttributeType("SoftDef%")],
     [AttributeTypeEnum.SoftMdef, new AttributeType("Soft MdDef")],
     [AttributeTypeEnum.SoftMdefPercent, new AttributeType("SoftMdef%")],
+    [AttributeTypeEnum.Delay, new AttributeType("Delay")],
     [AttributeTypeEnum.MonMedPhyRed, new AttributeType("Monster Medium Size Physical Reduction")],
     [AttributeTypeEnum.MonLarPhyRed, new AttributeType("Monster Large Size Physical Reduction")],
 ])
@@ -103,6 +108,7 @@ export const attributeList: Map<AttributeTypeEnum, AttributeType> = new Map([
     ...Array.from(StatusTypeList),
     ...Array.from(physicalAttributeList),
     ...Array.from(magicalAttributeList),
+    ...Array.from(calAttributeList),
     ...Array.from(otherAttributeList),
 ])
 

@@ -18,6 +18,17 @@ export class CombatStatus {
     minDmgph: number = 0
     maxDmgph: number = 0
 
+    vct: number = 0
+    fct: number = 0
+    cooldown: number = 0
+    delay: number = 0
+
+    secph: number = 1
+    hitRatio: number = 100
+
+    final: number = 0
+    finalph: number = 0
+
     static getWeapontk(
         type: AttributeTypeEnum,
         cal: CalculatedAttribute
@@ -265,6 +276,37 @@ export class CombatStatus {
         skill: ActiveSkill,
         skillLevel: number = 1
     ): number[] {
+        // Vct
+        const vct = Math.min(100, cal.rawAttributeList.get(AttributeTypeEnum.VctPercent)?.number ?? 0)
+        const skillVct = Math.min(100, cal.skillAttributeList.get(skill.enum)?.number ?? 0)
+        combatStatus.vct = [skill.vct[skillLevel - 1]]
+            .map(value => value - value * vct / 100)
+            .map(value => value - value * skillVct / 100)
+        [0]
+
+        // Fct
+        const fct = cal.rawAttributeList.get(AttributeTypeEnum.Fct)?.number ?? 0
+        const fctP = Math.min(100, cal.rawAttributeList.get(AttributeTypeEnum.FctPercent)?.number ?? 0)
+        console.log("finalDmg fct", fct, fctP)
+        combatStatus.fct = [skill.fct[skillLevel - 1]]
+            .map(value => Math.max(0, value - fct))
+            .map(value => value - value * fctP / 100)
+        [0]
+
+        const skillCooldown = Math.min(100, cal.cooldownAttributeList.get(skill.enum)?.number ?? 0)
+        combatStatus.cooldown = [skill.cooldown[skillLevel - 1]]
+            .map(value => value - skillCooldown)
+        [0]
+
+        const delay = Math.min(100, cal.rawAttributeList.get(AttributeTypeEnum.Delay)?.number ?? 0)
+        combatStatus.delay = [skill.delay[skillLevel - 1]]
+            .map(value => value - value * delay / 100)
+        [0]
+
+        combatStatus.secph = 4 - (cal.finalAttributeList.get(AttributeTypeEnum.Aspd)?.number ?? 150) / 50
+
+        combatStatus.hitRatio = Math.max(0, Math.min(100, 100 + (cal.finalAttributeList.get(AttributeTypeEnum.Hit)?.number ?? 175) - monster.hit))
+
         console.log("useEffect finalDmg 3")
         const type = skill.type
         const isSkillRange = skill.isRange
@@ -338,6 +380,16 @@ export class CombatStatus {
         combatStatus.maxDmgph = Math.floor(dmg[1] / combatStatus.hit)
         combatStatus.minDmg = combatStatus.minDmgph * combatStatus.hit
         combatStatus.maxDmg = combatStatus.maxDmgph * combatStatus.hit
+
+        // vct + fct -> motion(secph) & cooldown & delay
+        combatStatus.final = [(combatStatus.minDmg + combatStatus.maxDmg) / 2]
+            .map(value => value * combatStatus.hitRatio / 100)
+            .map(value => value / (combatStatus.vct + combatStatus.fct + Math.max(combatStatus.cooldown, combatStatus.delay, combatStatus.secph)))
+        [0]
+        combatStatus.finalph = [(combatStatus.minDmgph + combatStatus.maxDmgph) / 2]
+            .map(value => value * combatStatus.hitRatio / 100)
+            .map(value => value / (combatStatus.vct + combatStatus.fct + Math.max(combatStatus.cooldown, combatStatus.delay, combatStatus.secph)))
+        [0]
         return dmg
     }
 }

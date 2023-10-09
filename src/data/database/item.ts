@@ -660,7 +660,7 @@ export const itemDatabase: Equipment[] = [
             },
             {
                 type: AttributeTypeEnum.Fct,
-                formulaText: "<this.Rf/1> * 0.1",
+                formulaText: "(<this.Rf/1> - 10) * 0.1",
                 condition: {
                     refireList: [
                         {

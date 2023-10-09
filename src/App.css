@@ -241,6 +241,11 @@ button {
   color: var(--status-name);
 }
 
+.remark {
+  color: var(--link);
+  font-size: 12px;
+}
+
 .jc-center {
   display: flex;
   flex-direction: column;
