@@ -220,10 +220,10 @@ function App() {
   function onBuffClick(item: Item) {
     api.setViewItem(item)
   }
-  
+
   function onDeleteBuffClick(id: string) {
     api.deleteBuffStorage(id)
-}
+  }
 
   useEffect(() => {
     setShowCharacter(false)
@@ -270,9 +270,9 @@ function App() {
       <body className='App-body container mb-0 vh-100 py-2'>
         <div className='row h-100'>
           <div className={'col-md-4 h-100' + (showCharacter ? '' : ' d-none')}>
-            <button onClick={onSaveClick}>Import</button>
             <input type='file' id='file' ref={inputFile} style={{ display: 'none' }} accept=".json" onChange={handleFileChange} />
-            <button onClick={onLoadClick}>Export</button>
+            <button onClick={onLoadClick}>Import</button>
+            <button onClick={onSaveClick}>Export</button>
             <Character />
             <StatusBox />
             <Equipment title='General Equipment' type={eqipmentTypes} />
