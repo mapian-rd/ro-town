@@ -317,6 +317,7 @@ export const ContextProvider = (props: Props): JSX.Element => {
 
     cal.rawAttributeList.clear()
     cal.skillFormulaList.clear()
+    cal.baseSkillFormulaList.clear()
     console.log("formulaList size", cal.formulaList.size)
     cal.formulaList.forEach((formula, attributeType) => {
       if (attributeType === AttributeTypeEnum.SkillDmg) {
@@ -327,6 +328,16 @@ export const ContextProvider = (props: Props): JSX.Element => {
               oldValue = []
             }
             cal.skillFormulaList.set(f.skill, [...oldValue, f])
+          }
+        })
+      } if (attributeType === AttributeTypeEnum.SkillBasePercent) {
+        formula.forEach(f => {
+          if (f.skill) {
+            let oldValue = cal.baseSkillFormulaList.get(f.skill)
+            if (!oldValue) {
+              oldValue = []
+            }
+            cal.baseSkillFormulaList.set(f.skill, [...oldValue, f])
           }
         })
       } else {
@@ -344,6 +355,15 @@ export const ContextProvider = (props: Props): JSX.Element => {
         number.name = skill.name
       }
       cal.skillAttributeList.set(key, number)
+    })
+    cal.baseSkillAttributeList.clear()
+    cal.baseSkillFormulaList.forEach((value, key) => {
+      const number = calString(value, character.equipmentMap, character.status, character.clazz.getSkill(), character.baseLv)
+      const skill = character.clazz.activeSkill.find(item => item.enum === key)
+      if (skill) {
+        number.name = skill.name
+      }
+      cal.baseSkillAttributeList.set(key, number)
     })
 
     cal.calRawCall = !cal.calRawCall

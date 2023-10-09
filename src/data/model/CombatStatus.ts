@@ -250,7 +250,7 @@ export class CombatStatus {
     ): number {
         console.log("finalDmg getFinalDmg finaltk:", finaltk)
         if (type === AttributeTypeEnum.Atk) {
-            return finalPhysicalDmg(finaltk, 
+            return finalPhysicalDmg(finaltk,
                 // tkAP, 
                 mulAP, skillP, powerThrustAP, skillMulAP, elementDmgMulAP, hardefRM, softef, rangeMulAP, finalCritDmgM, darkClawM)
         } else {
@@ -295,7 +295,7 @@ export class CombatStatus {
 
         const tkAP = CombatStatus.getEqiupmenttkPercent(type, cal)
         const mulAP = CombatStatus.getMultiple(type, cal)
-        const skillP = skill.percent[skillLevel - 1]
+        const skillP = skill.percent[skillLevel - 1] * (1 + (cal.baseSkillAttributeList.get(skill.enum)?.number ?? 0) / 100)
         const powerThrustAP: number = 0 // 25
         const skillMulAP: number = cal.skillAttributeList.get(skill.enum)?.number ?? 0
         const elementDmgMulAP: number = 0

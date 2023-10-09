@@ -10,7 +10,7 @@ export class AttributeType {
 }
 
 export enum AttributeTypeEnum {
-    SkillDmg,
+    SkillBasePercent, SkillDmg,
     Str, Agi, Vit, Int, Dex, Luk,
     Atk, StatusAtk, WeaponAtk, EquipmentAtk, AtkPercent,
     Matk, StatusMatk, WeaponMatk, EquipmentMatk, MatkPercent,

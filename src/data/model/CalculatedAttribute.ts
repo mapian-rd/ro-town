@@ -42,10 +42,12 @@ export class CalculatedAttribute {
     checkedAttributeList: Map<string, AttributeName[]> = new Map()
     formulaList: Map<AttributeTypeEnum, FormulaString[]> = new Map()
     skillFormulaList: Map<SkillEnum, FormulaString[]> = new Map()
+    baseSkillFormulaList: Map<SkillEnum, FormulaString[]> = new Map()
     rawAttributeList: Map<AttributeTypeEnum, DescriptionNumber> = new Map()
     calRawCall: boolean = false
     finalAttributeList: Map<AttributeTypeEnum, DescriptionNumber> = new Map()
     skillAttributeList: Map<SkillEnum, DescriptionNumber> = new Map()
+    baseSkillAttributeList: Map<SkillEnum, DescriptionNumber> = new Map()
     calFinalCall: boolean = false
     statusAtk: number = 0
     statusMatk: number = 0

@@ -78,6 +78,7 @@ export const magicalAttributeList: Map<AttributeTypeEnum, AttributeType> = new M
 ])
 
 export const otherAttributeList: Map<AttributeTypeEnum, AttributeType> = new Map([
+    [AttributeTypeEnum.SkillBasePercent, new AttributeType("Skill Base Dmg Percent")],
     [AttributeTypeEnum.SkillDmg, new AttributeType("Skill Dmg")],
     [AttributeTypeEnum.Hp, new AttributeType("Hp")],
     [AttributeTypeEnum.HpPercent, new AttributeType("Hp%")],

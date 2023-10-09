@@ -5,8 +5,8 @@ import { Element } from "./Element";
 
 export enum SkillEnum {
     NormalAttack, NormalRangeAttack, 
-    PickyPeck, LunaticCarrotBeat, SilvervineStemSpear, CatnipMeteor,
-    PowerofLife, ArclouseDash, Hiss, PowerOfFlock, SpiritOfSavage,
+    PickyPeck, LunaticCarrotBeat, SilvervineStemSpear, CatnipMeteor, ScarOfTarou,
+    PowerofLife, SpritOfLife, ArclouseDash, Hiss, PowerOfFlock, SpiritOfSavage,
 }
 
 export interface Skill {

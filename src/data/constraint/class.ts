@@ -103,7 +103,7 @@ export class Doram extends JobClass {
             enum: SkillEnum.PickyPeck,
             name: "Picky Peck",
             maxLv: 5,
-            percent: [Math.floor(300 * 2.2), Math.floor(400 * 2.2), Math.floor(500 * 2.2), Math.floor(600 * 2.2), Math.floor(700 * 2.2)],
+            percent: [300, 400, 500, 600, 700],
             vct: [1, 1, 1, 1, 1],
             fct: [0, 0, 0, 0, 0],
             cooldown: [0, 0, 0, 0, 0],
@@ -122,7 +122,7 @@ export class Doram extends JobClass {
             fct: [1, 1, 1, 1, 1],
             cooldown: [6, 6, 6, 6, 6],
             delay: [1, 1, 1, 1, 1],
-            hit: [1, 1, 1, 1, 1],
+            hit: [3, 3, 3, 3, 3],
             type: AttributeTypeEnum.Atk,
             isRange: true,
         },
@@ -193,6 +193,34 @@ export class Doram extends JobClass {
                 {
                     type: AttributeTypeEnum.Agi,
                     formulaText: "40",
+                },
+            ]
+        },
+        {
+            id: "5052",
+            enum: SkillEnum.SpritOfLife,
+            name: "Sprit Of Life",
+            maxLv: 1,
+            attributeList: [
+                {
+                    type: AttributeTypeEnum.SkillBasePercent,
+                    skill: SkillEnum.PickyPeck,
+                    formulaText: "120",
+                },
+                {
+                    type: AttributeTypeEnum.SkillBasePercent,
+                    skill: SkillEnum.ScarOfTarou,
+                    formulaText: "120",
+                },
+                {
+                    type: AttributeTypeEnum.SkillBasePercent,
+                    skill: SkillEnum.LunaticCarrotBeat,
+                    formulaText: "120",
+                },
+                {
+                    type: AttributeTypeEnum.SkillBasePercent,
+                    skill: SkillEnum.SpiritOfSavage,
+                    formulaText: "120",
                 },
             ]
         }
