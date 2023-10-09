@@ -863,7 +863,20 @@ export const ContextProvider = (props: Props): JSX.Element => {
       api.unequip(storage.items[index])
       storage.items.splice(index, 1)
       setStorage({ ...storage })
-    }
+    },
+    deleteBuffStorage: (id: string) => {
+      // Delete on storage
+      const index = buffStorage.findIndex(item => item.id === id)
+      buffStorage.splice(index, 1)
+      setStorage({ ...storage })
+
+      // Delete on Character
+      const item = character.itemBuff.findIndex(item => item.id === id)
+      if (item !== -1) {
+        character.itemBuff.splice(item, 1)
+      }
+      api.updateCharacter({ itemBuff: character.itemBuff });
+    },
   }
 
   return (

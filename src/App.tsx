@@ -223,6 +223,10 @@ function App() {
   function onBuffClick(item: Item) {
     api.setViewItem(item)
   }
+  
+  function onDeleteBuffClick(id: string) {
+    api.deleteBuffStorage(id)
+}
 
   useEffect(() => {
     setShowCharacter(false)
@@ -331,6 +335,7 @@ function App() {
               storage={[...context.buffStorage ?? [], ...itemBuffDatabase]}
               addClick={addClick}
               onClick={onBuffClick}
+              onDeleteClick={onDeleteBuffClick}
             />
           </div>
 
