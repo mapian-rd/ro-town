@@ -30,7 +30,7 @@ export class CharacterExport implements Exportable {
     itemBuff: Map<string, boolean> = new Map()
     skillBuff: Map<string, boolean> = new Map()
 
-    static getCharacter(cExport: CharacterExport, storage: Storage): Character {
+    static getCharacter(cExport: CharacterExport, storage: Storage, buffStorage: Item[]): Character {
         const character = new Character()
         character.name = cExport.name
         character.clazz = getClass(cExport.clazz)
@@ -43,7 +43,7 @@ export class CharacterExport implements Exportable {
         character.pet = petList.find(pet => pet.id === cExport.pet)
         character.petFriendly = Array.from(petFriendlyList).find(([key, value]) => key === cExport.petFriendly)?.[1]
         character.itemBuff = Array.from(cExport.itemBuff).flatMap(([key, value]) => {
-            const item = itemBuffDatabase.find(item => item.id === key)
+            const item = [...itemBuffDatabase, ...buffStorage].find(item => item.id === key)
             if (item) {
                 return {
                     ...item,

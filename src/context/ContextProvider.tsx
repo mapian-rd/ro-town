@@ -78,7 +78,7 @@ export const ContextProvider = (props: Props): JSX.Element => {
 
   const [storage, setStorage] = useState<Storage>(data.storage);
   const [buffStorage, setBuffStorage] = useState<Item[]>(data.buffStorage);
-  const [character, setCharacter] = useState<Character>(CharacterExport.getCharacter(data.character, storage));
+  const [character, setCharacter] = useState<Character>(CharacterExport.getCharacter(data.character, storage, buffStorage));
   const [cal, setAttribute] = useState<CalculatedAttribute>(new CalculatedAttribute())
   const [monsterId, setMonsterId] = useState<MonsterId>(MonsterList.find(monster => monster.id === data.monsterId) ?? MonsterList[0]);
   const [monster, setMonster] = useState<Monster>()

@@ -178,16 +178,12 @@ function App() {
   function handleItemBuffChange(event: React.ChangeEvent<HTMLInputElement>, id: string) {
     let { checked } = event.target;
     const item = context.character.itemBuff.find(item => item.id === id)
+    console.log("handleItemBuffChange", item, checked)
     if (item) {
       item.isActive = Boolean(checked)
-    } else {
-      const newItem = itemBuffDatabase.find(item => item.id === id)
-      if (newItem) {
-        context.character.itemBuff.push({ ...newItem, isActive: Boolean(checked) })
-      }
+      console.log("handleItemBuffChange", context.character.itemBuff)
+      api.updateCharacter({ itemBuff: context.character.itemBuff });
     }
-    console.log("handleItemBuffChange", context.character.itemBuff)
-    api.updateCharacter({ itemBuff: context.character.itemBuff });
   };
 
   function handleSkillBuffChange(event: React.ChangeEvent<HTMLInputElement>, id: string) {
