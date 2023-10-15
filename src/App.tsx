@@ -139,6 +139,13 @@ function App() {
     element.click();
   }
 
+  function onClearClick() {
+    if (window.confirm("Are you sure to clear all data?")) {
+      localStorage.clear()
+      window.location.reload();
+    }
+  }
+
   function onLoadClick() {
     inputFile.current?.click()
   }
@@ -341,6 +348,7 @@ function App() {
             <input type='file' id='file' ref={inputFile} style={{ display: 'none' }} accept=".json" onChange={handleFileChange} />
             <button onClick={onLoadClick}>Import</button>
             <button onClick={onSaveClick}>Export</button>
+            <button onClick={onClearClick}>Clear</button>
             <Character />
             <StatusBox />
             <div className='w-100 d-flex justify-content-end'>

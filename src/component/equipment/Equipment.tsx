@@ -78,7 +78,7 @@ export function Equipment(props: EquipmentProps) {
 
     return (
         <div onDrop={onDrop} onDragOver={allowDrop}>
-            <Box title={props.title} buttonText={context.viewState === ViewState.AddItem ? "Clear" : undefined} onClick={onEditClearClick}>
+            <Box title={props.title} buttonText={context.viewState === ViewState.AddItem ? "Unequip All" : undefined} onClick={onEditClearClick}>
                 <div className="row row-cols-2 justify-content-between">
                     {eqipmentList}
                 </div>

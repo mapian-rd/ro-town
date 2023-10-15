@@ -51,14 +51,14 @@ export class CombatStatus {
     statustk: number = 0
     elementSkillMulP: number | undefined
     elementMildWindMulP: number | undefined
-    
+
     finaltk: number[] = []
 
     isMysticalAmp: boolean = false
     mysticalAmpM: number = 1 // 1.5
 
     tkAP: DescriptionNumber = new DescriptionNumber()
-    
+
     skillP: DescriptionNumber = new DescriptionNumber()
     finalSkillP: number = 0
 
@@ -400,7 +400,7 @@ export class CombatStatus {
     ): number[] {
         // Vct
         combatStatus.vct = cal.rawAttributeList.get(AttributeTypeEnum.VctPercent) ?? new DescriptionNumber()
-        combatStatus.skillVct = cal.skillAttributeList.get(skill.enum) ?? new DescriptionNumber()
+        combatStatus.skillVct = cal.vctAttributeList.get(skill.enum) ?? new DescriptionNumber()
         const vct = Math.min(100, combatStatus.vct.number)
         const skillVct = Math.min(100, combatStatus.skillVct.number)
         combatStatus.remainVct = [skill.vct[skillLevel - 1]]
@@ -436,13 +436,6 @@ export class CombatStatus {
         // Sec per hit
         combatStatus.secph = 4 - (cal.finalAttributeList.get(AttributeTypeEnum.Aspd)?.number ?? 150) / 50
 
-        // Hit
-        combatStatus.hit = cal.finalAttributeList.get(AttributeTypeEnum.Hit) ?? new DescriptionNumber(175, "175(base)")
-        combatStatus.hitRatio = Math.max(0, Math.min(100, 100 + combatStatus.hit.number - monster.hit))
-        combatStatus.ph = cal.finalAttributeList.get(AttributeTypeEnum.PerfectHit)?? new DescriptionNumber()
-        console.log("hit", combatStatus.ph)
-        combatStatus.finalHitRaio = (combatStatus.ph.number + (100 - combatStatus.ph.number) * combatStatus.hitRatio / 100)
-
         // Skill parameter
         console.log("useEffect finalDmg 3")
         const type = skill.type
@@ -450,6 +443,15 @@ export class CombatStatus {
         combatStatus.skillHit = skill.hit[skillLevel - 1]
         combatStatus.type = type
         combatStatus.isSkillRange = isSkillRange ?? false
+
+        // Hit
+        if (type === AttributeTypeEnum.Atk) {
+            combatStatus.hit = cal.finalAttributeList.get(AttributeTypeEnum.Hit) ?? new DescriptionNumber(175, "175(base)")
+            combatStatus.hitRatio = Math.max(0, Math.min(100, 100 + combatStatus.hit.number - monster.hit))
+            combatStatus.ph = cal.finalAttributeList.get(AttributeTypeEnum.PerfectHit) ?? new DescriptionNumber()
+            console.log("hit", combatStatus.ph)
+            combatStatus.finalHitRaio = (combatStatus.ph.number + (100 - combatStatus.ph.number) * combatStatus.hitRatio / 100)
+        }
 
         combatStatus.rWeaponAtk = cal.rWeaponAtk
         combatStatus.rWeaponMatk = cal.rWeaponMatk
@@ -645,7 +647,7 @@ export class CombatStatus {
             .map(value => value / (combatStatus.remainVct + combatStatus.remainFct + Math.max(combatStatus.remainCooldown, combatStatus.remainDelay, combatStatus.secph)))
         [0]
         combatStatus.finalph = [combatStatus.avgDmgph]
-            .map(value => value * combatStatus.hitRatio / 100)
+            .map(value => value * combatStatus.finalHitRaio / 100)
             .map(value => value / (combatStatus.remainVct + combatStatus.remainFct + Math.max(combatStatus.remainCooldown, combatStatus.remainDelay, combatStatus.secph)))
         [0]
 

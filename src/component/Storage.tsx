@@ -172,7 +172,12 @@ export default function Storage() {
                 searchDropdownList={searchDropdownList}
                 handleSearchDropdownChange={handleSearchDropdownChange}
             >
-                <div className="mh-0" >
+                <div className={"position-relative top-50 start-50 translate-middle text-center" + (list.length > 0 ? ' d-none' : '')}>
+                    <h5>Nothing here?</h5>
+                    <p>Feel free to create your item</p>
+                    <p>{"on the right side  ------->"}</p>
+                </div>
+                <div className={"mh-0" + (list.length > 0 ? '' : ' d-none')} >
                     {list}
                     <div ref={lastItemRef}></div>
                 </div>

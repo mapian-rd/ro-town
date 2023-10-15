@@ -101,9 +101,17 @@ export default function BuffStorageView() {
     const scrollCom = getItemList(scroll)
     const otherCom = getItemList(other)
 
-    const customCom = context.buffStorage.flatMap(buff => {
+    let customCom = context.buffStorage.flatMap(buff => {
         return getItemCom(buff, true)
     })
+    if (customCom.length === 0) {
+        customCom = ([
+            <div className={"position-relative top-50 start-50 translate-middle text-center"}>
+                <h5>Need more special Buff?</h5>
+                <p>Feel free to create your item here!</p>
+            </div>
+        ])
+    }
 
     return (
         <div className="d-flex flex-column h-100">

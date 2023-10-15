@@ -30,7 +30,7 @@ export function Combat() {
     return (
         <Box className="flex-grow-1" title="Combat" buttonText="More Info" onClick={() => api.setViewState(ViewState.MoreCombat)}>
             <div className="row m-0">
-                <div className="col-7">
+                <div className="col-7 px-0">
                     <div className="d-flex">
                         <span className="me-1 jc-center">Skill</span>
                         <Select jc-center
@@ -41,7 +41,7 @@ export function Combat() {
                         />
                     </div>
                 </div>
-                <div className="col-5">
+                <div className="col-5 px-0">
                     <div className="d-flex">
                         <span className="me-1 jc-center text-nowrap">Skill Lv</span>
                         <Select jc-center
@@ -53,39 +53,39 @@ export function Combat() {
                     </div>
                 </div>
 
-                <div className="col-6">
+                <div className="col-6 ps-0">
                     <div className="d-flex">
                         <span className="me-1 jc-center text-nowrap">DMG%</span>
                         <span className="w-100 text-end">{context.skill?.percent[(context.skillLevel ?? 0) - 1]}%</span>
                     </div>
                 </div>
-                <div className="col-6">
+                <div className="col-6 px-0">
                     <div className="d-flex">
                         <span className="me-1 jc-center text-nowrap">Hit/Skill</span>
                         <span className="w-100 text-end">{context.skill?.hit[(context.skillLevel ?? 0) - 1]}</span>
                     </div>
                 </div>
 
-                <div className="col-6">
+                <div className="col-6 ps-0">
                     <div className="d-flex">
                         <span className="me-1 jc-center">Vct</span>
                         <span className="w-100 text-end">{context.skill?.vct[(context.skillLevel ?? 0) - 1]}</span>
                     </div>
                 </div>
-                <div className="col-6">
+                <div className="col-6 px-0">
                     <div className="d-flex">
                         <span className="me-1 jc-center text-nowrap">Fct</span>
                         <span className="w-100 text-end">{context.skill?.fct[(context.skillLevel ?? 0) - 1]}</span>
                     </div>
                 </div>
 
-                <div className="col-6">
+                <div className="col-6 ps-0">
                     <div className="d-flex">
                         <span className="me-1 jc-center">Cooldown</span>
                         <span className="w-100 text-end">{context.skill?.cooldown[(context.skillLevel ?? 0) - 1]}</span>
                     </div>
                 </div>
-                <div className="col-6">
+                <div className="col-6 px-0">
                     <div className="d-flex">
                         <span className="me-1 jc-center text-nowrap">Delay</span>
                         <span className="w-100 text-end">{context.skill?.delay[(context.skillLevel ?? 0) - 1]}</span>
@@ -94,20 +94,20 @@ export function Combat() {
 
                 <hr className="h-line" />
 
-                <div className="d-flex">
+                <div className="d-flex px-0">
                     <span className="me-1 jc-center text-nowrap">Min Dmg</span>
                     <span className="w-100 text-end">{context.combatStatus.minDmg} ({context.combatStatus.minDmgph} x {context.combatStatus.skillHit})</span>
                 </div>
-                <div className="d-flex">
+                <div className="d-flex px-0">
                     <span className="me-1 jc-center text-nowrap">Max Dmg</span>
                     <span className="w-100 text-end">{context.combatStatus.maxDmg} ({context.combatStatus.maxDmgph} x {context.combatStatus.skillHit})</span>
                 </div>
-                <div className="d-flex final-dps">
+                <div className="d-flex final-dps px-0">
                     <span className="me-1 jc-center text-nowrap">Average Dmg</span>
                     <span className="w-100 text-end final-dps-value">{context.combatStatus.avgDmg} ({context.combatStatus.avgDmgph} x {context.combatStatus.skillHit})</span>
                 </div>
 
-                <div className="col-12">
+                <div className="col-12 px-0">
                     <div className="d-flex">
                         <span className="me-1 jc-center text-nowrap">Final Cast Time</span>
                         <span className="w-100 text-end">{(context.combatStatus.remainVct + context.combatStatus.remainFct).toFixed(2)}</span>
@@ -143,15 +143,15 @@ export function Combat() {
                     <span className="me-1 jc-center text-nowrap">Second per Hit (aspd)</span>
                     <span className="w-100 text-end">{context.combatStatus.secph.toFixed(2)}</span>
                 </div> */}
-                <div className="d-flex">
+                <div className="d-flex px-0">
                     <span className="me-1 jc-center text-nowrap">Final After Cast Time</span>
                     <span className="w-100 text-end">{Math.max(context.combatStatus.remainCooldown, context.combatStatus.remainDelay, context.combatStatus.secph).toFixed(2)}</span>
                 </div>
-                <div className="d-flex">
+                <div className="d-flex px-0">
                     <span className="me-1 jc-center text-nowrap">Hit Ratio</span>
                     <span className="w-100 text-end">{context.combatStatus.finalHitRaio}%</span>
                 </div>
-                <div className="d-flex flex-column final-dps">
+                <div className="d-flex flex-column final-dps px-0">
                     <div className="d-flex">
                         <span className="me-1 jc-center text-nowrap">Final Dps</span>
                         <span className="w-100 text-end final-dps-value">{context.combatStatus.final.toFixed(2)} ({context.combatStatus.finalph.toFixed(2)} x 5)</span>

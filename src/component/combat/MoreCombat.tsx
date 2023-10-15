@@ -66,10 +66,10 @@ export default function MoreCombat(prop: MoreCombatProps) {
                 {getItem((prop.combatStatus.type === AttributeTypeEnum.Atk) ? "Physical" : "Magical", "Type", "type")}
                 {getItem(prop.combatStatus.isWeaponRange ? "Range" : "Not Range", "Weapon type", "weaponRange")}
                 <div className="mb-2"></div>
-                {getItemNumber(prop.combatStatus.finalWeapontk, "Final weapon power", "finalWeapontk")}
-                {getItemNumber(prop.combatStatus.equipmenttk, "Final equipment power", "equipmenttk")}
+                {getItemNumber(prop.combatStatus.finalWeapontk, "Final weapon Atk/Matk", "finalWeapontk")}
+                {getItemNumber(prop.combatStatus.equipmenttk, "Final equipment Atk/Matk", "equipmenttk")}
                 {prop.combatStatus.isThanatos ? (
-                    getItem(prop.combatStatus.useDeftk, "Def power", "useDeftk")
+                    getItem(prop.combatStatus.useDeftk, "Def Atk", "useDeftk")
                 ) : (
                     undefined
                 )}
@@ -78,13 +78,17 @@ export default function MoreCombat(prop: MoreCombatProps) {
                 ) : (
                     undefined
                 )}
-                {getItem(prop.combatStatus.pseudoElementtk, "Pseudo element power", "pseudoElementtk")}
+                {prop.combatStatus.type === AttributeTypeEnum.Atk ? (
+                    getItem(prop.combatStatus.pseudoElementtk, "Pseudo element Atk", "pseudoElementtk")
+                ) : (
+                    undefined
+                )}
                 {getItemNumber(prop.combatStatus.sizeAddMulAP, "Size multiplier", "sizeAddMulAP")}
                 {getItemNumber(prop.combatStatus.elementAddMulAP, "Element multiplier", "elementAddMulAP")}
                 {getItemNumber(prop.combatStatus.raceAddMulAP, "Race multiplier", "raceAddMulAP")}
                 {getItemNumber(prop.combatStatus.classAddMulAP, "Class multiplier", "classAddMulAP")}
                 {getItem(prop.combatStatus.elementMulP, "Element Table", "elementMulP")}
-                {getItem(prop.combatStatus.statustk, "Status power", "statustk")}
+                {getItem(prop.combatStatus.statustk, "Status Atk/Matk", "statustk")}
                 {prop.combatStatus.elementSkillMulP ? (
                     getItem(prop.combatStatus.elementSkillMulP, "Skill Element Table", "elementSkillMulP")
                 ) : (
@@ -95,14 +99,14 @@ export default function MoreCombat(prop: MoreCombatProps) {
                 ) : (
                     undefined
                 )}
-                {getItem(prop.combatStatus.finaltk[0] + " ~ " + prop.combatStatus.finaltk[1], "Final Power", "finaltk")}
+                {getItem(prop.combatStatus.finaltk[0] + " ~ " + prop.combatStatus.finaltk[1], "Final Atk/Matk", "finaltk")}
                 <div className="mb-2"></div>
                 {prop.combatStatus.isMysticalAmp ? (
                     getItem(prop.combatStatus.mysticalAmpM, "Mystical Amp", "mysticalAmpM")
                 ) : (
                     undefined
                 )}
-                {getItemNumber(prop.combatStatus.tkAP, "Power percent", "tkAP")}
+                {getItemNumber(prop.combatStatus.tkAP, "Atk/Matk percent", "tkAP")}
                 <div className="mb-2"></div>
                 {getItemNumber(prop.combatStatus.skillP, "Skill percent", "skillP")}
                 {getItem(prop.combatStatus.finalSkillP, "Final Skill percent", "finalSkillP")}
@@ -117,13 +121,13 @@ export default function MoreCombat(prop: MoreCombatProps) {
                 <div className="mb-2"></div>
                 {getItemNumber(prop.combatStatus.ignoreP, "Ignore Def/Mdef", "ignoreP")}
                 {getItem(prop.combatStatus.monhardef, "Target Hard Def/Mdef", "monhardef")}
-                {getItem(prop.combatStatus.remainHardef, "Remain Hard Def/Mdef", "remainHardef")}
+                {getItem(prop.combatStatus.remainHardef.toFixed(2), "Remain Hard Def/Mdef", "remainHardef")}
                 {getItem(prop.combatStatus.hardefRM, "Hard Def/Mdef Reduce Multiplier", "hardefRM")}
                 <div className="mb-2"></div>
                 {getItem(prop.combatStatus.softef, "Target Soft Def/Mdef", "softef")}
                 <div className="mb-2"></div>
 
-                {prop.combatStatus.isSkillRange ? (
+                {prop.combatStatus.type === AttributeTypeEnum.Atk && prop.combatStatus.isSkillRange ? (
                     getItemNumber(prop.combatStatus.rangeMulAP, "Range Multiplier", "rangeMulAP")
                 ) : (
                     undefined
@@ -138,7 +142,7 @@ export default function MoreCombat(prop: MoreCombatProps) {
                     undefined
                 )}
 
-                {prop.combatStatus.darkClawLv ? (
+                {prop.combatStatus.type === AttributeTypeEnum.Atk && prop.combatStatus.darkClawLv ? (
                     <div>
                         {getItem(prop.combatStatus.darkClawLv, "Dark Claw Lv", "darkClawLv")}
                         {getItem(prop.combatStatus.darkClawM, "Dark Claw Multiplier", "darkClawM")}
@@ -147,18 +151,39 @@ export default function MoreCombat(prop: MoreCombatProps) {
                     undefined
                 )}
 
-
-                {getItem(prop.combatStatus.darkClawM, "Dark Claw Multiplier", "darkClawM")}
                 <div className="mb-2"></div>
 
                 {getItemNumber(prop.combatStatus.vct, "Vct global", "vct")}
                 {getItemNumber(prop.combatStatus.skillVct, "Vct skill", "skillVct")}
+                {getItem(prop.combatStatus.remainVct.toFixed(2), "Remain Vct", "remainVct")}
+                <div className="mb-2"></div>
                 {getItemNumber(prop.combatStatus.fct, "Fct", "fct")}
                 {getItemNumber(prop.combatStatus.fctP, "Fct percent", "fctP")}
+                {getItem(prop.combatStatus.remainFct.toFixed(2), "Remain Fct", "remainFct")}
+                <div className="mb-2"></div>
                 {getItemNumber(prop.combatStatus.cooldown, "Cooldown", "cooldown")}
+                {getItem(prop.combatStatus.remainCooldown, "Remain Cooldown", "remainCooldown")}
+                <div className="mb-2"></div>
                 {getItemNumber(prop.combatStatus.delay, "Delay", "delay")}
+                {getItem(prop.combatStatus.remainDelay.toFixed(2), "Remain Delay", "remainDelay")}
 
-                {getItemNumber(prop.combatStatus.hit, "Hit", "hit")}
+                <div className="mb-2"></div>
+
+                {getItem(prop.combatStatus.secph.toFixed(2), "Second per Hit (aspd)", "secph")}
+
+                <div className="mb-2"></div>
+
+                {prop.combatStatus.type === AttributeTypeEnum.Atk ? (
+                    <div>
+                        {getItemNumber(prop.combatStatus.hit, "Hit Ratio", "hit")}
+                        {getItemNumber(prop.combatStatus.ph, "Perfect Hit", "ph")}
+                        {getItem(prop.combatStatus.finalHitRaio, "Final Hit Ratio", "finalHitRaio")}
+                    </div>
+                ) : (
+                    undefined
+                )}
+                <div className="mb-2"></div>
+                {getItem(prop.combatStatus.killedSec.toFixed(2), "Used second to kill", "killedSec")}
             </div>
         </Box>
     )

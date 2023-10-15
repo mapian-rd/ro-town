@@ -40,10 +40,10 @@ export default function ItemBuff(props: Props) {
             <div className="row p-1 mx-0" key={'buff-' + item.id} id={'buff-' + item.id}>
                 <div className="col cursor-pointer" onClick={() => props.onClickBuff(item.id)}>
                     <div className="row">
-                        <div className="col-auto">
+                        <div className="col-auto ps-0">
                             <img className="w-100 my-2" src={item.imgSrc} alt="Item" />
                         </div>
-                        <div className={'col ps-0 d-flex align-items-center text-break'}>
+                        <div className={'col px-0 d-flex align-items-center text-break'}>
                             {item.name} {suffix}
                         </div>
                     </div>
@@ -58,7 +58,7 @@ export default function ItemBuff(props: Props) {
                         onChange={event => props.handleLvChange ? props.handleLvChange(event, item.id) : undefined}
                     />
                 </div>
-                <div className='col-auto jc-center'>
+                <div className='col-auto jc-center px-0'>
                     <div className="form-check form-switch">
                         <input
                             className="form-check-input"
