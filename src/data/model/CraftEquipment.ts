@@ -2,7 +2,10 @@ import { ItemType } from "./itemType";
 import { Attribute, AttributeName } from "./Attribute";
 import { Equipment, Item, Named } from "./Itemv2";
 import { Character } from "./Characterv2";
-import { cardDatabase, enchantDatabase, itemDatabase, optionDatabase } from "../database/item";
+import { itemDatabase } from "../database/item";
+import { cardDatabase } from "../database/card";
+import { enchantDatabase } from "../database/enchant";
+import { optionDatabase } from "../database/option";
 
 export class CraftEqiupment implements Named {
     itemId: string;

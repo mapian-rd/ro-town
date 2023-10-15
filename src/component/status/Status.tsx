@@ -95,7 +95,7 @@ export default function StatusBox() {
     }, [context.calculatedAttribute])
 
     return (
-        <Box title="Status" buttonText="More" onClick={onClick}>
+        <Box title="Status">
             <div>
                 <div className="row mx-0">
                     <div className="col-md-12 col-xl-5 ps-0 pe-1">

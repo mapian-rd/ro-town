@@ -11,7 +11,8 @@ import { ViewState } from "./AppContext";
 
 export interface AppApi {
     setViewState: (state: ViewState) => void;
-    setViewItem: (item: Named) => void;
+    setViewItem: (item: Named | undefined) => void;
+    setViewItem2: (item: Named | undefined) => void;
     setDragItem: (item: CraftEqiupment) => void;
     updateCharacter: (newState: Partial<Character>) => void;
     setMonsterId: (newMonsterId: MonsterId) => void;

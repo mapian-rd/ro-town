@@ -10,7 +10,6 @@ export const petList: Pet[] = [
         imageId: -1,
         name: "None",
         petAttribute: [],
-        description: "",
         type: ItemTypeEnum.Pet,
         attributeList: [],
     },
@@ -40,8 +39,6 @@ export const petList: Pet[] = [
                 formulaText: "1"
             },
         ],
-        description: "หากความสัมพันธ์อยู่ในระดับเป็นมิตร LUK +2, CRI +1"
-            + "\nหากความสัมพันธ์อยู่ในระดับสนิทสนม LUK +3, CRI +1",
         type: ItemTypeEnum.Pet,
         attributeList: [],
     },
@@ -61,9 +58,65 @@ export const petList: Pet[] = [
                 formulaText: "15"
             }
         ],
-        description: "หากความสัมพันธ์อยู่ในระดับเป็นมิตร ATK +10"
-            + "\nหากความสัมพันธ์อยู่ในระดับสนิทสนม ATK +15",
         type: ItemTypeEnum.Pet,
         attributeList: [],
-    }
+    },
+    {
+        id: "9118",
+        imageId: 1736,
+        name: "Aliot",
+        petAttribute: [
+            {
+                intimacy: ally,
+                type: AttributeTypeEnum.AspdPercent,
+                formulaText: "4"
+            },
+            {
+                intimacy: ally,
+                type: AttributeTypeEnum.Hit,
+                formulaText: "9"
+            },
+            {
+                intimacy: friendly,
+                type: AttributeTypeEnum.AspdPercent,
+                formulaText: "5"
+            },
+            {
+                intimacy: friendly,
+                type: AttributeTypeEnum.Hit,
+                formulaText: "12"
+            },
+        ],
+        type: ItemTypeEnum.Pet,
+        attributeList: [],
+    },
+    {
+        id: "9111",
+        imageId: 1159,
+        name: "Phreeoni",
+        petAttribute: [
+            {
+                intimacy: ally,
+                type: AttributeTypeEnum.Hit,
+                formulaText: "14"
+            },
+            {
+                intimacy: ally,
+                type: AttributeTypeEnum.PerfectHit,
+                formulaText: "10"
+            },
+            {
+                intimacy: friendly,
+                type: AttributeTypeEnum.Hit,
+                formulaText: "18"
+            },
+            {
+                intimacy: friendly,
+                type: AttributeTypeEnum.PerfectHit,
+                formulaText: "15"
+            },
+        ],
+        type: ItemTypeEnum.Pet,
+        attributeList: [],
+    },
 ]

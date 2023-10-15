@@ -1,5 +1,6 @@
 import { AttributeTypeEnum } from "./attributeType";
 import { JobClass, JobClassEnum } from "./class";
+import { ItemTypeEnum } from "./itemType";
 import { Item } from "./Itemv2";
 import { ActiveSkill, SkillEnum } from "./skill";
 import { Symbol } from "./Symbol";
@@ -59,4 +60,5 @@ export class Condition {
     skillList?: SkillCondition[]
     statusList?: StatusCondition[]
     baseLv?: NumberCondition
+    equip?: ItemTypeEnum
 }

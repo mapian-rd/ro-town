@@ -245,6 +245,7 @@ export async function MonsterSearch(id: number): Promise<Monster> {
     monster.race = MonTypeList.find(item => item.id === monRes.stats.race) ?? MonTypeFormless
     monster.isBoss = monRes.stats.mvp ? true : false
     monster.attribute = MonEleList.find(monEle => monEle.id === monRes.stats.element) ?? MonEleList[0]
+    monster.hp = monRes.stats.health
     monster.status = new Status(monRes.stats.str, monRes.stats.agi, monRes.stats.vit, monRes.stats._int, monRes.stats.dex, monRes.stats.luk)
     monster.hardDef = monRes.stats.defense
     monster.hardMdef = monRes.stats.magicDefense
@@ -255,6 +256,13 @@ export async function MonsterSearch(id: number): Promise<Monster> {
 
 export async function ItemDescriptionSearch(id: number): Promise<string> {
     const res = await fetch(`${dividePrideUrl}/api/database/Item/${id}?apiKey=${apiKey}&server=thROG`)
+    const json = await res.json()
+    const itemRes = json as ItemResponse
+    return itemRes.description
+}
+
+export async function SkillDescriptionSearch(id: number): Promise<string> {
+    const res = await fetch(`${dividePrideUrl}/api/database/Skill/${id}?apiKey=${apiKey}&server=thROG`)
     const json = await res.json()
     const itemRes = json as ItemResponse
     return itemRes.description

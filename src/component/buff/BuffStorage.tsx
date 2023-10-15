@@ -3,15 +3,16 @@ import classNames from 'classnames';
 import { attributeList } from "../../data/constraint/attributeType";
 import { AppContext } from "../../context/AppContext";
 import { AppApiContext } from "../../context/AppApiContext";
-import { Item } from "../../data/model/Itemv2";
+import { Item, Named } from "../../data/model/Itemv2";
 import Box from "../Box";
 import { itemBuffDatabase } from "../../data/database/buff";
+import { SkillBuff } from "../../data/model/Buff";
 
 interface Props {
-    list: Item[];
-    storage: Item[];
-    addClick: (list: Item[], found: boolean, id: string) => void;
-    onClick?: (item: Item) => void;
+    list: Named[];
+    storage: Named[];
+    addClick: (list: Named[], found: boolean, id: string) => void;
+    onClick?: (item: Named) => void;
     viewId?: string;
     onDeleteClick?: (id: string) => void;
 }
@@ -20,10 +21,10 @@ export default function BuffStorage(props: Props) {
     console.log("BuffStorage", props.list)
 
     const [filterName, setFilterName] = useState<string>()
-    const [filteredItemList, setFilteredItemList] = useState<Item[]>(props.storage)
+    const [filteredItemList, setFilteredItemList] = useState<Named[]>(props.storage)
     const [list, setList] = useState<JSX.Element[]>([])
 
-    function onClick(item: Item) {
+    function onClick(item: Named) {
         if (props.onClick) {
             props.onClick(item)
         }
@@ -81,9 +82,17 @@ export default function BuffStorage(props: Props) {
                 return buff?.id === item.id
             }) !== -1
             console.log("Storage", found)
-
-            const inCommon = itemBuffDatabase.findIndex(buff => buff.id === item.id) !== -1
-
+              
+            let inCommon = true
+            let imgSrc
+            if (Item.is(item)) {
+                const imgId = Item.getImgId(item.id, item.imgId)
+                imgSrc = `https://static.divine-pride.net/images/items/item/${imgId}.png`
+                inCommon = itemBuffDatabase.findIndex(buff => buff.id === item.id) !== -1
+            } else if (SkillBuff.is(item)) {
+                const imgId = Item.getImgId(item.id, item.imgId)
+                imgSrc = `https://static.divine-pride.net/images/skill/${imgId}.png`
+            }
             return (
                 <div className="row p-1" key={'buffStorage-' + item.id}>
                     <div className={"col-auto" + (inCommon ? ' d-none' : '')}>
@@ -94,10 +103,10 @@ export default function BuffStorage(props: Props) {
                             id={'buffStorage-' + item.id}
                             className={(props.viewId === item.id) ? 'row storage-item rounded select-ed' : 'row'}
                         >
-                            <div className="col" onClick={() => onClick(item)}>
+                            <div className="col cursor-pointer" onClick={() => onClick(item)}>
                                 <div className="row">
                                     <div className="col-auto">
-                                        <img className="w-100 my-2" src={`https://static.divine-pride.net/images/items/item/${Item.getImgId(item.id, item.imgId)}.png`} alt="Item" />
+                                        <img className="w-100 my-2" src={imgSrc} alt="Item" />
                                     </div>
                                     <div className='col ps-0 d-flex align-items-center text-break'>
                                         {item.name}

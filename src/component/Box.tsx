@@ -24,7 +24,7 @@ interface BoxProps {
 
 export default function Box(props: BoxProps) {
     return (
-        <div className={"d-flex flex-column pb-3 w-100 " + props.className ?? ""}>
+        <div className={"box-container d-flex flex-column w-100 " + (props.className ?? "")}>
             <div className="box-header d-flex align-items-center">
                 {props.title ? (
                     <div>

@@ -6,6 +6,7 @@ import { friendly, petFriendlyList } from "../data/constraint/pet";
 import { itemDatabase } from "../data/database/item";
 import { MonsterList } from "../data/database/monster";
 import { petList } from "../data/database/pet";
+import { skillActiveDatabase } from "../data/database/skill";
 import { MonsterSearch } from "../data/DividePride";
 import { calAspd } from "../data/formula/Aspd";
 import { calCrit } from "../data/formula/Critical";
@@ -15,8 +16,9 @@ import { calHit } from "../data/formula/Hit";
 import { caljobHp, calHp } from "../data/formula/Hp";
 import { caljobSp } from "../data/formula/Sp";
 import { calRemainStatusPoint } from "../data/formula/StatusPoint";
-import { Attribute } from "../data/model/Attribute";
+import { Attribute, AttributeName } from "../data/model/Attribute";
 import { AttributeType, AttributeTypeEnum } from "../data/model/attributeType";
+import { SkillBuff } from "../data/model/Buff";
 import { CalculatedAttribute } from "../data/model/CalculatedAttribute";
 import { Character, CharacterExport } from "../data/model/Characterv2";
 import { JobClass, JobClassEnum } from "../data/model/class";
@@ -74,6 +76,7 @@ export const ContextProvider = (props: Props): JSX.Element => {
 
   const [viewState, setViewState] = useState<ViewState>(ViewState.Normal);
   const [viewItem, setViewItem] = useState<Named>();
+  const [viewItem2, setViewItem2] = useState<Named>();
   const [dragItem, setDragItem] = useState<CraftEqiupment>();
 
   const [storage, setStorage] = useState<Storage>(data.storage);
@@ -82,7 +85,10 @@ export const ContextProvider = (props: Props): JSX.Element => {
   const [cal, setAttribute] = useState<CalculatedAttribute>(new CalculatedAttribute())
   const [monsterId, setMonsterId] = useState<MonsterId>(MonsterList.find(monster => monster.id === data.monsterId) ?? MonsterList[0]);
   const [monster, setMonster] = useState<Monster>()
-  const [skill, setSkill] = useState<ActiveSkill>(character.clazz.activeSkill.find(skill => skill.enum === data.skill) ?? character.clazz.activeSkill[0]);
+  const [skill, setSkill] = useState<ActiveSkill>(() => {
+    console.log("setSkill", character.clazz)
+    return character.clazz.activeSkillItem.find(skill => skill.enum === data.skill) ?? character.clazz.activeSkillItem[0]
+  });
   /**
    * Start from 1
    */
@@ -98,6 +104,7 @@ export const ContextProvider = (props: Props): JSX.Element => {
   const app = {
     viewState,
     viewItem,
+    viewItem2,
     dragItem,
     character,
     storage,
@@ -189,7 +196,6 @@ export const ContextProvider = (props: Props): JSX.Element => {
       }
     })
 
-    const rWeapon = character.equipmentMap.get(EquipmentSlot.rWeapon)
     cal.rWeaponAtk = 0
     cal.rWeaponMatk = 0
     cal.rRefineAtk = 0
@@ -208,55 +214,26 @@ export const ContextProvider = (props: Props): JSX.Element => {
     cal.lVarianceMatk = 0
     cal.lOverRefine = 0
     cal.shieldPenalty = 0
-    if (rWeapon) {
-      cal.rWeaponAtk = rWeapon.item!.atk ?? 0
-      cal.rWeaponMatk = rWeapon.item?.matk ?? 0
-      cal.rRefineAtk = refineATK(rWeapon, AttributeTypeEnum.Atk)
-      cal.rRefineMatk = refineATK(rWeapon, AttributeTypeEnum.Matk)
-      cal.rVarianceAtk = varianceATK(cal.rWeaponAtk, rWeapon.item!.equipmentLevel)
-      cal.rVarianceMatk = varianceMATK(cal.rWeaponMatk, cal.rRefineMatk, rWeapon.item!.equipmentLevel)
-      cal.rOverRefine = overRefineWeapon(rWeapon.item!.equipmentLevel, rWeapon.refineLevel)
-
-      cal.isWeaponRange = (itemTypeList.get(rWeapon.item!.type) as WeaponType).isRange;
-
-      cal.weaponPenalty = JobClass.getWeaponPenalty(character.clazz, rWeapon.item!.type);
-    }
-
-    const left = character.equipmentMap.get(EquipmentSlot.lWeapon);
-    if (left) {
-      if (left.item?.type === ItemTypeEnum.Shield) {
-        cal.shieldPenalty = character.clazz.shieldPenalty
-      } else {
-        if (left.id !== rWeapon?.id) {
-          cal.lWeaponAtk = left.item!.atk ?? 0
-          cal.lWeaponMatk = left.item?.matk ?? 0
-          cal.lRefineAtk = refineATK(left, AttributeTypeEnum.Atk)
-          cal.lRefineMatk = refineATK(left, AttributeTypeEnum.Matk)
-          cal.lVarianceAtk = varianceMATK(cal.lWeaponAtk, cal.lRefineAtk, left.item!.equipmentLevel)
-          cal.lVarianceMatk = varianceMATK(cal.lWeaponMatk, cal.lRefineMatk, left.item!.equipmentLevel)
-          cal.lOverRefine = overRefineWeapon(left.item!.equipmentLevel, left.refineLevel)
-
-          cal.shieldPenalty = JobClass.getWeaponPenalty(character.clazz, left.item!.type);
-        }
-      }
-    }
 
     cal.checkedAttributeList.clear()
     cal.formulaList.clear()
     equipmentList.forEach(equipment => {
       console.log("calEquipment equipment", equipment)
       if (equipment) {
-        const check = checkCraft(equipment, character)
-        console.log("calEquipment checkCraft", check)
-        cal.checkedAttributeList.set(equipment.id, check)
+        const old = cal.checkedAttributeList.get(equipment.id)
+        if (!old) {
+          const check = checkCraft(equipment, character)
+          console.log("calEquipment checkCraft", check)
+          cal.checkedAttributeList.set(equipment.id, check)
 
-        check.forEach(attribute => {
-          let oldValue = cal.formulaList.get(attribute.type)
-          if (!oldValue) {
-            oldValue = []
-          }
-          cal.formulaList.set(attribute.type, [...oldValue, new FormulaString(equipment.id, attribute.formulaText, attribute.name, attribute.max, attribute.skill)])
-        })
+          check.forEach(attribute => {
+            let oldValue = cal.formulaList.get(attribute.type)
+            if (!oldValue) {
+              oldValue = []
+            }
+            cal.formulaList.set(attribute.type, [...oldValue, new FormulaString(equipment.id, attribute.formulaText, attribute.name, attribute.max, attribute.skill)])
+          })
+        }
       }
     })
     console.log("calEquipment checkedAttributeList", cal.checkedAttributeList)
@@ -298,11 +275,11 @@ export const ContextProvider = (props: Props): JSX.Element => {
       cal.formulaList.set(attribute.type, [...oldValue, new FormulaString("itemBuff", attribute.formulaText, attribute.name, attribute.max, attribute.skill)])
     })
 
-    const skillBuffAttributes = character.skillBuff
+    const skillBuffAttributes: AttributeName[] = character.skillBuff
       .filter(item => item.isActive)
       .flatMap(item => {
         return item.attributeList.map(attribute => {
-          return { ...attribute, name: item.name }
+          return { ...attribute, name: item.name, formulaText: attribute.formulaText[item.activeLv - 1], max: attribute.max ? attribute.max[item.activeLv - 1] : undefined }
         })
       })
     const checkSkillBuff = skillBuffAttributes.filter(attribute => Attribute.checkAttribute(attribute, character))
@@ -390,7 +367,7 @@ export const ContextProvider = (props: Props): JSX.Element => {
     cal.skillAttributeList.clear()
     cal.skillFormulaList.forEach((value, key) => {
       const number = calString(value, character.equipmentMap, character.status, character.clazz.getSkill(), character.baseLv)
-      const skill = character.clazz.activeSkill.find(item => item.enum === key)
+      const skill = character.clazz.activeSkillItem.find(item => item.enum === key)
       if (skill) {
         number.name = skill.name
       }
@@ -399,7 +376,7 @@ export const ContextProvider = (props: Props): JSX.Element => {
     cal.baseSkillAttributeList.clear()
     cal.baseSkillFormulaList.forEach((value, key) => {
       const number = calString(value, character.equipmentMap, character.status, character.clazz.getSkill(), character.baseLv)
-      const skill = character.clazz.activeSkill.find(item => item.enum === key)
+      const skill = character.clazz.activeSkillItem.find(item => item.enum === key)
       if (skill) {
         number.name = skill.name
       }
@@ -408,7 +385,7 @@ export const ContextProvider = (props: Props): JSX.Element => {
     cal.vctAttributeList.clear()
     cal.vctFormulaList.forEach((value, key) => {
       const number = calString(value, character.equipmentMap, character.status, character.clazz.getSkill(), character.baseLv)
-      const skill = character.clazz.activeSkill.find(item => item.enum === key)
+      const skill = character.clazz.activeSkillItem.find(item => item.enum === key)
       if (skill) {
         number.name = skill.name
       }
@@ -417,13 +394,52 @@ export const ContextProvider = (props: Props): JSX.Element => {
     cal.cooldownAttributeList.clear()
     cal.cooldownFormulaList.forEach((value, key) => {
       const number = calString(value, character.equipmentMap, character.status, character.clazz.getSkill(), character.baseLv)
-      const skill = character.clazz.activeSkill.find(item => item.enum === key)
+      const skill = character.clazz.activeSkillItem.find(item => item.enum === key)
       if (skill) {
         number.name = skill.name
       }
       cal.cooldownAttributeList.set(key, number)
     })
     console.log("vctPercent 3", cal.rawAttributeList.get(AttributeTypeEnum.VctPercent))
+
+
+    const rWeapon = character.equipmentMap.get(EquipmentSlot.rWeapon)
+    if (rWeapon) {
+      cal.rWeaponAtk = [rWeapon.item!.atk ?? 0]
+        .map(value => value + value * getFinal(cal, AttributeTypeEnum.RWeaponAtkP).number / 100)
+      [0]
+      cal.rWeaponMatk = [rWeapon.item?.matk ?? 0]
+        .map(value => value + value * getFinal(cal, AttributeTypeEnum.RWeaponMatkP).number / 100)
+      [0]
+      cal.rRefineAtk = refineATK(rWeapon, AttributeTypeEnum.Atk)
+      cal.rRefineMatk = refineATK(rWeapon, AttributeTypeEnum.Matk)
+      cal.rVarianceAtk = varianceATK(cal.rWeaponAtk, rWeapon.item!.equipmentLevel)
+      cal.rVarianceMatk = varianceMATK(cal.rWeaponMatk, cal.rRefineMatk, rWeapon.item!.equipmentLevel)
+      cal.rOverRefine = overRefineWeapon(rWeapon.item!.equipmentLevel, rWeapon.refineLevel)
+
+      cal.isWeaponRange = (itemTypeList.get(rWeapon.item!.type) as WeaponType).isRange;
+
+      cal.weaponPenalty = JobClass.getWeaponPenalty(character.clazz, rWeapon.item!.type);
+    }
+
+    const left = character.equipmentMap.get(EquipmentSlot.lWeapon);
+    if (left) {
+      if (left.item?.type === ItemTypeEnum.Shield) {
+        cal.shieldPenalty = character.clazz.shieldPenalty
+      } else {
+        if (left.id !== rWeapon?.id) {
+          cal.lWeaponAtk = left.item!.atk ?? 0
+          cal.lWeaponMatk = left.item?.matk ?? 0
+          cal.lRefineAtk = refineATK(left, AttributeTypeEnum.Atk)
+          cal.lRefineMatk = refineATK(left, AttributeTypeEnum.Matk)
+          cal.lVarianceAtk = varianceMATK(cal.lWeaponAtk, cal.lRefineAtk, left.item!.equipmentLevel)
+          cal.lVarianceMatk = varianceMATK(cal.lWeaponMatk, cal.lRefineMatk, left.item!.equipmentLevel)
+          cal.lOverRefine = overRefineWeapon(left.item!.equipmentLevel, left.refineLevel)
+
+          cal.shieldPenalty = JobClass.getWeaponPenalty(character.clazz, left.item!.type);
+        }
+      }
+    }
 
     cal.calRawCall = !cal.calRawCall
   }
@@ -581,6 +597,7 @@ export const ContextProvider = (props: Props): JSX.Element => {
       } else if (attributeType === AttributeTypeEnum.Aspd) {
         const baseAspd = character.clazz.baseAspd
         const percent = cal.rawAttributeList.get(AttributeTypeEnum.AspdPercent) ?? new DescriptionNumber()
+        const haste = cal.rawAttributeList.get(AttributeTypeEnum.Haste) ?? new DescriptionNumber()
         const final = calAspd(
           baseAspd,
           agi.number,
@@ -588,7 +605,8 @@ export const ContextProvider = (props: Props): JSX.Element => {
           percent.number,
           raw.number,
           cal.weaponPenalty,
-          cal.shieldPenalty
+          cal.shieldPenalty,
+          haste.number,
         )
         number.number = Math.min(193, final)
         number.description = ""
@@ -599,6 +617,7 @@ export const ContextProvider = (props: Props): JSX.Element => {
         number.linePlus(raw, getAttributeType(attributeType).name, 1)
         number.line(cal.weaponPenalty, "weaponPenalty", 1)
         number.line(cal.shieldPenalty, "shieldPenalty", 1)
+        number.linePlus(haste, getAttributeType(AttributeTypeEnum.Haste).name, 1)
       } else if (attributeType === AttributeTypeEnum.SoftDef) {
         const baseLv = character.baseLv
         const percent = cal.rawAttributeList.get(AttributeTypeEnum.SoftDefPercent) ?? new DescriptionNumber()
@@ -718,6 +737,7 @@ export const ContextProvider = (props: Props): JSX.Element => {
         || attributeType === AttributeTypeEnum.SoftDefPercent
         || attributeType === AttributeTypeEnum.SoftMdefPercent
         || attributeType === AttributeTypeEnum.SkillDmg
+        || attributeType === AttributeTypeEnum.SkillBasePercent
       ) {
         number.number = -1
       }
@@ -729,9 +749,9 @@ export const ContextProvider = (props: Props): JSX.Element => {
   }
 
   useEffect(() => {
-    if (!character.clazz.activeSkill.includes(skill)) {
+    if (!character.clazz.activeSkill.includes(skill.enum)) {
       console.log("not incluede")
-      setSkill(character.clazz.activeSkill[0])
+      setSkill(character.clazz.activeSkillItem[0])
     }
   }, [character.clazz])
 
@@ -805,32 +825,73 @@ export const ContextProvider = (props: Props): JSX.Element => {
     setViewItem: (item: Named | undefined) => {
       console.log("setViewItem", item)
       setViewItem(item)
-      const oldElement = document.getElementsByClassName("rounded select-ed")
+      const oldElement = document.getElementsByClassName("rounded select-ed item1")
       Array.from(oldElement).forEach(element => {
         element.classList.remove("rounded")
         element.classList.remove("select-ed")
+        element.classList.remove("item1")
       });
       if (!item) return
-      let element
-      let equipment
+      let elements = []
       if (CraftEqiupment.is(item)) {
-        console.log("CraftEqiupment")
-        element = document.getElementById('storage-' + item.id)
-        equipment = document.getElementById('equipment-' + item.id)
+        elements.push(document.getElementById('storage-' + item.id))
+        elements.push(document.getElementById('equipment-' + item.id))
+      } else if (Item.is(item) || SkillBuff.is(item)) {
+        elements.push(document.getElementById('buffStorage-' + item.id))
+        elements.push(document.getElementById('buff-' + item.id))
+      }
+
+      elements.forEach(element => {
+        if (element !== null) {
+          element.classList.add("rounded")
+          element.classList.add("select-ed")
+          element.classList.add("item1")
+        }
+      })
+
+      if (CraftEqiupment.is(item) && item.item?.type !== undefined) {
+        const type = itemTypeList.get(item.item?.type)
+        if (type && type.equipSlot && type.equipSlot.length > 0) {
+          let foundItem: CraftEqiupment | undefined
+          type.equipSlot.forEach(slot => {
+            const found = character.equipmentMap.get(slot)
+            if (found && found.id !== item.id) {
+              foundItem = found
+              return
+            }
+          })
+          if (foundItem) {
+            api.setViewItem2(foundItem)
+          } else {
+            api.setViewItem2(undefined)
+          }
+        }
+      }
+    },
+    setViewItem2: (item: Named | undefined) => {
+      setViewItem2(item)
+      const oldElement = document.getElementsByClassName("rounded select-ed item2")
+      Array.from(oldElement).forEach(element => {
+        element.classList.remove("rounded")
+        element.classList.remove("select-ed")
+        element.classList.remove("item2")
+      });
+      if (!item) return
+      let elements = []
+      if (CraftEqiupment.is(item)) {
+        elements.push(document.getElementById('storage-' + item.id))
+        elements.push(document.getElementById('equipment-' + item.id))
       } else if (Item.is(item)) {
-        element = document.getElementById('buffStorage-' + item.id)
+        elements.push(document.getElementById('buffStorage-' + item.id))
       }
 
-      if (element) {
-        element.classList.add("rounded")
-        element.classList.add("select-ed")
-      }
-
-      if (equipment) {
-        equipment.classList.add("rounded")
-        equipment.classList.add("select-ed")
-      }
-      setViewItem(item)
+      elements.forEach(element => {
+        if (element !== null) {
+          element.classList.add("rounded")
+          element.classList.add("select-ed")
+          element.classList.add("item2")
+        }
+      })
     },
     setDragItem,
     updateCharacter: (newState: Partial<Character>) => {
@@ -876,9 +937,7 @@ export const ContextProvider = (props: Props): JSX.Element => {
               slot = type.equipSlot[0]
               const old = character.equipmentMap.get(slot)
               if (old) {
-                const oldElement = document.getElementById("storage-" + old.id)
-                oldElement?.classList.remove("storage-equiped")
-                character.equipmentMap.set(slot, item)
+                api.unequip(old)
               }
             }
             character.equipmentMap.set(slot, item)
@@ -888,8 +947,7 @@ export const ContextProvider = (props: Props): JSX.Element => {
               console.log("equip slot", slot)
               const old = character.equipmentMap.get(slot)
               if (old) {
-                const oldElement = document.getElementById("storage-" + old.id)
-                oldElement?.classList.remove("storage-equiped")
+                api.unequip(old)
               }
               character.equipmentMap.set(slot, item)
             })

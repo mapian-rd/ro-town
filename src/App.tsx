@@ -1,10 +1,7 @@
 import React, { useContext, useState, useEffect, useRef, ChangeEvent } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Character } from './component/Character';
-import { CraftEquipment } from './CraftEquipment';
-import { ItemStorage } from './ItemStorage';
 import StatusBox from './component/status/Status';
 import { AppContext, ViewState } from './context/AppContext';
 import { Equipment } from './component/equipment/Equipment';
@@ -14,38 +11,50 @@ import classNames from 'classnames';
 import Pet from './component/Pet';
 import ItemBuff from './component/buff/ItemBuff';
 import Monster from './component/Monster';
-import { Combat } from './component/Combat';
+import { Combat } from './component/combat/Combat';
 import { EquipmentSlot } from "./data/model/EquipmentSlot";
 import MoreStatus from './component/MoreStatus';
 import { AppApiContext } from './context/AppApiContext';
 import Storage from './component/Storage';
 import AddItem from './component/AddItem';
 import ItemDescription from './component/ItemDescription';
-import { PassiveSkill, Skill } from './data/model/skill';
-import { Item } from './data/model/Itemv2';
-import { itemDatabase } from './data/database/item';
-import { itemBuffDatabase, skillBuffDatabase } from './data/database/buff';
+import { Item, Named } from './data/model/Itemv2';
+import { itemBuffDatabase } from "./data/database/buff"
+import { skillBuffDatabase } from "./data/database/skill"
 import BuffStorage from './component/buff/BuffStorage';
 import AddBuff from './component/buff/AddBuff';
-import { CharacterExport } from './data/model/Characterv2';
 import { replacer } from './context/ContextProvider';
 import { ExportData } from './data/model/Exportable';
 import { AttributeTypeEnum } from './data/model/attributeType';
+import { MdDarkMode, MdLightMode } from "react-icons/md";
+import MoreCombat from './component/combat/MoreCombat';
+import { checkMinMax } from './common/extension';
+import BuffStorageView from './component/buff/BuffStorageView';
 
 export const optionStyle = {
   container: ({ data, isDisabled, isFocused, isSelected }: any) =>
     classNames(
-      'w-100'
+      'w-100',
+      'select-container cursor-pointer',
     ),
   control: ({ data, isDisabled, isFocused, isSelected }: any) =>
     classNames(
+      'select-control',
       isFocused ? 'select-ed' : 'select-none'
+    ),
+  singleValue: ({ data, isDisabled, isFocused, isSelected }: any) =>
+    classNames(
+      'select-singleValue',
     ),
   option: ({ data, isDisabled, isFocused, isSelected }: any) =>
     classNames(
       isFocused ? 'select-hover' : 'select-none',
       isSelected ? 'select-ed' : 'select-none'
     ),
+  menu: ({ data, isDisabled, isFocused, isSelected }: any) =>
+    classNames(
+      'select-menu'
+    )
 }
 
 const eqipmentTypes: Map<EquipmentSlot, EquipableType> = new Map([
@@ -69,28 +78,28 @@ function App() {
   const api = useContext(AppApiContext);
   console.log("App", context.viewItem)
 
+  const [theme, setTheme] = useState<string>("")
   const [showCharacter, setShowCharacter] = useState<boolean>(true)
-  const [showPet, setShowPet] = useState<boolean>(true)
+  const [showBuff, setShowBuff] = useState<boolean>(true)
+  const [showMonster, setShowMonster] = useState<boolean>(true)
   const [showCombat, setShowCombat] = useState<boolean>(true)
+  const [showMoreCombat, setShowMoreCombatf] = useState<boolean>(false)
   const [showMoreStatus, setShowMoreStatus] = useState<boolean>(false)
   const [showStorage, setShowStorage] = useState<boolean>(false)
   const [showAddItem, setShowAddItem] = useState<boolean>(false)
   const [showItemInfo, setShowItemInfo] = useState<boolean>(false)
   const [showBuffStorage, setShowBuffStorage] = useState<boolean>(false)
+  const [showSkillStorage, setShowSkillStorage] = useState<boolean>(false)
   const [showAddBuff, setShowAddBuff] = useState<boolean>(false)
+
+  const moreCombatRef = useRef<HTMLInputElement | null>(null)
+  const itemInfoRef = useRef<HTMLInputElement | null>(null)
+
   const inputFile = useRef<HTMLInputElement | null>(null)
 
-  const passiveSkillList = context.character.clazz.passiveSkill ?? []
+  const passiveSkillList = context.character.clazz.passiveSkillItem ?? []
 
   const skillList = [...passiveSkillList, ...skillBuffDatabase]
-  context.character.skillBuff.forEach(item => {
-    const found = skillList.findIndex(skill => skill.id === item.id)
-    console.log("findIndex", found)
-    if (found !== -1) {
-      skillList.splice(found, 1)
-    }
-    console.log("findIndex", skillList)
-  })
   const ownSkillBuff = context.character.skillBuff.map(item => {
     const imgId = Item.getImgId(item.id, item.imgId)
     let imgSrc
@@ -102,26 +111,12 @@ function App() {
       name: item.name,
       imgSrc: imgSrc,
       isActive: item.isActive,
-    }
-  })
-  const skillbuff = skillList.map(item => {
-    const imgId = Item.getImgId(item.id, item.imgId)
-    return {
-      id: item.id,
-      name: item.name,
-      imgSrc: `https://static.divine-pride.net/images/skill/${imgId}.png`,
-      isActive: false,
+      activeLv: item.activeLv,
+      maxLv: item.maxLv,
+      suffix: item.suffix,
     }
   })
 
-  const itemBuffList = [...itemBuffDatabase]
-  context.character.itemBuff.forEach(item => {
-    const found = itemBuffList.findIndex(skill => skill.id === item.id)
-    if (found !== -1) {
-      itemBuffList.splice(found, 1)
-    }
-  })
-  console.log("App", context.character.itemBuff)
   const ownItemBuff = context.character.itemBuff.map(item => {
     const imgId = Item.getImgId(item.id, item.imgId)
     return {
@@ -186,130 +181,179 @@ function App() {
     }
   };
 
+  function onClickBuff(id: string) {
+    const item = context.character.itemBuff.find(item => item.id === id)
+    if (item) {
+      api.setViewItem(item)
+    }
+    const skill = context.character.skillBuff.find(item => item.id === id)
+    if (skill) {
+      api.setViewItem(skill)
+    }
+  }
+
   function handleSkillBuffChange(event: React.ChangeEvent<HTMLInputElement>, id: string) {
     let { checked } = event.target;
     const item = context.character.skillBuff.find(item => item.id === id)
     if (item) {
-      console.log("handleSkillBuffChange", checked)
       item.isActive = checked
-    } else {
-      const newItem = [...passiveSkillList, ...skillBuffDatabase].find(item => item.id === id)
-      if (newItem) {
-        context.character.skillBuff.push({ ...newItem, isActive: checked })
-      }
+      api.updateCharacter({ skillBuff: context.character.skillBuff });
     }
-    console.log("handleSkillBuffChange", context.character.skillBuff)
-    api.updateCharacter({ skillBuff: context.character.skillBuff });
   };
 
-  function addClick(list: Item[], found: boolean, id: string) {
+  function handleLvSkillChange(event: React.ChangeEvent<HTMLInputElement>, id: string) {
+    let { value, max, min } = event.target;
+    let newValue = checkMinMax(Number(value), Number(min), Number(max));
+    const item = context.character.skillBuff.find(item => item.id === id)
+    if (item && newValue !== item.activeLv) {
+      item.activeLv = newValue
+      api.updateCharacter({ skillBuff: context.character.skillBuff });
+    }
+  };
+
+  function addItemBuffClick(list: Named[], found: boolean, id: string) {
     if (found) {
-      const item = list.findIndex(item => item.id === id)
+      const item = context.character.itemBuff.findIndex(item => item.id === id)
       if (item !== -1) {
         context.character.itemBuff.splice(item, 1)
       }
     } else {
       const newItem = [...context.buffStorage ?? [], ...itemBuffDatabase].find(item => item.id === id)
       if (newItem) {
-        context.character.itemBuff.push({ ...newItem, isActive: false })
+        context.character.itemBuff.push({ ...newItem, isActive: true })
       }
     }
     api.updateCharacter({ itemBuff: context.character.itemBuff });
   }
 
-  function onBuffClick(item: Item) {
-    api.setViewItem(item)
+  function addSkillBuffClick(list: Named[], found: boolean, id: string) {
+    if (found) {
+      const item = context.character.skillBuff.findIndex(item => item.id === id)
+      if (item !== -1) {
+        context.character.skillBuff.splice(item, 1)
+      }
+    } else {
+      const newItem = skillList.find(item => item.id === id)
+      if (newItem) {
+        context.character.skillBuff.push({ ...newItem, isActive: true, activeLv: newItem.maxLv })
+      }
+    }
+    api.updateCharacter({ skillBuff: context.character.skillBuff });
+  }
+
+  function onBuffClick(item: Named) {
+    if (context.viewState === ViewState.AddBuff) {
+      api.setViewItem2(item)
+    } else {
+      api.setViewItem(item)
+    }
   }
 
   function onDeleteBuffClick(id: string) {
     api.deleteBuffStorage(id)
   }
 
+  function hideItemDescription() {
+    api.setViewItem(undefined)
+    api.setViewItem2(undefined)
+  }
+
   useEffect(() => {
     setShowCharacter(false)
-    setShowPet(false)
+    setShowBuff(false)
+    setShowMonster(false)
     setShowCombat(false)
+    setShowMoreCombatf(false)
     setShowMoreStatus(false)
     setShowStorage(false)
     setShowAddItem(false)
     setShowAddBuff(false)
-    setShowItemInfo(false)
     setShowBuffStorage(false)
+    setShowSkillStorage(false)
     if (context.viewState === ViewState.MoreStatus) {
-      setShowCharacter(true)
-      setShowPet(true)
-      setShowMoreStatus(true)
     } else if (context.viewState === ViewState.Storage) {
-      setShowCharacter(true)
-      setShowStorage(true)
-      setShowItemInfo(true)
     } else if (context.viewState === ViewState.AddItem) {
+      setShowCharacter(true)
       setShowStorage(true)
       setShowAddItem(true)
-      setShowItemInfo(true)
     } else if (context.viewState === ViewState.BuffStorage) {
-      setShowPet(true)
       setShowBuffStorage(true)
-      setShowItemInfo(true)
+    } else if (context.viewState === ViewState.SkillStorage) {
+      setShowCharacter(true)
+      setShowSkillStorage(true)
+      setShowMonster(true)
+      setShowCombat(true)
     } else if (context.viewState === ViewState.AddBuff) {
       setShowBuffStorage(true)
       setShowAddBuff(true)
-      setShowItemInfo(true)
+    } else if (context.viewState === ViewState.MoreCombat) {
+      setShowCharacter(true)
+      setShowBuff(true)
+      setShowMonster(true)
+      setShowCombat(true)
+      setShowMoreCombatf(true)
     } else {
       setShowCharacter(true)
-      setShowPet(true)
+      setShowBuff(true)
+      setShowMonster(true)
       setShowCombat(true)
     }
   }, [context.viewState])
 
+  useEffect(() => {
+    console.log("viewItem", context.viewItem)
+    if (context.viewItem) {
+      setShowItemInfo(true)
+    } else {
+      setShowItemInfo(false)
+      api.setViewItem2(undefined)
+    }
+  }, [context.viewItem])
+
+  useEffect(() => {
+    moreCombatRef.current?.scrollIntoView()
+  }, [showMoreCombat])
+
+  useEffect(() => {
+    itemInfoRef.current?.scrollIntoView()
+  }, [showItemInfo])
+
   return (
-    <div className='App'>
+    <div className={'App ' + theme}>
       <header className='App-header'>
-        RO Calculator
+        <div className='row'>
+          <div className='col'>
+            RO Calculator
+          </div>
+          <div className='col-auto d-flex'>
+            <button className={'header-theme' + (theme === '' ? ' d-none' : '')} onClick={() => setTheme('')}>
+              <MdLightMode size={24} />
+            </button>
+            <button className={'header-theme' + (theme === 'dark' ? ' d-none' : '')} onClick={() => setTheme('dark')}>
+              <MdDarkMode size={24} />
+            </button>
+          </div>
+        </div>
       </header>
-      <body className='App-body container mb-0 vh-100 py-2'>
-        <div className='row h-100'>
-          <div className={'col-md-4 h-100' + (showCharacter ? '' : ' d-none')}>
+      <body className='App-body container-fluid mb-0 vh-100'>
+        <div className='row flex-nowrap h-100 pt-3'>
+          <div className={'col-md-3 h-100 overflow-y-auto' + (showCharacter ? '' : ' d-none')}>
             <input type='file' id='file' ref={inputFile} style={{ display: 'none' }} accept=".json" onChange={handleFileChange} />
             <button onClick={onLoadClick}>Import</button>
             <button onClick={onSaveClick}>Export</button>
             <Character />
             <StatusBox />
+            <div className='w-100 d-flex justify-content-end'>
+              <button onClick={() => api.setViewState(ViewState.AddItem)}>Add Item</button>
+            </div>
             <Equipment title='General Equipment' type={eqipmentTypes} />
             <Equipment title='Special Equipment' type={spEqipmentTypes} />
           </div>
-          <div className={'col-md-4 d-flex flex-column mh-0 h-100' + (showPet ? '' : ' d-none')} >
-            <div className={'row' + (showBuffStorage ? '' : ' pt-4')}>
-              <div className={'col' + (showBuffStorage ? '' : ' d-none')}>
-                <button onClick={() => api.setViewState(ViewState.Normal)}>Back</button>
-              </div>
-            </div>
-            <div className={(showBuffStorage ? 'd-none' : '')}>
-              <Pet />
-            </div>
-            <div className='flex-grow-1 mh-0'>
-              <div className={(showBuffStorage ? 'h-100' : 'h-50')}>
-                <ItemBuff
-                  title='Item Buff'
-                  list={ownItemBuff}
-                  handleBuffChange={handleItemBuffChange}
-                  onClick={showBuffStorage ? undefined : () => api.setViewState(ViewState.BuffStorage)}
-                />
-              </div>
-              <div className={'h-50' + (showBuffStorage ? ' d-none' : '')}>
-                <ItemBuff
-                  title='Skill Buff'
-                  list={[...ownSkillBuff, ...skillbuff]}
-                  handleBuffChange={handleSkillBuffChange}
-                />
-              </div>
-            </div>
-          </div>
 
-          <div className={'col-md-4 d-flex flex-column h-100' + (showStorage ? '' : ' d-none')}>
+          <div className={'col-md-3 d-flex flex-column h-100' + (showStorage ? '' : ' d-none')}>
             <div className='row'>
               <div className='col'>
-                <button onClick={() => api.setViewState(showAddItem ? ViewState.Storage : ViewState.Normal)}>Back</button>
+                <button onClick={() => api.setViewState(ViewState.Normal)}>Back</button>
               </div>
               <div className={'col-auto' + (showAddItem ? ' d-none' : '')}>
                 <button onClick={() => api.setViewState(ViewState.AddItem)}>Add New Item</button>
@@ -318,39 +362,76 @@ function App() {
             <Storage />
           </div>
 
-          <div className={'col-md-4 d-flex flex-column h-100' + (showBuffStorage ? '' : ' d-none')}>
+          <div className={'col-md-3 pt-4 d-flex flex-column mh-0 h-100' + (showBuff ? '' : ' d-none')} >
+            <Pet />
+            <div className='flex-grow-1 mh-0'>
+              <div className={'h-50'}>
+                <ItemBuff
+                  title='Item Buff'
+                  list={ownItemBuff}
+                  handleBuffChange={handleItemBuffChange}
+                  onClick={showBuffStorage ? undefined : () => api.setViewState(ViewState.BuffStorage)}
+                  onClickBuff={onClickBuff}
+                />
+              </div>
+              <div className={'h-50'}>
+                <ItemBuff
+                  title='Skill Buff'
+                  list={ownSkillBuff}
+                  handleBuffChange={handleSkillBuffChange}
+                  handleLvChange={handleLvSkillChange}
+                  onClick={showSkillStorage ? undefined : () => api.setViewState(ViewState.SkillStorage)}
+                  onClickBuff={onClickBuff}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className={'col-md-9 d-flex flex-column h-100' + (showBuffStorage ? '' : ' d-none')}>
+            <BuffStorageView />
+          </div>
+
+          <div className={'col-md-3 d-flex flex-column h-100' + (showSkillStorage ? '' : ' d-none')}>
             <div className='row'>
               <div className='col'>
-                <button className={(showAddBuff ? '' : 'd-none')} onClick={() => api.setViewState(ViewState.BuffStorage)}>Back</button>
-              </div>
-              <div className={'col-auto' + (showAddBuff ? ' d-none' : '')}>
-                <button onClick={() => api.setViewState(ViewState.AddBuff)}>Add Custom Item</button>
+                <button onClick={() => api.setViewState(ViewState.Normal)}>Back</button>
               </div>
             </div>
             <BuffStorage
-              list={context.character.itemBuff}
-              storage={[...context.buffStorage ?? [], ...itemBuffDatabase]}
-              addClick={addClick}
+              list={context.character.skillBuff}
+              storage={skillList}
+              addClick={addSkillBuffClick}
               onClick={onBuffClick}
               onDeleteClick={onDeleteBuffClick}
             />
           </div>
 
-          <div className={'col-md-4  h-100' + (showAddItem ? '' : ' d-none')}>
+          <div className={'col-md-3  h-100' + (showAddItem ? '' : ' d-none')}>
             <AddItem />
           </div>
 
-          <div className={'col-md-4  h-100' + (showAddBuff ? '' : ' d-none')}>
+          <div className={'col-md-3  h-100' + (showAddBuff ? '' : ' d-none')}>
             <AddBuff />
           </div>
 
-          <div className={'col-md-4 pt-4 d-flex flex-column h-100' + (showCombat ? '' : ' d-none')}>
+          <div className={'col-md-3 mt-4 d-flex flex-column' + (showMonster ? '' : ' d-none')}>
             <Monster monster={context.monster} />
-            <Combat />
+            <ItemBuff
+              title='Monster Debuff'
+              list={ownSkillBuff}
+              handleBuffChange={handleSkillBuffChange}
+              handleLvChange={handleLvSkillChange}
+              onClick={showSkillStorage ? undefined : () => api.setViewState(ViewState.SkillStorage)}
+              onClickBuff={onClickBuff}
+            />
           </div>
 
-          <div className={'col-md-4 d-flex flex-column h-100 align-items-start' + (showMoreStatus ? '' : ' d-none')}>
-            <button onClick={() => api.setViewState(ViewState.Normal)}>Back</button>
+          <div ref={itemInfoRef} className={'col-md-3 d-flex flex-column h-100 align-items-start' + (showItemInfo ? '' : ' d-none')}>
+            <button onClick={() => hideItemDescription()}>Hide</button>
+            <ItemDescription item1={context.viewItem} character={context.character} item2={context.viewItem2} />
+          </div>
+
+          <div className={'col-md-3 pt-4 d-flex flex-column h-100 overflow-auto' + (showCombat ? '' : ' d-none')}>
             <MoreStatus
               final={context.calculatedAttribute.finalAttributeList}
               baseSkillDmg={context.calculatedAttribute.baseSkillAttributeList}
@@ -361,10 +442,14 @@ function App() {
               fctP={api.getFinal(AttributeTypeEnum.FctPercent)}
               cooldown={context.calculatedAttribute.cooldownAttributeList}
             />
+            <Combat />
           </div>
 
-          <div className={'col-md-4 pt-4 d-flex flex-column h-100' + (showItemInfo ? '' : ' d-none')}>
-            <ItemDescription item1={context.viewItem} character={context.character} />
+          <div ref={moreCombatRef} className={'col-md-3 d-flex flex-column h-100 align-items-start' + (showMoreCombat ? '' : ' d-none')}>
+            <button onClick={() => api.setViewState(ViewState.Normal)}>Back</button>
+            <MoreCombat
+              combatStatus={context.combatStatus}
+            />
           </div>
         </div>
       </body>

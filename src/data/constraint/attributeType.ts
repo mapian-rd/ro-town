@@ -12,6 +12,7 @@ export const StatusTypeList: Map<AttributeTypeEnum, AttributeType> = new Map([
 export const physicalAttributeList: Map<AttributeTypeEnum, AttributeType> = new Map([
     [AttributeTypeEnum.StatusAtk, { name: "Status Atk", addAsCustom: false }],
     [AttributeTypeEnum.WeaponAtk, { name: "Final Weapon Atk", addAsCustom: false }],
+    [AttributeTypeEnum.RWeaponAtkP, { name: "Weapon Atk Percent" }],
     [AttributeTypeEnum.Atk, new AttributeType("Equipment Atk")],
     [AttributeTypeEnum.AtkPercent, new AttributeType("Atk%")],
     [AttributeTypeEnum.MeleeMul, new AttributeType("Melee Multiple")],
@@ -37,11 +38,25 @@ export const physicalAttributeList: Map<AttributeTypeEnum, AttributeType> = new 
     [AttributeTypeEnum.PhysicalAngel, new AttributeType("Dmg to Race Angel")],
     [AttributeTypeEnum.PhysicalDemon, new AttributeType("Dmg to Race Demon")],
     [AttributeTypeEnum.PhysicalDemi, new AttributeType("Dmg to Race Demi")],
+    [AttributeTypeEnum.IgnoreDefNormal, new AttributeType("Ignore def of normal monster")],
+    [AttributeTypeEnum.IgnoreDefBoss, new AttributeType("Ignore def of boss monster")],
+    [AttributeTypeEnum.IgnoreDefAllRace, new AttributeType("Ignore def of all race (except player)")],
+    [AttributeTypeEnum.IgnoreDefFormless, new AttributeType("Ignore def of Formless")],
+    [AttributeTypeEnum.IgnoreDefUndead, new AttributeType("Ignore def of Undead")],
+    [AttributeTypeEnum.IgnoreDefBrute, new AttributeType("Ignore def of Brute (except player)")],
+    [AttributeTypeEnum.IgnoreDefPlant, new AttributeType("Ignore def of Plant")],
+    [AttributeTypeEnum.IgnoreDefInsect, new AttributeType("Ignore def of Insect")],
+    [AttributeTypeEnum.IgnoreDefAngel, new AttributeType("Ignore def of Angel")],
+    [AttributeTypeEnum.IgnoreDefDemon, new AttributeType("Ignore def of Demon")],
+    [AttributeTypeEnum.IgnoreDefDemi, new AttributeType("Ignore def of Demi (except player)")],
+    [AttributeTypeEnum.IgnoreDefHuman, new AttributeType("Ignore def of Human player")],
+    [AttributeTypeEnum.IgnoreDefDoram, new AttributeType("Ignore def of Doram player")],
 ])
 
 export const magicalAttributeList: Map<AttributeTypeEnum, AttributeType> = new Map([
     [AttributeTypeEnum.StatusMatk, { name: "Status Matk", addAsCustom: false }],
     [AttributeTypeEnum.WeaponMatk, { name: "Weapon Matk", addAsCustom: false }],
+    [AttributeTypeEnum.RWeaponMatkP, { name: "Weapon Matk Percent" }],
     [AttributeTypeEnum.Matk, new AttributeType("Equipment Matk")],
     [AttributeTypeEnum.MatkPercent, new AttributeType("MATK%")],
     [AttributeTypeEnum.MagicSmall, new AttributeType("Dmg to Small Size")],
@@ -75,9 +90,25 @@ export const magicalAttributeList: Map<AttributeTypeEnum, AttributeType> = new M
     [AttributeTypeEnum.MagicSkillDark, new AttributeType(" Element Dark Dmg")],
     [AttributeTypeEnum.MagicSkillGhost, new AttributeType(" Element Ghost Dmg")],
     [AttributeTypeEnum.MagicSkillUndead, new AttributeType(" Element Undead Dmg")],
+    [AttributeTypeEnum.IgnoreMdefNormal, new AttributeType("Ignore Mdef of normal monster")],
+    [AttributeTypeEnum.IgnoreMdefBoss, new AttributeType("Ignore Mdef of boss monster")],
+    [AttributeTypeEnum.IgnoreMdefAllRace, new AttributeType("Ignore Mdef of all race (except player)")],
+    [AttributeTypeEnum.IgnoreMdefFormless, new AttributeType("Ignore Mdef of Formless")],
+    [AttributeTypeEnum.IgnoreMdefUndead, new AttributeType("Ignore Mdef of Undead")],
+    [AttributeTypeEnum.IgnoreMdefBrute, new AttributeType("Ignore Mdef of Brute (except player)")],
+    [AttributeTypeEnum.IgnoreMdefPlant, new AttributeType("Ignore Mdef of Plant")],
+    [AttributeTypeEnum.IgnoreMdefInsect, new AttributeType("Ignore Mdef of Insect")],
+    [AttributeTypeEnum.IgnoreMdefAngel, new AttributeType("Ignore Mdef of Angel")],
+    [AttributeTypeEnum.IgnoreMdefDemon, new AttributeType("Ignore Mdef of Demon")],
+    [AttributeTypeEnum.IgnoreMdefDemi, new AttributeType("Ignore Mdef of Demi (except player)")],
+    [AttributeTypeEnum.IgnoreMdefHuman, new AttributeType("Ignore Mdef of Human player")],
+    [AttributeTypeEnum.IgnoreMdefDoram, new AttributeType("Ignore Mdef of Doram player")],
 ])
 
 export const calAttributeList:  Map<AttributeTypeEnum, AttributeType> = new Map([
+    [AttributeTypeEnum.Vct, new AttributeType("Vct")],
+    [AttributeTypeEnum.VctPercent, new AttributeType("VctPercent")],
+    [AttributeTypeEnum.Fct, new AttributeType("Fct")],
     [AttributeTypeEnum.FctPercent, new AttributeType("Fct Percent")],
 ])
 
@@ -90,7 +121,9 @@ export const otherAttributeList: Map<AttributeTypeEnum, AttributeType> = new Map
     [AttributeTypeEnum.SpPercent, new AttributeType("Sp%")],
     [AttributeTypeEnum.Aspd, new AttributeType("Aspd")],
     [AttributeTypeEnum.AspdPercent, new AttributeType("Aspd%")],
+    [AttributeTypeEnum.Haste, new AttributeType("Item / Skill Haste")],
     [AttributeTypeEnum.Hit, new AttributeType("Hit")],
+    [AttributeTypeEnum.PerfectHit, new AttributeType("Perfect Hit")],
     [AttributeTypeEnum.Critical, new AttributeType("Critical")],
     [AttributeTypeEnum.Flee, new AttributeType("Flee")],
     [AttributeTypeEnum.Def, new AttributeType("Def")],
@@ -100,6 +133,9 @@ export const otherAttributeList: Map<AttributeTypeEnum, AttributeType> = new Map
     [AttributeTypeEnum.SoftMdef, new AttributeType("Soft MdDef")],
     [AttributeTypeEnum.SoftMdefPercent, new AttributeType("SoftMdef%")],
     [AttributeTypeEnum.Delay, new AttributeType("Delay")],
+])
+
+export const defAttributeList: Map<AttributeTypeEnum, AttributeType> = new Map([
     [AttributeTypeEnum.MonMedPhyRed, new AttributeType("Monster Medium Size Physical Reduction")],
     [AttributeTypeEnum.MonLarPhyRed, new AttributeType("Monster Large Size Physical Reduction")],
 ])
@@ -110,6 +146,7 @@ export const attributeList: Map<AttributeTypeEnum, AttributeType> = new Map([
     ...Array.from(magicalAttributeList),
     ...Array.from(calAttributeList),
     ...Array.from(otherAttributeList),
+    ...Array.from(defAttributeList),
 ])
 
 export function getAttributeType(type: AttributeTypeEnum): AttributeType {

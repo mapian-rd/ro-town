@@ -16,5 +16,9 @@ export const MonsterList: MonsterId[] = [
     {
         id: 2408,
         name: "Lv 10",
+    },
+    {
+        id: 20573,
+        name: "Phantom of Amdarais",
     }
 ]

@@ -1,12 +1,16 @@
 import { Neutral } from "../constraint/Monster";
-import { Attribute } from "./Attribute";
+import { Attribute, AttributeList } from "./Attribute";
 import { AttributeType, AttributeTypeEnum } from "./attributeType";
 import { Element } from "./Element";
 
 export enum SkillEnum {
     NormalAttack, NormalRangeAttack, 
-    PickyPeck, LunaticCarrotBeat, SilvervineStemSpear, CatnipMeteor, ScarOfTarou,
-    PowerofLife, SpritOfLife, ArclouseDash, Hiss, PowerOfFlock, SpiritOfSavage,
+    IncreaseAgi, Blessing, Clementia, Cantocandidus,
+    Scratch,
+    FreshShrimp, BunchOfShrimp, TunaBelly, TunaParty, PowerOfSea, Grooming, Purring, TastyShrimpParty, SpiritOfSea,
+    SilvervineStemSpear, SilvervineRootTwist, CatnipMeteor, CatnipPowdering, PowerOfLand, Chattering, MeowMeow, NyangGrass, SpiritOfLand,
+    PickyPeck, ArclouseDash, ScarOfTarou, LunaticCarrotBeat, PowerofLife, Hiss, PowerOfFlock, SpiritOfSavage, SpritOfLife,
+    Greed,
 }
 
 export interface Skill {
@@ -30,8 +34,8 @@ export class ActiveSkill implements Skill {
     delay: number[] = [];
     hit: number[] = [];
     type: AttributeTypeEnum = AttributeTypeEnum.Atk
-    isRange?: Boolean = false;
-    element?: Element = undefined;
+    isRange?: boolean = false;
+    element?: AttributeTypeEnum[] = [];
 }
 
 export class PassiveSkill implements Skill {
@@ -40,6 +44,7 @@ export class PassiveSkill implements Skill {
     enum: SkillEnum = SkillEnum.NormalAttack;
     maxLv: number = 1;
     imgId?: number;
-    attributeList: Attribute[] = [];
+    suffix?: string[] = [];
+    attributeList: AttributeList[] = [];
 }
 

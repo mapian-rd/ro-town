@@ -25,7 +25,7 @@ function getItem(number: DescriptionNumber, name: string, key: string) {
     if (min && max) {
         text = `${min}~${max}`
     }
-    if (number?.number <= 0) return null
+    if (number?.number < 0) return null
     return (
         <div className="row" key={key}>
             <div className="col">
@@ -94,7 +94,7 @@ export default function MoreStatus(prop: MoreStatusProps) {
     })
 
     return (
-        <Box title="More Status" className="h-100 mh-0" overflow>
+        <Box title="Status Infomation" className="h-100 mh-0" overflow>
             <div className="mh-0" >
                 <div className="row mt-2">
                     <div className="col status-name">
@@ -102,6 +102,12 @@ export default function MoreStatus(prop: MoreStatusProps) {
                     </div>
                 </div>
                 {statusList}
+                <div className="row mt-2">
+                    <div className="col status-name">
+                        -
+                    </div>
+                </div>
+                {attributeComList}
                 <div className="row mt-2">
                     <div className="col status-name">
                         Base Skill Percent Dmg
@@ -146,12 +152,6 @@ export default function MoreStatus(prop: MoreStatusProps) {
                     </div>
                 </div>
                 {magicalAttributeComList}
-                <div className="row mt-2">
-                    <div className="col status-name">
-                        Other
-                    </div>
-                </div>
-                {attributeComList}
             </div>
         </Box>
     )

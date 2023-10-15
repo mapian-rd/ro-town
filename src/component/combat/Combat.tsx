@@ -1,16 +1,16 @@
-import Box from "./Box";
+import Box from "../Box";
 import Select, { InputActionMeta } from "react-select";
-import { optionStyle } from "../App";
+import { optionStyle } from "../../App";
 import { useContext, useEffect } from "react";
-import { AppApiContext } from "../context/AppApiContext";
-import { AppContext } from "../context/AppContext";
-import { ActiveSkill } from "../data/model/skill";
+import { AppApiContext } from "../../context/AppApiContext";
+import { AppContext, ViewState } from "../../context/AppContext";
+import { ActiveSkill } from "../../data/model/skill";
 
 export function Combat() {
     const context = useContext(AppContext);
     const api = useContext(AppApiContext);
 
-    const skillOption = context.character.clazz.activeSkill.map(skill => {
+    const skillOption = context.character.clazz.activeSkillItem.map(skill => {
         return { value: skill, label: skill.name }
     })
 
@@ -28,9 +28,9 @@ export function Combat() {
     }
 
     return (
-        <Box className="flex-grow-1" title="Combat" >
-            <div className="row">
-                <div className="col-6">
+        <Box className="flex-grow-1" title="Combat" buttonText="More Info" onClick={() => api.setViewState(ViewState.MoreCombat)}>
+            <div className="row m-0">
+                <div className="col-7">
                     <div className="d-flex">
                         <span className="me-1 jc-center">Skill</span>
                         <Select jc-center
@@ -41,7 +41,7 @@ export function Combat() {
                         />
                     </div>
                 </div>
-                <div className="col-6">
+                <div className="col-5">
                     <div className="d-flex">
                         <span className="me-1 jc-center text-nowrap">Skill Lv</span>
                         <Select jc-center
@@ -96,50 +96,68 @@ export function Combat() {
 
                 <div className="d-flex">
                     <span className="me-1 jc-center text-nowrap">Min Dmg</span>
-                    <span className="w-100 text-end">{context.combatStatus.minDmg} ({context.combatStatus.minDmgph} x {context.combatStatus.hit})</span>
+                    <span className="w-100 text-end">{context.combatStatus.minDmg} ({context.combatStatus.minDmgph} x {context.combatStatus.skillHit})</span>
                 </div>
                 <div className="d-flex">
                     <span className="me-1 jc-center text-nowrap">Max Dmg</span>
-                    <span className="w-100 text-end">{context.combatStatus.maxDmg} ({context.combatStatus.maxDmgph} x {context.combatStatus.hit})</span>
+                    <span className="w-100 text-end">{context.combatStatus.maxDmg} ({context.combatStatus.maxDmgph} x {context.combatStatus.skillHit})</span>
                 </div>
-                <div className="col-6">
+                <div className="d-flex final-dps">
+                    <span className="me-1 jc-center text-nowrap">Average Dmg</span>
+                    <span className="w-100 text-end final-dps-value">{context.combatStatus.avgDmg} ({context.combatStatus.avgDmgph} x {context.combatStatus.skillHit})</span>
+                </div>
+
+                <div className="col-12">
                     <div className="d-flex">
-                        <span className="me-1 jc-center">Vct</span>
-                        <span className="w-100 text-end">{context.combatStatus.vct.toFixed(2)}</span>
+                        <span className="me-1 jc-center text-nowrap">Final Cast Time</span>
+                        <span className="w-100 text-end">{(context.combatStatus.remainVct + context.combatStatus.remainFct).toFixed(2)}</span>
+                    </div>
+                </div>
+
+                {/* <div className="col-6">
+                    <div className="d-flex">
+                        <span className="me-1 jc-center text-nowrap">Vct</span>
+                        <span className="w-100 text-end">{context.combatStatus.remainVct.toFixed(2)}</span>
                     </div>
                 </div>
                 <div className="col-6">
                     <div className="d-flex">
                         <span className="me-1 jc-center text-nowrap">Fct</span>
-                        <span className="w-100 text-end">{context.combatStatus.fct.toFixed(2)}</span>
+                        <span className="w-100 text-end">{context.combatStatus.remainFct.toFixed(2)}</span>
                     </div>
-                </div>
+                </div> */}
 
-                <div className="col-6">
+                {/* <div className="col-6">
                     <div className="d-flex">
-                        <span className="me-1 jc-center">Cooldown</span>
-                        <span className="w-100 text-end">{context.combatStatus.cooldown}</span>
+                        <span className="me-1 jc-center text-nowrap">Cooldown</span>
+                        <span className="w-100 text-end">{context.combatStatus.remainCooldown}</span>
                     </div>
                 </div>
                 <div className="col-6">
                     <div className="d-flex">
                         <span className="me-1 jc-center text-nowrap">Delay</span>
-                        <span className="w-100 text-end">{context.combatStatus.delay.toFixed(2)}</span>
+                        <span className="w-100 text-end">{context.combatStatus.remainDelay.toFixed(2)}</span>
                     </div>
                 </div>
                 <div className="d-flex">
                     <span className="me-1 jc-center text-nowrap">Second per Hit (aspd)</span>
                     <span className="w-100 text-end">{context.combatStatus.secph.toFixed(2)}</span>
+                </div> */}
+                <div className="d-flex">
+                    <span className="me-1 jc-center text-nowrap">Final After Cast Time</span>
+                    <span className="w-100 text-end">{Math.max(context.combatStatus.remainCooldown, context.combatStatus.remainDelay, context.combatStatus.secph).toFixed(2)}</span>
                 </div>
                 <div className="d-flex">
                     <span className="me-1 jc-center text-nowrap">Hit Ratio</span>
-                    <span className="w-100 text-end">{context.combatStatus.hitRatio}%</span>
+                    <span className="w-100 text-end">{context.combatStatus.finalHitRaio}%</span>
                 </div>
-                <div className="d-flex final-dps">
-                    <span className="me-1 jc-center text-nowrap">Final Dps</span>
-                    <span className="w-100 text-end final-dps-value">{context.combatStatus.final.toFixed(2)} ({context.combatStatus.finalph.toFixed(2)} x 5)</span>
+                <div className="d-flex flex-column final-dps">
+                    <div className="d-flex">
+                        <span className="me-1 jc-center text-nowrap">Final Dps</span>
+                        <span className="w-100 text-end final-dps-value">{context.combatStatus.final.toFixed(2)} ({context.combatStatus.finalph.toFixed(2)} x 5)</span>
+                    </div>
+                    <span className="text-end text-nowrap remark w-100">* Ignore Ping & Computer Performance</span>
                 </div>
-                <span className="text-end text-nowrap remark">* Ignore Ping & Computer Performance</span>
             </div>
         </Box>
     )

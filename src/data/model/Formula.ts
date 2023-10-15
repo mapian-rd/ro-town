@@ -76,7 +76,7 @@ export function calString(array: FormulaString[], equipmentMap: Map<EquipmentSlo
     let description = ""
     console.log("calString", array)
     array.forEach(item => {
-        const craftEqiupment = Array.from(equipmentMap.values()).find(equipment => equipment?.id === item.id)
+        const craftEqiupment = Array.from(equipmentMap.values()).find(equipment => equipment?.id === item.id) ?? item.item
         const text = Array.from(item.text.matchAll(/(<([^<>]*)>)?([^<]*)/g)).flatMap(item => {
             let s = ""
             if (item[1] && item[1] !== "") {
@@ -126,13 +126,15 @@ export class FormulaString {
     name: string;
     max?: string;
     skill?: SkillEnum;
+    item?: CraftEqiupment;
 
-    constructor(id: string, text: string, name: string, max?: string, skill?: SkillEnum) {
+    constructor(id: string, text: string, name: string, max?: string, skill?: SkillEnum, item?: CraftEqiupment) {
         this.id = id;
         this.text = text;
         this.name = name;
         this.max = max;
         this.skill = skill;
+        this.item = item;
     }
 }
 

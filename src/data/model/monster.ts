@@ -7,7 +7,7 @@ import { Status } from "./status"
 export class MonsterId {
     id!: number;
     name!: string;
-    
+
     constructor(id: number, name: string) {
         this.id = id;
         this.name = name;
@@ -23,6 +23,7 @@ export class Monster {
     isBoss: boolean = false;
     attribute!: MonsterElement;
     status!: Status
+    hp!: number;
     softDef(): number {
         return monsterSoftDef(this.level, this.status.vit)
     }
@@ -54,12 +55,23 @@ export class MonsterRace {
     name: string;
     physicalAttributeType: AttributeTypeEnum;
     magicAttributeType: AttributeTypeEnum;
+    ignoreDefAttributeType: AttributeTypeEnum;
+    ignoreMdefAttributeType: AttributeTypeEnum;
 
-    constructor(id: number, name: string, physicalAttributeType: AttributeTypeEnum, magicAttributeType: AttributeTypeEnum) {
+    constructor(
+        id: number,
+        name: string,
+        physicalAttributeType: AttributeTypeEnum,
+        magicAttributeType: AttributeTypeEnum,
+        ignoreDefAttributeType: AttributeTypeEnum,
+        ignoreMdefAttributeType: AttributeTypeEnum,
+    ) {
         this.id = id;
         this.name = name;
         this.physicalAttributeType = physicalAttributeType
         this.magicAttributeType = magicAttributeType
+        this.ignoreDefAttributeType = ignoreDefAttributeType
+        this.ignoreMdefAttributeType = ignoreMdefAttributeType
     }
 }
 

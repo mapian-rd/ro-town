@@ -1,5 +1,5 @@
 import React from "react";
-import { cardDatabase } from "./data/database/item";
+import { cardDatabase } from "./data/database/card";
 import { Equipment } from "./data/model/Itemv1";
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';

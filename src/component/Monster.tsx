@@ -31,7 +31,7 @@ export default function Monster(prop: MonsterProps) {
     return (
         <Box title="Monster">
             <div className="row">
-                <div className="col-auto">
+                <div className="col-2">
                     <img className="w-100 my-2" src={`https://static.divine-pride.net/images/mobs/png/${context.monsterId?.id}.png`} alt="Monster" />
                 </div>
                 <div className="col-10">
@@ -46,6 +46,12 @@ export default function Monster(prop: MonsterProps) {
                     </div>
 
                     <div className="row">
+                        <div className="col-12">
+                            <div className="d-flex">
+                                <span className="monster-status me-1 jc-center">Hp</span>
+                                <span className="w-100 text-end">{prop.monster?.hp}</span>
+                            </div>
+                        </div>
                         <div className="col-xl-6 col-12">
                             <div className="d-flex">
                                 <span className="monster-status me-1 jc-center">Lv</span>

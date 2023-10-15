@@ -1,6 +1,7 @@
 import { classList, getClass, noviceClass } from "../constraint/class"
 import { petFriendlyList } from "../constraint/pet"
-import { itemBuffDatabase, skillBuffDatabase } from "../database/buff"
+import { itemBuffDatabase } from "../database/buff"
+import { skillBuffDatabase, skillPassiveDatabase } from "../database/skill"
 import { petList } from "../database/pet"
 import { ItemBuff, SkillBuff } from "./Buff"
 import { JobClass, JobClassEnum } from "./class"
@@ -9,9 +10,14 @@ import { EquipmentSlot } from "./EquipmentSlot"
 import { Exportable } from "./Exportable"
 import { Item } from "./Itemv2"
 import { Pet, PetFriendly, PetFriendlyEnum } from "./Petv2"
-import { ActiveSkill, Skill } from "./skill"
+import { ActiveSkill, Skill, SkillEnum } from "./skill"
 import { Status } from "./status"
 import { Storage } from "./storage"
+
+interface Activable {
+    active: boolean
+    lv: number
+}
 
 export class CharacterExport implements Exportable {
     name: string = "Character1"
@@ -28,7 +34,7 @@ export class CharacterExport implements Exportable {
     pet?: string;
     petFriendly?: PetFriendlyEnum;
     itemBuff: Map<string, boolean> = new Map()
-    skillBuff: Map<string, boolean> = new Map()
+    skillBuff: Map<string, Activable> = new Map()
 
     static getCharacter(cExport: CharacterExport, storage: Storage, buffStorage: Item[]): Character {
         const character = new Character()
@@ -53,18 +59,12 @@ export class CharacterExport implements Exportable {
             return []
         })
         character.skillBuff = Array.from(cExport.skillBuff).flatMap(([key, value]) => {
-            const item = skillBuffDatabase.find(item => item.id === key)
+            const item = [...skillBuffDatabase, ...skillPassiveDatabase].find(item => item.id === key)
             if (item) {
                 return {
                     ...item,
-                    isActive: value
-                }
-            }
-            const passive = character.clazz.passiveSkill.find(item => item.id === key)
-            if (passive) {
-                return {
-                    ...passive,
-                    isActive: value
+                    isActive: value.active,
+                    activeLv: value.lv
                 }
             }
             return []
@@ -96,7 +96,7 @@ export class CharacterExport implements Exportable {
         })
         cExport.skillBuff = new Map()
         character.skillBuff.forEach(item => {
-            cExport.skillBuff.set(item.id, item.isActive)
+            cExport.skillBuff.set(item.id, { active: item.isActive, lv: item.activeLv })
         })
         console.log("getExport", cExport)
         return cExport

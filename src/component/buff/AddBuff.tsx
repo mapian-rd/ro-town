@@ -19,7 +19,7 @@ const typeOption = Array.from(attributeList).flatMap(([key, value]) => {
 
 const uniqueSkill: Map<SkillEnum, 1> = new Map()
 
-const skillOption = Array.from(classList).flatMap(([key, value]) => value.activeSkill.flatMap(skill => {
+const skillOption = Array.from(classList).flatMap(([key, value]) => value.activeSkillItem.flatMap(skill => {
     const isAdded = uniqueSkill.get(skill.enum) ?? 0
     if (isAdded === 1) return []
     uniqueSkill.set(skill.enum, 1)
@@ -33,6 +33,7 @@ export default function AddBuff() {
     const [name, setName] = useState<string>("")
     const [imgId, setImgId] = useState<number>()
     const [attributes, setAttributes] = useState<Attribute[]>([])
+    const [item, setItem] = useState<Item>(new Item(crypto.randomUUID(), name, ItemTypeEnum.Buff, []))
 
     function onChangeName(event: React.ChangeEvent<HTMLInputElement>) {
         let { value } = event.target;
@@ -75,13 +76,21 @@ export default function AddBuff() {
     }
 
     async function saveClick() {
-        const item = new Item(crypto.randomUUID(), name, ItemTypeEnum.Buff, attributes)
-        item.imgId = imgId
-        console.log("saveClick", item)
         api.addBuff(item)
+        clearClick()
+        api.setViewState(ViewState.BuffStorage)
+    }
+
+    function clearClick() {
         setName("");
         setImgId(undefined);
         setAttributes([]);
+        setItem(new Item(crypto.randomUUID(), "", ItemTypeEnum.Buff, []))
+        api.setViewItem(undefined)
+    }
+
+    function cancelClik() {
+        clearClick()
         api.setViewState(ViewState.BuffStorage)
     }
 
@@ -141,12 +150,30 @@ export default function AddBuff() {
         )
     })
 
+    useEffect(() => {
+        setItem({ ...item, name })
+    }, [name])
+
+    useEffect(() => {
+        setItem({ ...item, imgId })
+    }, [imgId])
+
+    useEffect(() => {
+        setItem({ ...item, attributeList: attributes })
+    }, [attributes])
+
+    useEffect(() => {
+        if (item.name !== '') {
+            api.setViewItem(item)
+        }
+    }, [item])
+
     return (
         <div className="d-flex flex-column h-100">
             <div className='d-flex' >
-                <button onClick={saveClick}>Save</button>
+                <button onClick={cancelClik}>Cancel</button>
             </div>
-            <Box className="flex-grow-1" title="Add Custom">
+            <Box className="flex-grow-1" title="Add Custom" buttonText="Clear" onClick={clearClick}>
                 <div>
                     <div className="row mb-2">
                         <div className="col-3 jc-center">
@@ -175,6 +202,9 @@ export default function AddBuff() {
                 </div>
                 {attributeComList}
                 <button onClick={onAddClick}>Add Attribute</button>
+                <div className={item.name ? 'd-flex justify-content-around mt-4' : ' d-none'} >
+                    <button onClick={saveClick}>Save</button>
+                </div>
             </Box>
         </div>
     )

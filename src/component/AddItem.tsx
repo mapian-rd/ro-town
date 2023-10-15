@@ -6,10 +6,13 @@ import Select from "react-select";
 import { ItemTypeEnum, itemTypeList } from "../data/model/itemType";
 import { optionStyle } from "../App";
 import { Equipment, Item } from "../data/model/Itemv2";
-import { cardDatabase, enchantDatabase, itemDatabase, optionDatabase } from "../data/database/item";
 import { CraftEqiupment } from "../data/model/CraftEquipment";
 import { checkMinMax } from "../common/extension";
 import { CardPrefixSearch, ItemDescriptionSearch } from "../data/DividePride";
+import { cardDatabase } from "../data/database/card";
+import { enchantDatabase } from "../data/database/enchant";
+import { itemDatabase } from "../data/database/item";
+import { optionDatabase } from "../data/database/option";
 
 const typeOption = Array.from(itemTypeList).map(([key, value]) => {
     return { value: key, label: value.name }
@@ -142,7 +145,6 @@ export default function AddItem() {
 
     async function saveClick() {
         if (craftEquipment) {
-            console.log(craftEquipment)
             let refineText = ""
             if (craftEquipment.refineLevel > 0) {
                 refineText = `+${craftEquipment.refineLevel} `
@@ -185,12 +187,22 @@ export default function AddItem() {
 
             craftEquipment.name = refineText + cardText + item?.name + cardSlotText + optionText
             api.addItem(craftEquipment)
-            setType(undefined);
-            setItem(undefined);
-            setCraftEquipment(undefined);
-            setRefineable(false);
-            api.setViewState(ViewState.Storage)
+            clearClick()
         }
+    }
+
+    async function equipClick() {
+        await saveClick()
+        if (craftEquipment) {
+            api.equip(craftEquipment)
+        }
+    }
+
+    function clearClick() {
+        setType(undefined);
+        setItem(undefined);
+        setCraftEquipment(undefined);
+        setRefineable(false);
     }
 
     useEffect(() => {
@@ -204,16 +216,30 @@ export default function AddItem() {
 
     useEffect(() => {
         console.log("useEffect refineLevel", craftEquipment?.refineLevel)
+        if (craftEquipment) {
+            let refineText = ""
+            if (craftEquipment.refineLevel > 0) {
+                refineText = `+${craftEquipment.refineLevel} `
+            }
+            let cardSlotText = ""
+            if (craftEquipment.cardList.length > 0) {
+                cardSlotText = ` [${craftEquipment.cardList.length}]`
+            }
+            let optionText = ""
+            let fillOptionList = craftEquipment.optionList.flatMap(item => item ?? [])
+            if (fillOptionList.length > 0) {
+                optionText += ` [${fillOptionList.length}Option]`
+            }
+            craftEquipment.name = refineText + item?.name + cardSlotText + optionText
+            api.setViewItem(craftEquipment)
+        }
     }, [craftEquipment])
 
     console.log("handleRefineChange ens", craftEquipment?.refineLevel)
 
     return (
-        <div className="d-flex flex-column h-100">
-            <div className='d-flex' >
-                <button onClick={saveClick}>Save</button>
-            </div>
-            <Box className="flex-grow-1" title="Craft">
+        <div className="d-flex flex-column h-100 pt-4">
+            <Box className="flex-grow-1" title="Craft Equipment" buttonText="Clear" onClick={clearClick}>
                 <div>
                     <div className="row">
                         <div className="col-3 jc-center">
@@ -259,6 +285,10 @@ export default function AddItem() {
                     {cardView}
                     {enchantView}
                     {optionView}
+                    <div className={craftEquipment ? 'd-flex justify-content-around mt-4' : ' d-none'} >
+                        <button onClick={saveClick}>Save</button>
+                        <button onClick={equipClick}>Equip</button>
+                    </div>
                 </div>
             </Box>
         </div>

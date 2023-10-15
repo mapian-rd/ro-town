@@ -54,7 +54,7 @@ export function Character() {
     return (
         <Box title={context.character.name} titleEdiable onChangeTitle={onChangeName}>
             <div>
-                <div className="row mx-0 mb-2">
+                <div className="row mx-0">
                     <div className="col-xl-2 px-0 d-flex">
                         <span className="me-1 jc-center">LV</span>
                         <input

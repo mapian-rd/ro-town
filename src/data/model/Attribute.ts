@@ -15,8 +15,10 @@ export class Attribute {
      * 2. Every n Refine <this.Rf/n>
      * 3. Every n Refine of Item <I$id.Rf/n>
      * 4. Every n Dex <dex/n>
-     * 5. Skill level <S$name.Lv>
+     * 5. Skill level <S$id.Lv>
      * 6. Every n Base Lv <BaseLv/n>
+     * 7. Refine level <this.Rf/1>
+     * 8. Item Refine level <I$id.Rf/1>
      */
     formulaText: string = "";
     max?: string;
@@ -52,9 +54,9 @@ export class Attribute {
         if (attribute.condition.skillList) {
             for (let i = 0; i < attribute.condition.skillList.length; i++) {
                 const condition = attribute.condition.skillList[i]
-                const activeSkill = character.clazz.activeSkill.find(skill => skill.enum === condition.skill)
-                const buffSkill = character.clazz.buffSkill.find(skill => skill.enum === condition.skill)
-                const passiveSkill = character.clazz.passiveSkill.find(skill => skill.enum === condition.skill)
+                const activeSkill = character.clazz.activeSkill.find(skill => skill === condition.skill)
+                const buffSkill = character.clazz.buffSkill.find(skill => skill === condition.skill)
+                const passiveSkill = character.clazz.passiveSkill.find(skill => skill === condition.skill)
                 if (!activeSkill && !buffSkill && !passiveSkill) {
                     return false
                 }
@@ -94,6 +96,26 @@ export class Attribute {
         }
         return true
     }
+}
+
+
+export interface AttributeList {
+    type: AttributeTypeEnum;
+    skill?: SkillEnum
+    /**
+     * Formula
+     * 1. Basic Math +-*\/
+     * 2. Every n Refine <this.Rf/n>
+     * 3. Every n Refine of Item <I$id.Rf/n>
+     * 4. Every n Dex <dex/n>
+     * 5. Skill level <S$id.Lv>
+     * 6. Every n Base Lv <BaseLv/n>
+     * 7. Refine level <this.Rf/1>
+     * 8. Item Refine level <I$id.Rf/1>
+     */
+    formulaText: string[]
+    max?: string[];
+    condition?: Condition;
 }
 
 export interface AttributeName extends Attribute {

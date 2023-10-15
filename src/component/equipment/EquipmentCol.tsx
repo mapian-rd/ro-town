@@ -6,7 +6,7 @@ interface EquipmentColProps {
     type: EquipableType;
     equipment?: CraftEqiupment;
     onDrag?: (event: React.DragEvent<HTMLDivElement>, item: CraftEqiupment) => void;
-    onClick?: (item: CraftEqiupment) => void;
+    onClick?: (item?: CraftEqiupment) => void;
 }
 
 export function EqiupmentCol(props: EquipmentColProps) {
@@ -15,13 +15,13 @@ export function EqiupmentCol(props: EquipmentColProps) {
         element = (
             <div
                 id={"equipment-" + props.equipment.id}
-                className="col-5 equipment-col"
+                className="col-5 equipment-col cursor-pointer"
                 draggable
                 onDragStart={(event) => (props.onDrag && props.equipment) ? props.onDrag(event, props.equipment) : undefined}
-                onClick={() => (props.onClick && props.equipment) ? props.onClick(props.equipment) : undefined}
+                onClick={() => props.onClick ? props.onClick(props.equipment) : undefined}
             >
                 <div className="row">
-                    <div className="col-4 my-2 pe-0">
+                    <div className="col-auto my-2 equipment-img">
                         <img className="h-100" src={`https://static.divine-pride.net/images/items/item/${Item.getImgId(props.equipment.itemId, props.equipment.item?.imgId)}.png`} alt="Item" />
                     </div>
                     <div className="col px-1 equipment-ed">
@@ -32,9 +32,9 @@ export function EqiupmentCol(props: EquipmentColProps) {
         )
     } else {
         element = (
-            <div className="col-5 equipment-col">
+            <div className="col-5 equipment-col cursor-pointer" onClick={() => props.onClick ? props.onClick(props.equipment) : undefined}>
                 <div className="row">
-                    <div className="col-4 my-2">
+                    <div className="col-auto my-2 equipment-img">
                         <img className="w-100" src={process.env.PUBLIC_URL + "/item_invert.png"} alt="Item" />
                     </div>
                     <div className="col px-1 equipment-no">

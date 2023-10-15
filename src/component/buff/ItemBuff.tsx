@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import { Named } from "../../data/model/Itemv2";
 import Box from "../Box";
 
 interface Buff {
@@ -6,6 +7,9 @@ interface Buff {
     name: string;
     imgSrc?: string;
     isActive: boolean;
+    activeLv?: number;
+    maxLv?: number;
+    suffix?: string[];
 }
 
 interface Props {
@@ -14,6 +18,8 @@ interface Props {
     buttonText?: string;
     onClick?: () => void;
     handleBuffChange?: (event: React.ChangeEvent<HTMLInputElement>, id: string) => void
+    handleLvChange?: (event: React.ChangeEvent<HTMLInputElement>, id: string) => void
+    onClickBuff: (id: string) => void;
 }
 
 export default function ItemBuff(props: Props) {
@@ -22,15 +28,37 @@ export default function ItemBuff(props: Props) {
     const [filteredItemList, setFilteredItemList] = useState<Buff[]>(props.list)
 
     const itemComList = filteredItemList.map(item => {
+        let suffix = ""
+        if (item.maxLv && item.maxLv > 1) {
+            if (item.suffix) {
+                suffix = item.suffix[(item.activeLv ?? 1) - 1]
+            } else {
+                suffix = "Lv." + item.activeLv ?? 1
+            }
+        }
         return (
-            <div className="row p-1" key={'buff-' + item.id}>
-                <div className="col-auto">
-                    <img className="w-100 my-2" src={item.imgSrc} alt="Item" />
+            <div className="row p-1 mx-0" key={'buff-' + item.id} id={'buff-' + item.id}>
+                <div className="col cursor-pointer" onClick={() => props.onClickBuff(item.id)}>
+                    <div className="row">
+                        <div className="col-auto">
+                            <img className="w-100 my-2" src={item.imgSrc} alt="Item" />
+                        </div>
+                        <div className={'col ps-0 d-flex align-items-center text-break'}>
+                            {item.name} {suffix}
+                        </div>
+                    </div>
                 </div>
-                <div className={'col ps-0 d-flex align-items-center text-break'}>
-                    {item.name}
+                <div className={'col-auto d-flex' + (item.maxLv ? '' : ' d-none')}>
+                    <span className="me-1 jc-center"></span>
+                    <input
+                        type="number"
+                        min="1"
+                        max={item.maxLv}
+                        value={item.activeLv}
+                        onChange={event => props.handleLvChange ? props.handleLvChange(event, item.id) : undefined}
+                    />
                 </div>
-                <div className={'col-auto'}>
+                <div className='col-auto jc-center'>
                     <div className="form-check form-switch">
                         <input
                             className="form-check-input"
@@ -64,11 +92,11 @@ export default function ItemBuff(props: Props) {
                 }
                 return true
             })
-            .sort((a, b) => {
-                if (a.isActive) return -1
-                if (b.isActive) return 1
-                return 0
-            })
+        // .sort((a, b) => {
+        //     if (a.isActive) return -1
+        //     if (b.isActive) return 1
+        //     return 0
+        // })
         setFilteredItemList(itemList)
     }, [filterName, props.list])
 
@@ -76,7 +104,7 @@ export default function ItemBuff(props: Props) {
         <Box
             className="h-100"
             title={props.title}
-            buttonText={props.onClick ? "Edit" : undefined}
+            buttonText={props.onClick ? "Add" : undefined}
             onClick={props.onClick}
             onSearchChange={onSearchChange}
             searchable

@@ -9,7 +9,7 @@ export enum ItemTypeEnum {
     ShadowWeapon, ShadowArmor, ShadowShield, ShadowShoes, ShadowEarring, ShadowPendent,
     CardHeadgear, CardArmor, CardWeapon, CardShield, CardGarment, CardShoes, CardAccessery, CardAccesseryLeft, CardAccesseryRight,
     Pet,
-    Enchant, Buff,
+    Enchant, Buff, CostumeEnchant,
 }
 
 export class ItemType {
@@ -73,12 +73,12 @@ export const itemTypeList: Map<ItemTypeEnum, EquipableType> = new Map([
     [ItemTypeEnum.CostumeML, { name: "Costume Middle-Lower", equipSlot: [EquipmentSlot.middleCostume, EquipmentSlot.lowerCostume] }],
     [ItemTypeEnum.CostumeUML, { name: "Costume Upper-Middle-Lower", equipSlot: [EquipmentSlot.upperCostume, EquipmentSlot.middleCostume, EquipmentSlot.lowerCostume] }],
     [ItemTypeEnum.CostumeGarment, { name: "CostumeGarment", equipSlot: [EquipmentSlot.garmentCostume] }],
-    [ItemTypeEnum.ShadowWeapon, { name: "Shadow Weapon", equipSlot: [EquipmentSlot.weaponShadow] }],
-    [ItemTypeEnum.ShadowArmor, { name: "Shadow Armor", equipSlot: [EquipmentSlot.armorShadow] }],
-    [ItemTypeEnum.ShadowShield, { name: "Shadow Shield", equipSlot: [EquipmentSlot.sheidShadow] }],
-    [ItemTypeEnum.ShadowShoes, { name: "Shadow Shoes", equipSlot: [EquipmentSlot.shoesShadow] }],
-    [ItemTypeEnum.ShadowEarring, { name: "Shadow Earring", equipSlot: [EquipmentSlot.earringShadow] }],
-    [ItemTypeEnum.ShadowPendent, { name: "Shadow Pendent", equipSlot: [EquipmentSlot.pendantShadow] }],
+    [ItemTypeEnum.ShadowWeapon, { name: "Shadow Weapon", refineable: true, equipSlot: [EquipmentSlot.weaponShadow] }],
+    [ItemTypeEnum.ShadowArmor, { name: "Shadow Armor", refineable: true, equipSlot: [EquipmentSlot.armorShadow] }],
+    [ItemTypeEnum.ShadowShield, { name: "Shadow Shield", refineable: true, equipSlot: [EquipmentSlot.sheidShadow] }],
+    [ItemTypeEnum.ShadowShoes, { name: "Shadow Shoes", refineable: true, equipSlot: [EquipmentSlot.shoesShadow] }],
+    [ItemTypeEnum.ShadowEarring, { name: "Shadow Earring", refineable: true, equipSlot: [EquipmentSlot.earringShadow] }],
+    [ItemTypeEnum.ShadowPendent, { name: "Shadow Pendent", refineable: true, equipSlot: [EquipmentSlot.pendantShadow] }],
 ])
 
 export class WeaponType extends EquipableType {

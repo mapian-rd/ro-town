@@ -8,27 +8,27 @@ export const MonSizeBig = new MonsterSize(2, "Big", AttributeTypeEnum.PhysicalLa
 
 export const MonSizeList = [MonSizeSmall, MonSizeMedium, MonSizeBig]
 
-export const MonTypeFormless = new MonsterRace(0, "Formless", AttributeTypeEnum.PhysicalFormless, AttributeTypeEnum.MagicFormless)
-export const MonTypeUndead = new MonsterRace(1, "Undead", AttributeTypeEnum.PhysicalRaceUndead, AttributeTypeEnum.MagicUndead)
-export const MonTypeBrute = new MonsterRace(2, "Brute", AttributeTypeEnum.PhysicalBrute, AttributeTypeEnum.MagicBrute)
-export const MonTypePlant = new MonsterRace(3, "Plant", AttributeTypeEnum.PhysicalPlant, AttributeTypeEnum.MagicPlant)
-export const MonTypeInsect = new MonsterRace(4, "Insect", AttributeTypeEnum.PhysicalInsect, AttributeTypeEnum.MagicInsect)
-export const MonTypeAngel = new MonsterRace(5, "Angel", AttributeTypeEnum.PhysicalAngel, AttributeTypeEnum.MagicAngel)
-export const MonTypeDemon = new MonsterRace(6, "Demon", AttributeTypeEnum.PhysicalDemon, AttributeTypeEnum.MagicDemon)
-export const MonTypeDemi = new MonsterRace(7, "Demi-human", AttributeTypeEnum.PhysicalDemi, AttributeTypeEnum.MagicDemi)
+export const MonTypeFormless = new MonsterRace(0, "Formless", AttributeTypeEnum.PhysicalFormless, AttributeTypeEnum.MagicFormless, AttributeTypeEnum.IgnoreDefFormless, AttributeTypeEnum.IgnoreMdefFormless)
+export const MonTypeUndead = new MonsterRace(1, "Undead", AttributeTypeEnum.PhysicalRaceUndead, AttributeTypeEnum.MagicUndead, AttributeTypeEnum.IgnoreDefUndead, AttributeTypeEnum.IgnoreMdefUndead)
+export const MonTypeBrute = new MonsterRace(2, "Brute", AttributeTypeEnum.PhysicalBrute, AttributeTypeEnum.MagicBrute, AttributeTypeEnum.IgnoreDefBrute, AttributeTypeEnum.IgnoreMdefBrute)
+export const MonTypePlant = new MonsterRace(3, "Plant", AttributeTypeEnum.PhysicalPlant, AttributeTypeEnum.MagicPlant, AttributeTypeEnum.IgnoreDefPlant, AttributeTypeEnum.IgnoreMdefPlant)
+export const MonTypeInsect = new MonsterRace(4, "Insect", AttributeTypeEnum.PhysicalInsect, AttributeTypeEnum.MagicInsect, AttributeTypeEnum.IgnoreDefInsect, AttributeTypeEnum.IgnoreMdefInsect)
+export const MonTypeAngel = new MonsterRace(5, "Angel", AttributeTypeEnum.PhysicalAngel, AttributeTypeEnum.MagicAngel, AttributeTypeEnum.IgnoreDefAngel, AttributeTypeEnum.IgnoreMdefAngel)
+export const MonTypeDemon = new MonsterRace(6, "Demon", AttributeTypeEnum.PhysicalDemon, AttributeTypeEnum.MagicDemon, AttributeTypeEnum.IgnoreDefDemon, AttributeTypeEnum.IgnoreMdefDemon)
+export const MonTypeDemi = new MonsterRace(7, "Demi-human", AttributeTypeEnum.PhysicalDemi, AttributeTypeEnum.MagicDemi, AttributeTypeEnum.IgnoreDefDemi, AttributeTypeEnum.IgnoreMdefDemi)
 
 export const MonTypeList = [MonTypeFormless, MonTypeUndead, MonTypeBrute, MonTypePlant, MonTypeInsect, MonTypeAngel, MonTypeDemon, MonTypeDemi]
 
-export const Neutral = new Element("Neutral", 0, AttributeTypeEnum.PhysicalNeutral, AttributeTypeEnum.MagicNeutral)
-export const Water = new Element("Water", 1, AttributeTypeEnum.PhysicalWater, AttributeTypeEnum.MagicWater)
-export const Earth = new Element("Earth", 2, AttributeTypeEnum.PhysicalEarth, AttributeTypeEnum.MagicEarth)
-export const Fire = new Element("Fire", 3, AttributeTypeEnum.PhysicalFire, AttributeTypeEnum.MagicFire)
-export const Wind = new Element("Wind", 4, AttributeTypeEnum.PhysicalWind, AttributeTypeEnum.MagicWind)
-export const Poison = new Element("Poison", 5, AttributeTypeEnum.PhysicalPoison, AttributeTypeEnum.MagicPoison)
-export const Holy = new Element("Holy", 6, AttributeTypeEnum.PhysicalHoly, AttributeTypeEnum.MagicHoly)
-export const Dark = new Element("Dark", 7, AttributeTypeEnum.PhysicalDark, AttributeTypeEnum.MagicDark)
-export const Ghost = new Element("Ghost", 8, AttributeTypeEnum.PhysicalGhost, AttributeTypeEnum.MagicGhost)
-export const Undead = new Element("Undead", 9, AttributeTypeEnum.PhysicalUndead, AttributeTypeEnum.MagicUndead)
+export const Neutral = new Element("Neutral", 0, AttributeTypeEnum.PhysicalNeutral, AttributeTypeEnum.MagicNeutral, AttributeTypeEnum.MagicSkillNeutral)
+export const Water = new Element("Water", 1, AttributeTypeEnum.PhysicalWater, AttributeTypeEnum.MagicWater, AttributeTypeEnum.MagicSkillWater)
+export const Earth = new Element("Earth", 2, AttributeTypeEnum.PhysicalEarth, AttributeTypeEnum.MagicEarth, AttributeTypeEnum.MagicSkillEarth)
+export const Fire = new Element("Fire", 3, AttributeTypeEnum.PhysicalFire, AttributeTypeEnum.MagicFire, AttributeTypeEnum.MagicSkillFire)
+export const Wind = new Element("Wind", 4, AttributeTypeEnum.PhysicalWind, AttributeTypeEnum.MagicWind, AttributeTypeEnum.MagicSkillWind)
+export const Poison = new Element("Poison", 5, AttributeTypeEnum.PhysicalPoison, AttributeTypeEnum.MagicPoison, AttributeTypeEnum.MagicSkillPoison)
+export const Holy = new Element("Holy", 6, AttributeTypeEnum.PhysicalHoly, AttributeTypeEnum.MagicHoly, AttributeTypeEnum.MagicSkillHoly)
+export const Dark = new Element("Dark", 7, AttributeTypeEnum.PhysicalDark, AttributeTypeEnum.MagicDark, AttributeTypeEnum.MagicSkillDark)
+export const Ghost = new Element("Ghost", 8, AttributeTypeEnum.PhysicalGhost, AttributeTypeEnum.MagicGhost, AttributeTypeEnum.MagicSkillGhost)
+export const Undead = new Element("Undead", 9, AttributeTypeEnum.PhysicalUndead, AttributeTypeEnum.MagicUndead, AttributeTypeEnum.MagicSkillUndead)
 
 export const ElementList = [Neutral, Water, Earth, Fire, Wind, Poison, Holy, Dark, Ghost, Undead]
 

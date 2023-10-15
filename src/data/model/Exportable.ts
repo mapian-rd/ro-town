@@ -21,7 +21,11 @@ export class ExportData {
     ): ExportData {
         console.log("getExportData", context)
         const data = new ExportData()
-        data.storage = context.storage
+        data.storage.items = [...context.storage.items]
+        data.storage.items.forEach(item => {
+            item.item = undefined
+            item.sumAttributeList = undefined
+        })
         data.buffStorage = context.buffStorage
         data.character = CharacterExport.getExport(context.character)
         if (context.monsterId) {

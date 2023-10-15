@@ -17,10 +17,11 @@ export function Equipment(props: EquipmentProps) {
     const context = useContext(AppContext);
     const api = useContext(AppApiContext);
 
-    function onClick(item: CraftEqiupment) {
-        console.log("onClick", item.id)
-        if (context.viewState === ViewState.Storage) {
+    function onClick(item?: CraftEqiupment) {
+        if (item) {
             api.setViewItem(item)
+        } else {
+            api.setViewState(ViewState.AddItem)
         }
     }
 
@@ -45,6 +46,23 @@ export function Equipment(props: EquipmentProps) {
         event.preventDefault();
     }
 
+    function onEditClearClick() {
+        if (context.viewState === ViewState.Storage) {
+            const ids = new Map<string, boolean>()
+            Array.from(props.type).forEach(([key, value]) => {
+                let equipment = context.character.equipmentMap.get(key)
+                if (equipment) {
+                    if (!ids.get(equipment.id)) {
+                        api.unequip(equipment)
+                        ids.set(equipment.id, true)
+                    }
+                }
+            })
+        } else {
+            api.setViewState(ViewState.AddItem)
+        }
+    }
+
     // const api = useContext(AppApiContext);
     const eqipmentList = Array.from(props.type).map(([key, value]) => {
         let equipment = context.character.equipmentMap.get(key)
@@ -60,7 +78,7 @@ export function Equipment(props: EquipmentProps) {
 
     return (
         <div onDrop={onDrop} onDragOver={allowDrop}>
-            <Box title={props.title} buttonText="Edit" onClick={() => api.setViewState(ViewState.Storage)}>
+            <Box title={props.title} buttonText={context.viewState === ViewState.AddItem ? "Clear" : undefined} onClick={onEditClearClick}>
                 <div className="row row-cols-2 justify-content-between">
                     {eqipmentList}
                 </div>

@@ -1,11 +1,12 @@
 import { getClass } from "../constraint/class";
 import { Bow, OneHandedStaff } from "../constraint/itemType";
+import { skillActiveDatabase, skillBuffDatabase, skillPassiveDatabase } from "../database/skill";
 import { AttributeTypeEnum } from "./attributeType";
 import { ItemType, ItemTypeEnum, WeaponType } from "./itemType";
-import { ActiveSkill, PassiveSkill } from "./skill";
+import { ActiveSkill, PassiveSkill, Skill, SkillEnum } from "./skill";
 
 export enum JobClassEnum {
-    Novice, Doram
+    Novice, Doram, Mage,
 }
 
 export abstract class JobClass {
@@ -35,12 +36,27 @@ export abstract class JobClass {
     weaponPenalty: Map<ItemTypeEnum, number> = new Map([[ItemTypeEnum.OneHandRod, -25]])
     shieldPenalty: number = -10;
 
-    activeSkill: ActiveSkill[] = []
-    buffSkill: PassiveSkill[] = []
-    passiveSkill: PassiveSkill[] = []
+    activeSkill: SkillEnum[] = []
+    buffSkill: SkillEnum[] = []
+    passiveSkill: SkillEnum[] = []
 
-    getSkill() {
-        return [...this.activeSkill, ...this.buffSkill, ...this.passiveSkill]
+    activeSkillItem: ActiveSkill[] = []
+    buffSkillItem: PassiveSkill[] = []
+    passiveSkillItem: PassiveSkill[] = []
+
+    getActiveSkill(): ActiveSkill[] {
+        return this.activeSkill.flatMap(item => skillActiveDatabase.find(skill => skill.enum === item) ?? [])
+    }
+    getBuffSkill(): PassiveSkill[] {
+        return this.buffSkill.flatMap(item => skillBuffDatabase.find(skill => skill.enum === item) ?? [])
+    }
+
+    getPassiveSkill(): PassiveSkill[] {
+        return this.passiveSkill.flatMap(item => skillPassiveDatabase.find(skill => skill.enum === item) ?? [])
+    }
+
+    getSkill(): Skill[] {
+        return [...this.activeSkillItem, ...this.buffSkillItem, ...this.passiveSkillItem]
     }
 
     static getBonus(clazz: JobClass, jobLv: number, status: AttributeTypeEnum): number {

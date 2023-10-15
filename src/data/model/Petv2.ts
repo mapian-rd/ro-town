@@ -11,14 +11,17 @@ export class PetAttribute extends Attribute {
     }
 }
 
+export interface PetDescription {
+    intimacy: PetFriendly;
+    description: string;
+}
+
 export class Pet extends Item {
     imageId!: number;
     petAttribute: PetAttribute[];
-    description: string;
-    constructor(id: string, name: string, attribures: Attribute[], petAttribute: PetAttribute[], description: string) {
+    constructor(id: string, name: string, attribures: Attribute[], petAttribute: PetAttribute[], description: PetDescription[]) {
         super(id, name, ItemTypeEnum.Pet, attribures);
         this.petAttribute = petAttribute;
-        this.description = description;
     }
 
     static findPetAttribute(pet: Pet, intimacy: PetFriendly): Attribute[] {

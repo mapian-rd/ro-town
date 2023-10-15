@@ -1,34 +1,47 @@
-import { useContext, useEffect, useState } from "react";
+import { createRef, useContext, useEffect, useRef, useState } from "react";
 import { AppApiContext } from "../context/AppApiContext";
-import { AppContext } from "../context/AppContext";
+import { AppContext, ViewState } from "../context/AppContext";
 import { Instrument } from "../data/constraint/itemType";
 import { CraftEqiupment } from "../data/model/CraftEquipment";
 import { ItemTypeEnum, itemTypeList } from "../data/model/itemType";
 import { Equipment, Item } from "../data/model/Itemv2";
 import classNames from 'classnames';
 import Box from "./Box";
+import { MdDelete } from "react-icons/md";
 
 const searchDropdownList = Array.from(itemTypeList).map(([key, value]) => {
     return { label: value.name, value: key }
 })
 
+let scrollToLast = false
+
 export default function Storage() {
     console.log("Storage")
     const context = useContext(AppContext);
     const api = useContext(AppApiContext);
+    const lastItemRef = useRef<HTMLDivElement | null>(null);
 
     const [filterName, setFilterName] = useState<string>()
     const [filterType, setFilterType] = useState<ItemTypeEnum>()
     const [filteredItemList, setFilteredItemList] = useState<CraftEqiupment[]>(context.storage.items)
     const [list, setList] = useState<JSX.Element[]>([])
+    const [refMap, setRefMap] = useState<Map<string, React.RefObject<HTMLDivElement>>>(new Map())
 
     function onClick(item: CraftEqiupment) {
         console.log("onClick", item.id)
-        api.setViewItem(item)
+        if (context.viewState === ViewState.AddItem) {
+            api.setViewItem2(item)
+        } else {
+            api.setViewItem(item)
+        }
     }
 
-    function onEquip(item: CraftEqiupment) {
-        api.equip(item)
+    function onEquip(found: boolean, item: CraftEqiupment) {
+        if (found) {
+            api.unequip(item)
+        } else {
+            api.equip(item)
+        }
     }
 
     function onDrag(event: React.DragEvent<HTMLDivElement>, item: CraftEqiupment) {
@@ -87,10 +100,17 @@ export default function Storage() {
         setFilteredItemList(itemList)
     }, [context.storage, filterName, filterType])
 
+    useEffect(() => {
+        scrollToLast = true
+    }, [context.storage])
+
     // context.storage.items
     useEffect(() => {
         console.log("Storage list")
         setList(filteredItemList.map(item => {
+            const itemRef = createRef<HTMLDivElement>();
+            refMap.set(item.id, itemRef)
+
             console.log("Storage list", item.id)
 
             const found = Array.from(context.character.equipmentMap).findIndex(([key, value]) => {
@@ -99,14 +119,14 @@ export default function Storage() {
             console.log("Storage", item, item.id, item.name, context.viewItem)
 
             return (
-                <div className="row p-1" key={'storage-' + item.id}>
-                    <div className="col-auto">
-                        <button onClick={() => onDeleteClick(item.id)}>-</button>
+                <div className={"row p-1" + (found ? ' storage-equiped' : '')} key={'storage-' + item.id} ref={itemRef}>
+                    <div className="col-auto p-0">
+                        <button className="h-100" onClick={() => onDeleteClick(item.id)}><MdDelete /></button>
                     </div>
                     <div className="col">
                         <div
                             id={'storage-' + item.id}
-                            className={(context.viewItem?.id === item.id ? 'row storage-item rounded select-ed' : 'row') + (found ? ' storage-equiped' : '')}
+                            className={'row cursor-pointer' + (context.viewItem?.id === item.id ? ' storage-item rounded select-ed' : '')}
                             draggable
                             onClick={() => onClick(item)}
                             onDragStart={event => onDrag(event, item)}>
@@ -118,10 +138,32 @@ export default function Storage() {
                             </div>
                         </div>
                     </div>
+                    <div className="col-auto">
+                        <button
+                            className={"h-100 storage-button" + (found ? ' storage-equiped' : '')}
+                            onClick={() => onEquip(found, item)}
+                        >
+                            {found ? "Unequip" : "Equip"}
+                        </button>
+                    </div>
                 </div>
             )
         }))
-    }, [filteredItemList, context.viewItem])
+    }, [filteredItemList, context.character])
+
+    useEffect(() => {
+        if (scrollToLast && lastItemRef) {
+            lastItemRef?.current?.scrollIntoView()
+            scrollToLast = false
+        }
+    }, [list])
+
+    useEffect(() => {
+        if (context.viewItem) {
+            const ref = refMap.get(context.viewItem.id)
+            ref?.current?.scrollIntoView()
+        }
+    }, [context.viewItem])
 
     return (
         <div className="d-flex flex-column flex-grow-1 h-100 mh-0" onDrop={onDrop} onDragOver={allowDrop}>
@@ -132,6 +174,7 @@ export default function Storage() {
             >
                 <div className="mh-0" >
                     {list}
+                    <div ref={lastItemRef}></div>
                 </div>
             </Box >
         </div>

@@ -4,41 +4,19 @@ import { ItemTypeEnum } from "../model/itemType"
 import { ActiveSkill, PassiveSkill, SkillEnum } from "../model/skill"
 import { OneHandedStaff } from "./itemType"
 
-const normalAttack: ActiveSkill = {
-    id: "normal",
-    enum: SkillEnum.NormalAttack,
-    name: "Normal Attack",
-    maxLv: 1,
-    percent: [100],
-    vct: [0],
-    fct: [0],
-    cooldown: [0],
-    delay: [0],
-    hit: [1],
-    type: AttributeTypeEnum.Atk,
-    isRange: false,
-}
-
-const normalRangeAttack: ActiveSkill = {
-    id: "range",
-    enum: SkillEnum.NormalRangeAttack,
-    name: "Normal Attack (Range)",
-    maxLv: 1,
-    percent: [100],
-    vct: [0],
-    fct: [0],
-    cooldown: [0],
-    delay: [0],
-    hit: [1],
-    type: AttributeTypeEnum.Atk,
-    isRange: true,
-}
-
 export class Novice extends JobClass {
+    // enum: JobClassEnum = JobClassEnum.Novice
     name = "Novice"
-    activeSkill = [
-        normalAttack
+    activeSkill: SkillEnum[] = [
+        SkillEnum.NormalAttack,
     ]
+    
+    constructor() {
+        super()
+        this.activeSkillItem = this.getActiveSkill()
+        this.buffSkillItem = this.getBuffSkill()
+        this.passiveSkillItem = this.getPassiveSkill()
+    }
 }
 
 export class Doram extends JobClass {
@@ -95,154 +73,46 @@ export class Doram extends JobClass {
         1202, 1210, 1218, 1226, 1234, 1242, 1250, 1258, 1266, 1274];
     weaponPenalty = new Map([[ItemTypeEnum.OneHandRod, -20]])
     shieldPenalty = -7;
-    activeSkill = [
-        normalAttack,
-        normalRangeAttack,
-        {
-            id: "5033",
-            enum: SkillEnum.PickyPeck,
-            name: "Picky Peck",
-            maxLv: 5,
-            percent: [300, 400, 500, 600, 700],
-            vct: [1, 1, 1, 1, 1],
-            fct: [0, 0, 0, 0, 0],
-            cooldown: [0, 0, 0, 0, 0],
-            delay: [1, 1, 1, 1, 1],
-            hit: [5, 5, 5, 5, 5],
-            type: AttributeTypeEnum.Atk,
-            isRange: true,
-        },
-        {
-            id: "5036",
-            enum: SkillEnum.LunaticCarrotBeat,
-            name: "Lunatic Carrot Beat",
-            maxLv: 5,
-            percent: [300, 400, 500, 600, 700],
-            vct: [0, 0, 0, 0, 0],
-            fct: [1, 1, 1, 1, 1],
-            cooldown: [6, 6, 6, 6, 6],
-            delay: [1, 1, 1, 1, 1],
-            hit: [3, 3, 3, 3, 3],
-            type: AttributeTypeEnum.Atk,
-            isRange: true,
-        },
-        {
-            id: "5045",
-            enum: SkillEnum.PowerOfFlock,
-            name: "Power Of Flock",
-            maxLv: 5,
-            percent: [0, 0, 0, 0, 0],
-            vct: [4, 3, 2, 1, 0],
-            fct: [1, 1, 1, 1, 1],
-            cooldown: [100, 100, 100, 100, 100],
-            delay: [1, 1, 1, 1, 1],
-            hit: [0, 0, 0, 0, 0],
-            type: AttributeTypeEnum.Debuff,
-            isRange: true,
-        },
-        {
-            id: "5046",
-            enum: SkillEnum.SpiritOfSavage,
-            name: "Sprit Of Savage",
-            maxLv: 5,
-            percent: [400, 550, 700, 850, 1000],
-            vct: [1, 1, 1, 1, 0],
-            fct: [2.5, 2, 1.5, 1, 0],
-            cooldown: [30, 28, 26, 24, 22],
-            delay: [1, 1, 1, 1, 1],
-            hit: [1, 1, 1, 1, 1],
-            type: AttributeTypeEnum.Atk,
-            isRange: true,
-        }
+    activeSkill: SkillEnum[] = [
+        SkillEnum.NormalAttack,
+        SkillEnum.NormalRangeAttack,
+        SkillEnum.Scratch,
+        SkillEnum.TunaBelly,
+        SkillEnum.SilvervineStemSpear,
+        SkillEnum.CatnipMeteor,
+        SkillEnum.PickyPeck,
+        SkillEnum.LunaticCarrotBeat,
+        SkillEnum.PowerOfFlock,
+        SkillEnum.SpiritOfSavage,
     ];
     passiveSkill = [
-        {
-            id: "5031",
-            enum: SkillEnum.PowerofLife,
-            name: "Power of Life",
-            maxLv: 5,
-            attributeList: [
-                {
-                    type: AttributeTypeEnum.Flee,
-                    formulaText: "20",
-                },
-                {
-                    type: AttributeTypeEnum.Hit,
-                    formulaText: "20",
-                },
-                {
-                    type: AttributeTypeEnum.Critical,
-                    formulaText: "20",
-                },
-                {
-                    type: AttributeTypeEnum.RangeMul,
-                    formulaText: "20",
-                },
-            ],
-        },
-        {
-            id: "5035",
-            enum: SkillEnum.ArclouseDash,
-            name: "Arclouse Dash",
-            maxLv: 5,
-            attributeList: [
-                {
-                    type: AttributeTypeEnum.RangeMul,
-                    formulaText: "10",
-                },
-                {
-                    type: AttributeTypeEnum.Agi,
-                    formulaText: "40",
-                },
-            ]
-        },
-        {
-            id: "5052",
-            enum: SkillEnum.SpritOfLife,
-            name: "Sprit Of Life",
-            maxLv: 1,
-            attributeList: [
-                {
-                    type: AttributeTypeEnum.SkillBasePercent,
-                    skill: SkillEnum.PickyPeck,
-                    formulaText: "120",
-                },
-                {
-                    type: AttributeTypeEnum.SkillBasePercent,
-                    skill: SkillEnum.ScarOfTarou,
-                    formulaText: "120",
-                },
-                {
-                    type: AttributeTypeEnum.SkillBasePercent,
-                    skill: SkillEnum.LunaticCarrotBeat,
-                    formulaText: "120",
-                },
-                {
-                    type: AttributeTypeEnum.SkillBasePercent,
-                    skill: SkillEnum.SpiritOfSavage,
-                    formulaText: "120",
-                },
-            ]
-        }
+        SkillEnum.PowerOfSea,
+        SkillEnum.SpiritOfSea,
+        SkillEnum.PowerOfLand,
+        SkillEnum.SpiritOfLand,
+        SkillEnum.PowerofLife,
+        SkillEnum.SpritOfLife,
     ]
     buffSkill = [
-        {
-            id: "5047",
-            enum: SkillEnum.Hiss,
-            name: "Hiss",
-            maxLv: 5,
-            attributeList: [
-                {
-                    type: AttributeTypeEnum.PD,
-                    formulaText: "50",
-                },
-                {
-                    type: AttributeTypeEnum.MoveSpeed,
-                    formulaText: "1",
-                },
-            ]
-        }
+        SkillEnum.FreshShrimp,
+        SkillEnum.BunchOfShrimp,
+        SkillEnum.TunaParty,
+        SkillEnum.TastyShrimpParty,
+        SkillEnum.Grooming,
+        SkillEnum.Purring,
+        SkillEnum.Chattering,
+        SkillEnum.MeowMeow,
+        SkillEnum.NyangGrass,
+        SkillEnum.ArclouseDash,
+        SkillEnum.Hiss,
     ]
+
+    constructor() {
+        super()
+        this.activeSkillItem = this.getActiveSkill()
+        this.buffSkillItem = this.getBuffSkill()
+        this.passiveSkillItem = this.getPassiveSkill()
+    }
 }
 
 export const doramClass = new Doram()
@@ -255,7 +125,7 @@ export const classList: Map<JobClassEnum, JobClass> = new Map([
 
 export function getClass(type: JobClassEnum): JobClass {
     const statusType = classList.get(type)
-    if(statusType) {
+    if (statusType) {
         return statusType
     }
     return classList.get(type) ?? noviceClass

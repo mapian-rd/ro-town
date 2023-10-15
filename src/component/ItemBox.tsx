@@ -1,19 +1,22 @@
 import React, { ReactNode } from "react";
+import { OverlayTrigger, Tooltip } from "react-bootstrap";
 import { Item } from "../data/model/Itemv2";
 
 
 interface BoxProps {
     children: ReactNode;
     className?: string | undefined;
+    id?: string;
     title?: string;
     buttonText?: string;
     description?: any[];
     imgSrc?: string;
-    option?: string[];
+    option?: Item[];
     cardSlot?: number;
-    card?: string[];
+    card?: Item[];
     enchant?: Item[];
     onClick?: () => void;
+    onClickCard?: (item: Item, craftId?: string) => void;
 }
 
 export default function ItemBox(props: BoxProps) {
@@ -22,7 +25,7 @@ export default function ItemBox(props: BoxProps) {
         console.log("optionView")
         return (
             <div className="itembox-card mt-1" key={index}>
-                {option}
+                {option.name}
             </div>
         )
     })
@@ -31,28 +34,59 @@ export default function ItemBox(props: BoxProps) {
         console.log("cardView", props.cardSlot)
         if (props.card) {
             if (props.card.length > index) {
+                const card = props.card[index]
                 return (
-                    <img src={process.env.PUBLIC_URL + "/4140.png"} alt="card" key={index} />
+                    <OverlayTrigger
+                        placement="top"
+                        overlay={<Tooltip>{card.name}</Tooltip>}
+                    >
+                        {({ ref, ...triggerHandler }) => (
+                            <img
+                                src={process.env.PUBLIC_URL + "/4140.png"}
+                                alt="card"
+                                key={"card-" + card.id}
+                                id={"card-" + card.id}
+                                ref={ref} {...triggerHandler}
+                                onClick={() => props.onClickCard ? props.onClickCard(card, props.id) : undefined}
+                            />
+                        )}
+                    </OverlayTrigger>
                 )
             }
         }
         if (props.cardSlot) {
             if (props.cardSlot > index) {
                 return (
-                    <img src={process.env.PUBLIC_URL + "/nocard.png"} alt="card" key={index} />
+                    <img src={process.env.PUBLIC_URL + "/nocard.png"} alt="card" key={`${props.id}-${index}`} />
                 )
             }
         }
         if (props.enchant) {
             const enchantIndex = Math.abs(index - 3)
             if (props.enchant.length > enchantIndex) {
+                const enchant = props.enchant[enchantIndex]
                 return (
-                    <img src={`https://static.divine-pride.net/images/items/item/${props.enchant[enchantIndex].id}.png`} alt="enchant" key={index} />
+                    <OverlayTrigger
+                        placement="top"
+                        overlay={<Tooltip>{enchant.name}</Tooltip>}
+                    >
+                        {({ ref, ...triggerHandler }) => (
+                            <img
+                                src={`https://static.divine-pride.net/images/items/item/${enchant.id}.png`}
+                                alt="enchant"
+                                key={"card-" + enchant.id}
+                                id={"card-" + enchant.id}
+                                ref={ref} {...triggerHandler}
+                                onClick={() => props.onClickCard ? props.onClickCard(enchant, props.id) : undefined}
+                            />
+                        )}
+                    </OverlayTrigger>
+
                 )
             }
         }
         return (
-            <img src={process.env.PUBLIC_URL + "/none.png"} alt="card" key={index} />
+            <img src={process.env.PUBLIC_URL + "/none.png"} alt="card" key={`${props.id}-${index}`} />
         )
     })
 

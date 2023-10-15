@@ -1,5 +1,6 @@
 import { rWeapon } from "../../Constraints"
 import { finalATK, finalMagicDmg, finalMATK, finalPhysicalDmg, finalWeaponAtk, finalWeaponMatk, getMinMaxVarianceTK, pseudoElementAtk, trueWeaponMatk, defAtk, hardDefR, hardMdefR, monsterSoftDef, monsterSoftMdef, finalCritDmg, statusBonus, getMinMaxOverRefine } from "../../formula"
+import { Neutral } from "../constraint/Monster"
 import { AttributeType, AttributeTypeEnum } from "./attributeType"
 import { CalculatedAttribute } from "./CalculatedAttribute"
 import { Character } from "./Characterv2"
@@ -9,25 +10,123 @@ import { Monster } from "./monster"
 import { ActiveSkill, Skill } from "./skill"
 
 export class CombatStatus {
-    skillMod: number = 100
-    multiple: number = 100
+    type: AttributeTypeEnum = AttributeTypeEnum.Atk
+    isWeaponRange: boolean = false
+
+    rWeaponAtk: number = 0
+    rWeaponMatk: number = 0
+    rRefineAtk: number = 0
+    rRefineMatk: number = 0
+    rVarianceAtk: number = 0
+    rVarianceMatk: number = 0
+    rOverRefine: number = 0
+    rHighRefine: number = 0
+
+    lWeaponAtk: number = 0
+    lWeaponMatk: number = 0
+    lRefineAtk: number = 0
+    lRefineMatk: number = 0
+    lVarianceAtk: number = 0
+    lVarianceMatk: number = 0
+    lOverRefine: number = 0
+    lHighRefine: number = 0
+
+    finalWeapontk: DescriptionNumber = new DescriptionNumber()
+    equipmenttk: DescriptionNumber = new DescriptionNumber()
+
+    isThanatos: boolean = false
+    useDeftk: number = 0
+
+    isEdp: boolean = false
+    edpM: number = 1 // 4
+
+    pseudoElementtk: number = 0
+    sizeAddMulAP: DescriptionNumber = new DescriptionNumber()
+    elementAddMulAP: DescriptionNumber = new DescriptionNumber()
+    raceAddMulAP: DescriptionNumber = new DescriptionNumber()
+    classAddMulAP: DescriptionNumber = new DescriptionNumber()
+
+    elementMulP: number = 100
+
+    statustk: number = 0
+    elementSkillMulP: number | undefined
+    elementMildWindMulP: number | undefined
+    
+    finaltk: number[] = []
+
+    isMysticalAmp: boolean = false
+    mysticalAmpM: number = 1 // 1.5
+
+    tkAP: DescriptionNumber = new DescriptionNumber()
+    
+    skillP: DescriptionNumber = new DescriptionNumber()
+    finalSkillP: number = 0
+
+    isPowerThrust: boolean = false
+    powerThrustAP: number = 0 // 25
+
+    skillMulAP: DescriptionNumber = new DescriptionNumber()
+    elementDmgMulAP: DescriptionNumber = new DescriptionNumber()
+
+    ignoreDef: DescriptionNumber = new DescriptionNumber()
+    ignoreMdef: DescriptionNumber = new DescriptionNumber()
+    ignoreP: DescriptionNumber = new DescriptionNumber()
+    monhardef: number = 0
+    remainHardef: number = 0
+    hardefRM: number = 0
+    softef: number = 0
+
+    isSkillRange: boolean = false
+    rangeMulAP: DescriptionNumber = new DescriptionNumber()
+
+    isCrit: boolean = false
+    critDmgAP: DescriptionNumber = new DescriptionNumber()
+    finalCritDmg: number = 1
+
+    darkClawLv: number = 0
+    darkClawM: number = 1
+
+    vct: DescriptionNumber = new DescriptionNumber()
+    skillVct: DescriptionNumber = new DescriptionNumber()
+    fct: DescriptionNumber = new DescriptionNumber()
+    fctP: DescriptionNumber = new DescriptionNumber()
+    cooldown: DescriptionNumber = new DescriptionNumber()
+    delay: DescriptionNumber = new DescriptionNumber()
+    hit: DescriptionNumber = new DescriptionNumber()
 
     minDmg: number = 0
     maxDmg: number = 0
-    hit: number = 1
+    avgDmg: number = 0
+    skillHit: number = 1
     minDmgph: number = 0
     maxDmgph: number = 0
+    avgDmgph: number = 0
 
-    vct: number = 0
-    fct: number = 0
-    cooldown: number = 0
-    delay: number = 0
+    remainVct: number = 0
+    remainFct: number = 0
+    remainCooldown: number = 0
+    remainDelay: number = 0
 
     secph: number = 1
     hitRatio: number = 100
+    ph: DescriptionNumber = new DescriptionNumber()
+    finalHitRaio: number = 100
 
     final: number = 0
     finalph: number = 0
+
+    killedSec: number = 0
+
+    static getIgnoreed(
+        type: AttributeTypeEnum,
+        combatStatus: CombatStatus,
+    ): DescriptionNumber {
+        if (type === AttributeTypeEnum.Atk) {
+            return combatStatus.ignoreDef
+        } else {
+            return combatStatus.ignoreMdef
+        }
+    }
 
     static getWeapontk(
         type: AttributeTypeEnum,
@@ -44,35 +143,35 @@ export class CombatStatus {
         type: AttributeTypeEnum,
         cal: CalculatedAttribute,
         monster: Monster
-    ): number {
+    ): DescriptionNumber {
         let attributeType: AttributeTypeEnum
         if (type === AttributeTypeEnum.Atk) {
             attributeType = monster.size.physicalAttributeType
         } else {
             attributeType = monster.size.magicAttributeType
         }
-        return cal.finalAttributeList.get(attributeType)?.number ?? 0
+        return cal.finalAttributeList.get(attributeType) ?? new DescriptionNumber()
     }
 
     static getElementAddMulAP(
         type: AttributeTypeEnum,
         cal: CalculatedAttribute,
         monster: Monster
-    ): number {
+    ): DescriptionNumber {
         let attributeType: AttributeTypeEnum
         if (type === AttributeTypeEnum.Atk) {
             attributeType = monster.attribute.physicalAttributeType
         } else {
             attributeType = monster.attribute.magicAttributeType
         }
-        return cal.finalAttributeList.get(attributeType)?.number ?? 0
+        return cal.finalAttributeList.get(attributeType) ?? new DescriptionNumber()
     }
 
     static getRaceAddMulAP(
         type: AttributeTypeEnum,
         cal: CalculatedAttribute,
         monster: Monster
-    ): number {
+    ): DescriptionNumber {
         let attributeType: AttributeTypeEnum
         if (type === AttributeTypeEnum.Atk) {
             attributeType = monster.race.physicalAttributeType
@@ -80,21 +179,21 @@ export class CombatStatus {
             attributeType = monster.race.magicAttributeType
         }
         console.log("finalDmg", attributeType)
-        return cal.finalAttributeList.get(attributeType)?.number ?? 0
+        return cal.finalAttributeList.get(attributeType) ?? new DescriptionNumber()
     }
 
     static getClassAddMulAP(
         type: AttributeTypeEnum,
         cal: CalculatedAttribute,
         monster: Monster
-    ): number {
+    ): DescriptionNumber {
         let attributeType: AttributeTypeEnum
         if (type === AttributeTypeEnum.Atk) {
             attributeType = monster.isBoss ? AttributeTypeEnum.PhysicalBoss : AttributeTypeEnum.PhysicalMon
         } else {
             attributeType = monster.isBoss ? AttributeTypeEnum.PhysicalBoss : AttributeTypeEnum.PhysicalMon
         }
-        return cal.finalAttributeList.get(attributeType)?.number ?? 0
+        return cal.finalAttributeList.get(attributeType) ?? new DescriptionNumber()
     }
 
     static getStatustk(type: AttributeTypeEnum, cal: CalculatedAttribute): number {
@@ -106,19 +205,19 @@ export class CombatStatus {
         }
     }
 
-    static getEqiupmenttk(type: AttributeTypeEnum, cal: CalculatedAttribute): number {
+    static getEqiupmenttk(type: AttributeTypeEnum, cal: CalculatedAttribute): DescriptionNumber {
         if (type === AttributeTypeEnum.Atk) {
-            return cal.rawAttributeList.get(AttributeTypeEnum.Atk)?.number ?? 0
+            return cal.rawAttributeList.get(AttributeTypeEnum.Atk) ?? new DescriptionNumber()
         } else {
-            return cal.rawAttributeList.get(AttributeTypeEnum.Matk)?.number ?? 0
+            return cal.rawAttributeList.get(AttributeTypeEnum.Matk) ?? new DescriptionNumber()
         }
     }
 
-    static getEqiupmenttkPercent(type: AttributeTypeEnum, cal: CalculatedAttribute): number {
+    static getEqiupmenttkPercent(type: AttributeTypeEnum, cal: CalculatedAttribute): DescriptionNumber {
         if (type === AttributeTypeEnum.Atk) {
-            return cal.rawAttributeList.get(AttributeTypeEnum.AtkPercent)?.number ?? 0
+            return cal.rawAttributeList.get(AttributeTypeEnum.AtkPercent) ?? new DescriptionNumber()
         } else {
-            return cal.rawAttributeList.get(AttributeTypeEnum.MatkPercent)?.number ?? 0
+            return cal.rawAttributeList.get(AttributeTypeEnum.MatkPercent) ?? new DescriptionNumber()
         }
     }
 
@@ -173,6 +272,16 @@ export class CombatStatus {
             return finalWeaponMatk(weaponAtk, varianceAtk, refineAtk, overRefine, highRefine)
         }
     }
+    static getFinalWeapontkCal(
+        type: AttributeTypeEnum,
+        cal: CalculatedAttribute,
+    ): DescriptionNumber {
+        if (type === AttributeTypeEnum.Atk) {
+            return cal.finalAttributeList.get(AttributeTypeEnum.WeaponAtk) ?? new DescriptionNumber
+        } else {
+            return cal.finalAttributeList.get(AttributeTypeEnum.WeaponMatk) ?? new DescriptionNumber
+        }
+    }
 
     static getTrueMinMaxWeapontk(
         type: AttributeTypeEnum,
@@ -209,6 +318,19 @@ export class CombatStatus {
             const lMax = finalWeaponMatk(lWeapontk, lMinMaxVariancetk[1], lRefinetk, lMinMaxOverRefine[1], lHighRefine)
             return [rMin + lMin, rMax + lMax]
         }
+    }
+
+    static getTrueMinMaxWeapontkCal(
+        type: AttributeTypeEnum,
+        cal: CalculatedAttribute,
+    ): number[] {
+        let number: DescriptionNumber | undefined
+        if (type === AttributeTypeEnum.Atk) {
+            number = cal.finalAttributeList.get(AttributeTypeEnum.WeaponAtk)
+        } else {
+            number = cal.finalAttributeList.get(AttributeTypeEnum.WeaponMatk)
+        }
+        return [number?.min ?? 0, number?.max ?? 0]
     }
 
     static getFinaltk(
@@ -277,119 +399,257 @@ export class CombatStatus {
         skillLevel: number = 1
     ): number[] {
         // Vct
-        const vct = Math.min(100, cal.rawAttributeList.get(AttributeTypeEnum.VctPercent)?.number ?? 0)
-        const skillVct = Math.min(100, cal.skillAttributeList.get(skill.enum)?.number ?? 0)
-        combatStatus.vct = [skill.vct[skillLevel - 1]]
+        combatStatus.vct = cal.rawAttributeList.get(AttributeTypeEnum.VctPercent) ?? new DescriptionNumber()
+        combatStatus.skillVct = cal.skillAttributeList.get(skill.enum) ?? new DescriptionNumber()
+        const vct = Math.min(100, combatStatus.vct.number)
+        const skillVct = Math.min(100, combatStatus.skillVct.number)
+        combatStatus.remainVct = [skill.vct[skillLevel - 1]]
             .map(value => value - value * vct / 100)
             .map(value => value - value * skillVct / 100)
         [0]
 
         // Fct
-        const fct = cal.rawAttributeList.get(AttributeTypeEnum.Fct)?.number ?? 0
-        const fctP = Math.min(100, cal.rawAttributeList.get(AttributeTypeEnum.FctPercent)?.number ?? 0)
+        combatStatus.fct = cal.rawAttributeList.get(AttributeTypeEnum.Fct) ?? new DescriptionNumber()
+        combatStatus.fctP = cal.rawAttributeList.get(AttributeTypeEnum.FctPercent) ?? new DescriptionNumber()
+        const fct = combatStatus.fct.number
+        const fctP = Math.min(100, combatStatus.fctP.number)
         console.log("finalDmg fct", fct, fctP)
-        combatStatus.fct = [skill.fct[skillLevel - 1]]
+        combatStatus.remainFct = [skill.fct[skillLevel - 1]]
             .map(value => Math.max(0, value - fct))
             .map(value => value - value * fctP / 100)
         [0]
 
-        const skillCooldown = Math.min(100, cal.cooldownAttributeList.get(skill.enum)?.number ?? 0)
-        combatStatus.cooldown = [skill.cooldown[skillLevel - 1]]
+        // Cooldown
+        combatStatus.cooldown = cal.cooldownAttributeList.get(skill.enum) ?? new DescriptionNumber()
+        const skillCooldown = Math.min(100, combatStatus.cooldown.number)
+        combatStatus.remainCooldown = [skill.cooldown[skillLevel - 1]]
             .map(value => value - skillCooldown)
         [0]
 
-        const delay = Math.min(100, cal.rawAttributeList.get(AttributeTypeEnum.Delay)?.number ?? 0)
-        combatStatus.delay = [skill.delay[skillLevel - 1]]
+        // Delay
+        combatStatus.delay = cal.rawAttributeList.get(AttributeTypeEnum.Delay) ?? new DescriptionNumber()
+        const delay = Math.min(100, combatStatus.delay.number)
+        combatStatus.remainDelay = [skill.delay[skillLevel - 1]]
             .map(value => value - value * delay / 100)
         [0]
 
+        // Sec per hit
         combatStatus.secph = 4 - (cal.finalAttributeList.get(AttributeTypeEnum.Aspd)?.number ?? 150) / 50
 
-        combatStatus.hitRatio = Math.max(0, Math.min(100, 100 + (cal.finalAttributeList.get(AttributeTypeEnum.Hit)?.number ?? 175) - monster.hit))
+        // Hit
+        combatStatus.hit = cal.finalAttributeList.get(AttributeTypeEnum.Hit) ?? new DescriptionNumber(175, "175(base)")
+        combatStatus.hitRatio = Math.max(0, Math.min(100, 100 + combatStatus.hit.number - monster.hit))
+        combatStatus.ph = cal.finalAttributeList.get(AttributeTypeEnum.PerfectHit)?? new DescriptionNumber()
+        console.log("hit", combatStatus.ph)
+        combatStatus.finalHitRaio = (combatStatus.ph.number + (100 - combatStatus.ph.number) * combatStatus.hitRatio / 100)
 
+        // Skill parameter
         console.log("useEffect finalDmg 3")
         const type = skill.type
         const isSkillRange = skill.isRange
-        combatStatus.hit = skill.hit[skillLevel - 1]
+        combatStatus.skillHit = skill.hit[skillLevel - 1]
+        combatStatus.type = type
+        combatStatus.isSkillRange = isSkillRange ?? false
+
+        combatStatus.rWeaponAtk = cal.rWeaponAtk
+        combatStatus.rWeaponMatk = cal.rWeaponMatk
+        combatStatus.rRefineAtk = cal.rRefineAtk
+        combatStatus.rRefineMatk = cal.rRefineMatk
+        combatStatus.rVarianceAtk = cal.rVarianceAtk
+        combatStatus.rVarianceMatk = cal.rVarianceMatk
+        combatStatus.rOverRefine = cal.rOverRefine
+        combatStatus.rHighRefine = cal.rHighRefine
+
+        combatStatus.lWeaponAtk = cal.lWeaponAtk
+        combatStatus.lWeaponMatk = cal.lWeaponMatk
+        combatStatus.lRefineAtk = cal.lRefineAtk
+        combatStatus.lRefineMatk = cal.lRefineMatk
+        combatStatus.lVarianceAtk = cal.lVarianceAtk
+        combatStatus.lVarianceMatk = cal.lVarianceMatk
+        combatStatus.lOverRefine = cal.lOverRefine
+        combatStatus.lHighRefine = cal.lHighRefine
 
         const weapontk = this.getWeapontk(type, cal)
         const rWeapontk = weapontk[0]
-        const pseudoElementMulAP = 0 // Magnum Break(Fire20) || EDP(Posion25)
 
-        const equipmenttk = CombatStatus.getEqiupmenttk(type, cal)
-        // const useDeftk = defAtk(monster.hardDef)
-        const useDeftk = 0
+        // equipmenttk
+        combatStatus.equipmenttk = CombatStatus.getEqiupmenttk(type, cal)
+        const equipmenttk = combatStatus.equipmenttk.number
+
+        // useDeftk
+        if (combatStatus.isThanatos) {
+            combatStatus.useDeftk = defAtk(monster.hardDef)
+        }
+        const useDeftk = combatStatus.useDeftk
+
         const consumabletk: number = 0 // already in equipmenttk
         const bufftk: number = 0 // already in equipmenttk
-        const edpM: number = 1 // 4
+
+        // edp
+        if (combatStatus.isEdp) {
+            combatStatus.edpM = 4
+        }
+        const edpM: number = combatStatus.edpM
+
+        // pseudoElement
+        const pseudoElementMulAP = 0 // Magnum Break(Fire20) || EDP(Posion25)
         const pseudoElementtk = pseudoElementAtk(rWeapontk, pseudoElementMulAP)
-        const sizeAddMulAP = CombatStatus.getSizeAddMulAP(type, cal, monster)
-        const elementAddMulAP = CombatStatus.getElementAddMulAP(type, cal, monster)
-        const raceAddMulAP = CombatStatus.getRaceAddMulAP(type, cal, monster)
-        console.log("finalDmg", raceAddMulAP)
-        const classAddMulAP = CombatStatus.getClassAddMulAP(type, cal, monster)
+        combatStatus.pseudoElementtk = pseudoElementtk
+
+        // serc
+        combatStatus.sizeAddMulAP = CombatStatus.getSizeAddMulAP(type, cal, monster)
+        combatStatus.elementAddMulAP = CombatStatus.getElementAddMulAP(type, cal, monster)
+        combatStatus.raceAddMulAP = CombatStatus.getRaceAddMulAP(type, cal, monster)
+        combatStatus.classAddMulAP = CombatStatus.getClassAddMulAP(type, cal, monster)
+        const sizeAddMulAP = combatStatus.sizeAddMulAP.number
+        const elementAddMulAP = combatStatus.elementAddMulAP.number
+        const raceAddMulAP = combatStatus.raceAddMulAP.number
+        const classAddMulAP = combatStatus.classAddMulAP.number
+
         const elementMulP: number = 100
+        combatStatus.elementMulP = elementMulP
+
         const statustk = CombatStatus.getStatustk(type, cal)
+        combatStatus.statustk = statustk
         const masterytk: number = 0 // already in equipmenttk
         const elementSkillMulP: number | undefined = undefined
+        combatStatus.elementSkillMulP = elementSkillMulP
         const elementMildWindMulP: number | undefined = undefined
-        const mysticalAmpM: number = 1 // 1.5
+        combatStatus.elementMildWindMulP = elementMildWindMulP
 
-        const tkAP = CombatStatus.getEqiupmenttkPercent(type, cal)
-        const mulAP = CombatStatus.getMultiple(type, cal)
-        const skillP = skill.percent[skillLevel - 1] * (1 + (cal.baseSkillAttributeList.get(skill.enum)?.number ?? 0) / 100)
-        const powerThrustAP: number = 0 // 25
-        const skillMulAP: number = cal.skillAttributeList.get(skill.enum)?.number ?? 0
-        const elementDmgMulAP: number = 0
-        const ignoreP: number = 0
-        const hardDef = monster.hardDef * (1 - ignoreP / 100)
-        const hardefRM = CombatStatus.getHardefRM(type, hardDef)
-        const softef = CombatStatus.getSoftef(type, monster)
-        let rangeMulAP = 0
-        if (isSkillRange) {
-            rangeMulAP = cal.rawAttributeList.get(AttributeTypeEnum.RangeMul)?.number ?? 0
+        // mysticalAmp
+        if (combatStatus.isMysticalAmp) {
+            combatStatus.mysticalAmpM = 1.5
         }
-        console.log("rangeMulAP", isSkillRange, rangeMulAP)
-        // const finalCritDmgM = finalCritDmg(cal.rawAttributeList.get(AttributeTypeEnum.CritDmg)?.number ?? 0)
-        const finalCritDmgM = 1
-        const darkClawM: number = 1 // 1.3, 1.6, 1.9, 2.2, 2.5
+        const mysticalAmpM: number = combatStatus.mysticalAmpM
 
-        const variancetk = CombatStatus.getVariance(type, cal)
-        const refinetk = CombatStatus.getRefinetk(type, cal)
-        const overRefine = [cal.rOverRefine, cal.lOverRefine]
-        const highRefine = [cal.rHighRefine, cal.lHighRefine]
+        combatStatus.tkAP = CombatStatus.getEqiupmenttkPercent(type, cal)
+        const tkAP = combatStatus.tkAP.number
+        const mulAP = CombatStatus.getMultiple(type, cal)
 
-        const rVariancetk = variancetk[0]
-        const rRefinetk = refinetk[0]
-        const rOverRefine = overRefine[0]
-        const rHighRefine = highRefine[0]
+        // skill percent
+        combatStatus.skillP = cal.baseSkillAttributeList.get(skill.enum) ?? new DescriptionNumber()
+        combatStatus.finalSkillP = skill.percent[skillLevel - 1] * (1 + (combatStatus.skillP.number) / 100)
+        const skillP = combatStatus.finalSkillP
 
-        const lWeapontk = weapontk[1]
-        const lVariancetk = variancetk[1]
-        const lRefinetk = refinetk[1]
-        const lOverRefine = overRefine[1]
-        const lHighRefine = highRefine[1]
+        // power thrust
+        if (combatStatus.isPowerThrust) {
+            combatStatus.powerThrustAP = 25
+        }
+        const powerThrustAP = combatStatus.powerThrustAP
 
-        const statusBonusV = cal.statusBonus
+        // skill mul
+        combatStatus.skillMulAP = cal.skillAttributeList.get(skill.enum) ?? new DescriptionNumber()
+        const skillMulAP = combatStatus.skillMulAP.number
+
+        // elementDmgMulAP
+        if (skill.element) {
+            combatStatus.elementDmgMulAP = cal.finalAttributeList.get(skill.element[skillLevel - 1]) ?? new DescriptionNumber()
+        } else {
+            if (type === AttributeTypeEnum.Matk) {
+                combatStatus.elementDmgMulAP = cal.finalAttributeList.get(AttributeTypeEnum.MagicSkillNeutral) ?? new DescriptionNumber()
+            }
+        }
+        const elementDmgMulAP = combatStatus.elementDmgMulAP.number
+
+        // IgnoreDef
+        combatStatus.ignoreDef = cal.finalAttributeList.get(AttributeTypeEnum.IgnoreDefAllRace) ?? new DescriptionNumber()
+        if (monster.isBoss) {
+            combatStatus.ignoreDef.plusNumber(cal.finalAttributeList.get(AttributeTypeEnum.IgnoreDefBoss) ?? new DescriptionNumber())
+        } else {
+            combatStatus.ignoreDef.plusNumber(cal.finalAttributeList.get(AttributeTypeEnum.IgnoreDefNormal) ?? new DescriptionNumber())
+        }
+        combatStatus.ignoreDef.plusNumber(cal.finalAttributeList.get(monster.race.ignoreDefAttributeType) ?? new DescriptionNumber())
+
+        // IgnoreMdef
+        combatStatus.ignoreMdef = cal.finalAttributeList.get(AttributeTypeEnum.IgnoreMdefAllRace) ?? new DescriptionNumber()
+        if (monster.isBoss) {
+            combatStatus.ignoreMdef.plusNumber(cal.finalAttributeList.get(AttributeTypeEnum.IgnoreMdefBoss) ?? new DescriptionNumber())
+        } else {
+            combatStatus.ignoreMdef.plusNumber(cal.finalAttributeList.get(AttributeTypeEnum.IgnoreMdefNormal) ?? new DescriptionNumber())
+        }
+        combatStatus.ignoreMdef.plusNumber(cal.finalAttributeList.get(monster.race.ignoreMdefAttributeType) ?? new DescriptionNumber())
+
+        combatStatus.ignoreP = CombatStatus.getIgnoreed(type, combatStatus)
+        const ignoreP: number = Math.min(100, combatStatus.ignoreP.number)
+        if (type === AttributeTypeEnum.Atk) {
+            combatStatus.monhardef = monster.hardDef
+        } else {
+            combatStatus.monhardef = monster.hardMdef
+        }
+        combatStatus.remainHardef = combatStatus.monhardef * (1 - ignoreP / 100)
+        const hardDef = combatStatus.remainHardef
+        const hardefRM = CombatStatus.getHardefRM(type, hardDef)
+        combatStatus.hardefRM = hardefRM
+        const softef = CombatStatus.getSoftef(type, monster)
+        combatStatus.hardefRM = softef
+
+        // range mul
+        if (combatStatus.isSkillRange) {
+            combatStatus.rangeMulAP = cal.rawAttributeList.get(AttributeTypeEnum.RangeMul) ?? new DescriptionNumber()
+        }
+        const rangeMulAP = combatStatus.rangeMulAP.number
+
+        // crit
+        if (combatStatus.isCrit) {
+            combatStatus.critDmgAP = cal.rawAttributeList.get(AttributeTypeEnum.CritDmg) ?? new DescriptionNumber()
+            combatStatus.finalCritDmg = finalCritDmg(combatStatus.critDmgAP.number)
+        }
+        const finalCritDmgM = combatStatus.finalCritDmg
+
+        // dark claw
+        if (combatStatus.darkClawLv) {
+            combatStatus.darkClawM = [1.3, 1.6, 1.9, 2.2, 2.5][combatStatus.darkClawLv - 1]
+        }
+        const darkClawM = combatStatus.darkClawM
+
+        // const variancetk = CombatStatus.getVariance(type, cal)
+        // const refinetk = CombatStatus.getRefinetk(type, cal)
+        // const overRefine = [cal.rOverRefine, cal.lOverRefine]
+        // const highRefine = [cal.rHighRefine, cal.lHighRefine]
+
+        // const rVariancetk = variancetk[0]
+        // const rRefinetk = refinetk[0]
+        // const rOverRefine = overRefine[0]
+        // const rHighRefine = highRefine[0]
+
+        // const lWeapontk = weapontk[1]
+        // const lVariancetk = variancetk[1]
+        // const lRefinetk = refinetk[1]
+        // const lOverRefine = overRefine[1]
+        // const lHighRefine = highRefine[1]
+
+        // const statusBonusV = cal.statusBonus
         const sizePenaltyP: number = 100
-        const dmg = CombatStatus.getTrueMinMaxWeapontk(type, cal.isWeaponRange, rWeapontk, rVariancetk, rRefinetk, rOverRefine, rHighRefine, lWeapontk, lVariancetk, lRefinetk, lOverRefine, lHighRefine, statusBonusV)
-            .map(finalWeapontk => CombatStatus.getFinaltk(type, finalWeapontk, sizePenaltyP, equipmenttk, useDeftk, consumabletk, bufftk, edpM, pseudoElementtk, sizeAddMulAP, elementAddMulAP, raceAddMulAP, classAddMulAP, elementMulP, tkAP, statustk, masterytk, elementSkillMulP, elementMildWindMulP, mysticalAmpM))
+        // const dmg = CombatStatus.getTrueMinMaxWeapontk(type, cal.isWeaponRange, rWeapontk, rVariancetk, rRefinetk, rOverRefine, rHighRefine, lWeapontk, lVariancetk, lRefinetk, lOverRefine, lHighRefine, statusBonusV)
+        combatStatus.finalWeapontk = CombatStatus.getFinalWeapontkCal(type, cal)
+        combatStatus.finaltk = []
+        const dmg = [combatStatus.finalWeapontk.min ?? 0, combatStatus.finalWeapontk.max ?? 0]
+            .map(finalWeapontk => {
+                const finaltk = CombatStatus.getFinaltk(type, finalWeapontk, sizePenaltyP, equipmenttk, useDeftk, consumabletk, bufftk, edpM, pseudoElementtk, sizeAddMulAP, elementAddMulAP, raceAddMulAP, classAddMulAP, elementMulP, tkAP, statustk, masterytk, elementSkillMulP, elementMildWindMulP, mysticalAmpM)
+                combatStatus.finaltk.push(finaltk)
+                return finaltk
+            })
             .map(finaltk => CombatStatus.getFinalDmg(type, finaltk, tkAP, mulAP, skillP, powerThrustAP, skillMulAP, elementDmgMulAP, hardefRM, softef, rangeMulAP, finalCritDmgM, darkClawM, elementMulP));
         console.log("finalDmg", dmg)
-        combatStatus.minDmgph = Math.floor(dmg[0] / combatStatus.hit)
-        combatStatus.maxDmgph = Math.floor(dmg[1] / combatStatus.hit)
-        combatStatus.minDmg = combatStatus.minDmgph * combatStatus.hit
-        combatStatus.maxDmg = combatStatus.maxDmgph * combatStatus.hit
+        combatStatus.minDmgph = Math.floor(dmg[0] / combatStatus.skillHit)
+        combatStatus.maxDmgph = Math.floor(dmg[1] / combatStatus.skillHit)
+        combatStatus.avgDmgph = Math.floor((combatStatus.minDmgph + combatStatus.maxDmgph) / 2)
+        combatStatus.minDmg = combatStatus.minDmgph * combatStatus.skillHit
+        combatStatus.maxDmg = combatStatus.maxDmgph * combatStatus.skillHit
+        combatStatus.avgDmg = combatStatus.avgDmgph * combatStatus.skillHit
 
         // vct + fct -> motion(secph) & cooldown & delay
-        combatStatus.final = [(combatStatus.minDmg + combatStatus.maxDmg) / 2]
-            .map(value => value * combatStatus.hitRatio / 100)
-            .map(value => value / (combatStatus.vct + combatStatus.fct + Math.max(combatStatus.cooldown, combatStatus.delay, combatStatus.secph)))
+        combatStatus.final = [combatStatus.avgDmg]
+            .map(value => value * combatStatus.finalHitRaio / 100)
+            .map(value => value / (combatStatus.remainVct + combatStatus.remainFct + Math.max(combatStatus.remainCooldown, combatStatus.remainDelay, combatStatus.secph)))
         [0]
-        combatStatus.finalph = [(combatStatus.minDmgph + combatStatus.maxDmgph) / 2]
+        combatStatus.finalph = [combatStatus.avgDmgph]
             .map(value => value * combatStatus.hitRatio / 100)
-            .map(value => value / (combatStatus.vct + combatStatus.fct + Math.max(combatStatus.cooldown, combatStatus.delay, combatStatus.secph)))
+            .map(value => value / (combatStatus.remainVct + combatStatus.remainFct + Math.max(combatStatus.remainCooldown, combatStatus.remainDelay, combatStatus.secph)))
         [0]
+
+        combatStatus.killedSec = monster.hp / combatStatus.finalph
         return dmg
     }
 }
