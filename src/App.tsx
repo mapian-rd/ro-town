@@ -30,17 +30,20 @@ import { MdDarkMode, MdLightMode } from "react-icons/md";
 import MoreCombat from './component/combat/MoreCombat';
 import { checkMinMax } from './common/extension';
 import BuffStorageView from './component/buff/BuffStorageView';
+import { debuffDatabase } from './data/database/debuff';
 
 export const optionStyle = {
   container: ({ data, isDisabled, isFocused, isSelected }: any) =>
     classNames(
       'w-100',
       'select-container cursor-pointer',
+      isDisabled ? 'select-disable' : '',
     ),
   control: ({ data, isDisabled, isFocused, isSelected }: any) =>
     classNames(
       'select-control',
-      isFocused ? 'select-ed' : 'select-none'
+      isFocused ? 'select-ed' : 'select-none',
+      isDisabled ? 'select-disable' : '',
     ),
   singleValue: ({ data, isDisabled, isFocused, isSelected }: any) =>
     classNames(
@@ -90,7 +93,9 @@ function App() {
   const [showItemInfo, setShowItemInfo] = useState<boolean>(false)
   const [showBuffStorage, setShowBuffStorage] = useState<boolean>(false)
   const [showSkillStorage, setShowSkillStorage] = useState<boolean>(false)
+  const [showDebuffStorage, setShowDebuffStorage] = useState<boolean>(false)
   const [showAddBuff, setShowAddBuff] = useState<boolean>(false)
+  const [showEditItem, setShowEditItem] = useState<boolean>(false)
 
   const moreCombatRef = useRef<HTMLInputElement | null>(null)
   const itemInfoRef = useRef<HTMLInputElement | null>(null)
@@ -124,6 +129,23 @@ function App() {
       name: item.name,
       imgSrc: `https://static.divine-pride.net/images/items/item/${imgId}.png`,
       isActive: item.isActive,
+    }
+  })
+
+  const debuff = context.character.debuff.map(item => {
+    const imgId = Item.getImgId(item.id, item.imgId)
+    let imgSrc
+    if (imgId !== -1) {
+      imgSrc = `https://static.divine-pride.net/images/skill/${imgId}.png`
+    }
+    return {
+      id: item.id,
+      name: item.name,
+      imgSrc: imgSrc,
+      isActive: item.isActive,
+      activeLv: item.activeLv,
+      maxLv: item.maxLv,
+      suffix: item.suffix,
     }
   })
 
@@ -192,10 +214,17 @@ function App() {
     const item = context.character.itemBuff.find(item => item.id === id)
     if (item) {
       api.setViewItem(item)
+      return
     }
     const skill = context.character.skillBuff.find(item => item.id === id)
     if (skill) {
       api.setViewItem(skill)
+      return
+    }
+    const debuff = context.character.debuff.find(item => item.id === id)
+    if (debuff) {
+      api.setViewItem(debuff)
+      return
     }
   }
 
@@ -215,6 +244,25 @@ function App() {
     if (item && newValue !== item.activeLv) {
       item.activeLv = newValue
       api.updateCharacter({ skillBuff: context.character.skillBuff });
+    }
+  };
+
+  function handleDebuffChange(event: React.ChangeEvent<HTMLInputElement>, id: string) {
+    let { checked } = event.target;
+    const item = context.character.debuff.find(item => item.id === id)
+    if (item) {
+      item.isActive = checked
+      api.updateCharacter({ debuff: context.character.debuff });
+    }
+  };
+
+  function handleLvDebuffChange(event: React.ChangeEvent<HTMLInputElement>, id: string) {
+    let { value, max, min } = event.target;
+    let newValue = checkMinMax(Number(value), Number(min), Number(max));
+    const item = context.character.debuff.find(item => item.id === id)
+    if (item && newValue !== item.activeLv) {
+      item.activeLv = newValue
+      api.updateCharacter({ debuff: context.character.debuff });
     }
   };
 
@@ -248,6 +296,21 @@ function App() {
     api.updateCharacter({ skillBuff: context.character.skillBuff });
   }
 
+  function addDebuffClick(list: Named[], found: boolean, id: string) {
+    if (found) {
+      const item = context.character.debuff.findIndex(item => item.id === id)
+      if (item !== -1) {
+        context.character.debuff.splice(item, 1)
+      }
+    } else {
+      const newItem = debuffDatabase.find(item => item.id === id)
+      if (newItem) {
+        context.character.debuff.push({ ...newItem, isActive: true, activeLv: newItem.maxLv })
+      }
+    }
+    api.updateCharacter({ debuff: context.character.debuff });
+  }
+
   function onBuffClick(item: Named) {
     if (context.viewState === ViewState.AddBuff) {
       api.setViewItem2(item)
@@ -258,6 +321,10 @@ function App() {
 
   function onDeleteBuffClick(id: string) {
     api.deleteBuffStorage(id)
+  }
+
+  function onDeleteDebuffClick(id: string) {
+    api.deleteDebuffStorage(id)
   }
 
   function hideItemDescription() {
@@ -277,6 +344,8 @@ function App() {
     setShowAddBuff(false)
     setShowBuffStorage(false)
     setShowSkillStorage(false)
+    setShowDebuffStorage(false)
+    setShowEditItem(false)
     if (context.viewState === ViewState.MoreStatus) {
     } else if (context.viewState === ViewState.Storage) {
     } else if (context.viewState === ViewState.AddItem) {
@@ -290,6 +359,11 @@ function App() {
       setShowSkillStorage(true)
       setShowMonster(true)
       setShowCombat(true)
+    } else if (context.viewState === ViewState.DebuffStorage) {
+      setShowCharacter(true)
+      setShowBuff(true)
+      setShowDebuffStorage(true)
+      setShowCombat(true)
     } else if (context.viewState === ViewState.AddBuff) {
       setShowBuffStorage(true)
       setShowAddBuff(true)
@@ -299,6 +373,11 @@ function App() {
       setShowMonster(true)
       setShowCombat(true)
       setShowMoreCombatf(true)
+    } else if (context.viewState === ViewState.EditItem) {
+      setShowCharacter(true)
+      setShowStorage(true)
+      setShowAddItem(true)
+      setShowEditItem(true)
     } else {
       setShowCharacter(true)
       setShowBuff(true)
@@ -406,11 +485,28 @@ function App() {
               </div>
             </div>
             <BuffStorage
+              title='Buff Storage'
               list={context.character.skillBuff}
               storage={skillList}
               addClick={addSkillBuffClick}
               onClick={onBuffClick}
               onDeleteClick={onDeleteBuffClick}
+            />
+          </div>
+
+          <div className={'col-md-3 d-flex flex-column h-100' + (showDebuffStorage ? '' : ' d-none')}>
+            <div className='row'>
+              <div className='col'>
+                <button onClick={() => api.setViewState(ViewState.Normal)}>Back</button>
+              </div>
+            </div>
+            <BuffStorage
+              title='Monster Debuff Storage'
+              list={context.character.debuff}
+              storage={debuffDatabase}
+              addClick={addDebuffClick}
+              onClick={onBuffClick}
+              onDeleteClick={onDeleteDebuffClick}
             />
           </div>
 
@@ -426,10 +522,10 @@ function App() {
             <Monster monster={context.monster} />
             <ItemBuff
               title='Monster Debuff'
-              list={ownSkillBuff}
-              handleBuffChange={handleSkillBuffChange}
-              handleLvChange={handleLvSkillChange}
-              onClick={showSkillStorage ? undefined : () => api.setViewState(ViewState.SkillStorage)}
+              list={debuff}
+              handleBuffChange={handleDebuffChange}
+              handleLvChange={handleLvDebuffChange}
+              onClick={showDebuffStorage ? undefined : () => api.setViewState(ViewState.DebuffStorage)}
               onClickBuff={onClickBuff}
             />
           </div>
@@ -449,6 +545,7 @@ function App() {
               fct={api.getRaw(AttributeTypeEnum.Fct)}
               fctP={api.getFinal(AttributeTypeEnum.FctPercent)}
               cooldown={context.calculatedAttribute.cooldownAttributeList}
+              sizePanalty={context.calculatedAttribute.sizePenalty}
             />
             <Combat />
           </div>

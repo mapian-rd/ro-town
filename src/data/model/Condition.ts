@@ -53,6 +53,10 @@ export class ItemCondition extends NumberCondition {
     }
 }
 
+export interface RefineSum extends NumberCondition {
+    items: string[],
+}
+
 export class Condition {
     itemList?: ItemCondition[]
     refireList?: NumberCondition[]
@@ -61,4 +65,5 @@ export class Condition {
     statusList?: StatusCondition[]
     baseLv?: NumberCondition
     equip?: ItemTypeEnum
+    refineSum?: RefineSum
 }

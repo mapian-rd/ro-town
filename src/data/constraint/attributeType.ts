@@ -123,7 +123,6 @@ export const otherAttributeList: Map<AttributeTypeEnum, AttributeType> = new Map
     [AttributeTypeEnum.AspdPercent, new AttributeType("Aspd%")],
     [AttributeTypeEnum.Haste, new AttributeType("Item / Skill Haste")],
     [AttributeTypeEnum.Hit, new AttributeType("Hit")],
-    [AttributeTypeEnum.PerfectHit, new AttributeType("Perfect Hit")],
     [AttributeTypeEnum.Critical, new AttributeType("Critical")],
     [AttributeTypeEnum.Flee, new AttributeType("Flee")],
     [AttributeTypeEnum.Def, new AttributeType("Def")],
@@ -132,12 +131,16 @@ export const otherAttributeList: Map<AttributeTypeEnum, AttributeType> = new Map
     [AttributeTypeEnum.SoftDefPercent, new AttributeType("SoftDef%")],
     [AttributeTypeEnum.SoftMdef, new AttributeType("Soft MdDef")],
     [AttributeTypeEnum.SoftMdefPercent, new AttributeType("SoftMdef%")],
+])
+
+export const importantAttributeList: Map<AttributeTypeEnum, AttributeType> = new Map([
     [AttributeTypeEnum.Delay, new AttributeType("Delay")],
+    [AttributeTypeEnum.PerfectHit, new AttributeType("Perfect Hit")],
 ])
 
 export const defAttributeList: Map<AttributeTypeEnum, AttributeType> = new Map([
-    [AttributeTypeEnum.MonMedPhyRed, new AttributeType("Monster Medium Size Physical Reduction")],
-    [AttributeTypeEnum.MonLarPhyRed, new AttributeType("Monster Large Size Physical Reduction")],
+    [AttributeTypeEnum.PhysicalMedR, new AttributeType("Medium Size Physical Reduction")],
+    [AttributeTypeEnum.PhysicalLargeR, new AttributeType("Large Size Physical Reduction")],
 ])
 
 export const attributeList: Map<AttributeTypeEnum, AttributeType> = new Map([
@@ -145,6 +148,7 @@ export const attributeList: Map<AttributeTypeEnum, AttributeType> = new Map([
     ...Array.from(physicalAttributeList),
     ...Array.from(magicalAttributeList),
     ...Array.from(calAttributeList),
+    ...Array.from(importantAttributeList),
     ...Array.from(otherAttributeList),
     ...Array.from(defAttributeList),
 ])

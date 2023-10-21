@@ -15,7 +15,7 @@ interface BoxProps {
     cardSlot?: number;
     card?: Item[];
     enchant?: Item[];
-    onClick?: () => void;
+    onClick?: (craftId?: string) => void;
     onClickCard?: (item: Item, craftId?: string) => void;
 }
 
@@ -92,10 +92,10 @@ export default function ItemBox(props: BoxProps) {
 
     return (
         <div className={"d-flex flex-column position-relative pb-3 h-100 " + props.className ?? ""}>
-            <div className="itembox-header d-flex">
+            <div className="itembox-header d-flex justify-content-between">
                 <span className="offset-4 jc-center text-break">{props.title}</span>
                 {props.buttonText ? (
-                    <button className="box-button" onClick={props.onClick}>{props.buttonText}</button>
+                    <button className="box-button" onClick={() => props.onClick ? props.onClick(props.id) : undefined}>{props.buttonText}</button>
                 ) : (
                     <span>
 

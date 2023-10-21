@@ -14,6 +14,7 @@ export interface AppApi {
     setViewItem: (item: Named | undefined) => void;
     setViewItem2: (item: Named | undefined) => void;
     setDragItem: (item: CraftEqiupment) => void;
+    setEditItem: (item?: CraftEqiupment) => void;
     updateCharacter: (newState: Partial<Character>) => void;
     setMonsterId: (newMonsterId: MonsterId) => void;
     setSkill: (newSkill: ActiveSkill) => void;
@@ -26,6 +27,7 @@ export interface AppApi {
     unequip: (item: CraftEqiupment) => void;
     deleteItemStorage: (id: string) => void;
     deleteBuffStorage: (id: string) => void;
+    deleteDebuffStorage: (id: string) => void;
 }
 
 export const AppApiContext = createContext<AppApi>({} as AppApi)

@@ -190,7 +190,6 @@ div {
   border: 2px solid transparent !important;
   background-color: var(--snow) !important;
   box-shadow: none !important;
-  background-color: var(--white);
   color: var(--black) !important;
 }
 
@@ -204,6 +203,10 @@ div {
 
 .select-hover {
   background-color: var(--highlight-bg) !important;
+}
+
+.select-disable {
+  background-color: var(--gray) !important;
 }
 
 button {

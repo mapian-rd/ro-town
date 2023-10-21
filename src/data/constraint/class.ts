@@ -1,8 +1,6 @@
-import { AttributeTypeEnum } from "../model/attributeType"
 import { JobClass, JobClassEnum } from "../model/class"
 import { ItemTypeEnum } from "../model/itemType"
-import { ActiveSkill, PassiveSkill, SkillEnum } from "../model/skill"
-import { OneHandedStaff } from "./itemType"
+import { SkillEnum } from "../model/skill"
 
 export class Novice extends JobClass {
     // enum: JobClassEnum = JobClassEnum.Novice

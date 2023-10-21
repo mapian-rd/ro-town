@@ -64,7 +64,7 @@ export const cardDatabase: Item[] = [
                 }
             },
             {
-                type: AttributeTypeEnum.MonMedPhyRed,
+                type: AttributeTypeEnum.PhysicalMedR,
                 formulaText: "5",
                 condition: {
                     itemList: [
@@ -77,7 +77,7 @@ export const cardDatabase: Item[] = [
                 }
             },
             {
-                type: AttributeTypeEnum.MonLarPhyRed,
+                type: AttributeTypeEnum.PhysicalLargeR,
                 formulaText: "5",
                 condition: {
                     itemList: [
@@ -105,18 +105,18 @@ export const cardDatabase: Item[] = [
     {
         id: "4609",
         name: "Khalitzburg Knightage Card",
-        type: ItemTypeEnum.CardWeapon,
+        type: ItemTypeEnum.CardShield,
         attributeList: [
             {
                 type: AttributeTypeEnum.Def,
                 formulaText: "20",
             },
             {
-                type: AttributeTypeEnum.MonMedPhyRed,
+                type: AttributeTypeEnum.PhysicalMedR,
                 formulaText: "25",
             },
             {
-                type: AttributeTypeEnum.MonLarPhyRed,
+                type: AttributeTypeEnum.PhysicalLargeR,
                 formulaText: "25",
             },
             {
@@ -147,7 +147,7 @@ export const cardDatabase: Item[] = [
     {
         id: "4593",
         name: "Menblatt Card",
-        type: ItemTypeEnum.CardArmor,
+        type: ItemTypeEnum.CardGarment,
         attributeList: [
             {
                 type: AttributeTypeEnum.RangeMul,
@@ -270,7 +270,7 @@ export const cardDatabase: Item[] = [
                 }
             },
         ],
-    },  
+    },
     {
         id: "4505",
         name: "Scaraba Card",
@@ -285,5 +285,212 @@ export const cardDatabase: Item[] = [
                 formulaText: "-1",
             },
         ],
-    },  
+    },
+    {
+        id: "27256",
+        name: "Blut Hase Card",
+        type: ItemTypeEnum.CardShoes,
+        attributeList: [
+            {
+                type: AttributeTypeEnum.AtkPercent,
+                formulaText: "3",
+            },
+            {
+                type: AttributeTypeEnum.RangeMul,
+                formulaText: "5",
+            },
+        ],
+    },
+    {
+        id: "4643",
+        name: "Infinite Vagabond Wolf Card",
+        type: ItemTypeEnum.CardShoes,
+        attributeList: [
+            {
+                type: AttributeTypeEnum.Atk,
+                formulaText: "10",
+            },
+            {
+                type: AttributeTypeEnum.Atk,
+                formulaText: "10",
+                condition: {
+                    refireList: [
+                        {
+                            number: 7,
+                            symbol: Symbol.gte,
+                        }
+                    ]
+                }
+            },
+            {
+                type: AttributeTypeEnum.Atk,
+                formulaText: "15",
+                condition: {
+                    refireList: [
+                        {
+                            number: 9,
+                            symbol: Symbol.gte,
+                        }
+                    ]
+                }
+            },
+        ],
+    },
+    {
+        id: "300310",
+        name: "Helmut Lugenburg Card",
+        type: ItemTypeEnum.CardArmor,
+        attributeList: [
+            {
+                type: AttributeTypeEnum.SpUsedDP,
+                formulaText: "-10",
+            },
+            {
+                type: AttributeTypeEnum.MeleeMul,
+                formulaText: "<this.Rf/3> * 4",
+            },
+            {
+                type: AttributeTypeEnum.RangeMul,
+                formulaText: "<this.Rf/3> * 4",
+            },
+            {
+                type: AttributeTypeEnum.AtkPercent,
+                formulaText: "3",
+                condition: {
+                    itemList: [
+                        {
+                            itemId: "27333",
+                        }
+                    ]
+                }
+            },
+        ],
+    },
+    {
+        id: "4133",
+        name: "Raydric Card",
+        type: ItemTypeEnum.CardGarment,
+        attributeList: [
+            {
+                type: AttributeTypeEnum.PhysicalSkillNeutralR,
+                formulaText: "20",
+            },
+        ],
+    },
+    {
+        id: "27147",
+        name: "Human Chimera Card",
+        type: ItemTypeEnum.CardAccessery,
+        attributeList: [
+            {
+                type: AttributeTypeEnum.Hit,
+                formulaText: "5",
+            },
+            {
+                type: AttributeTypeEnum.Hit,
+                formulaText: "10",
+                condition: {
+                    baseLv: {
+                        number: 90,
+                        symbol: Symbol.gte,
+                    }
+                }
+            },
+            {
+                type: AttributeTypeEnum.Delay,
+                formulaText: "3",
+                condition: {
+                    itemList: [
+                        {
+                            itemId: "27148"
+                        }
+                    ]
+                }
+            },
+        ],
+    },
+    {
+        id: "27148",
+        name: "Material Chimera Card",
+        type: ItemTypeEnum.CardAccessery,
+        attributeList: [
+            {
+                type: AttributeTypeEnum.Flee,
+                formulaText: "10",
+            },
+            {
+                type: AttributeTypeEnum.Flee,
+                formulaText: "10",
+                condition: {
+                    baseLv: {
+                        number: 90,
+                        symbol: Symbol.gte,
+                    }
+                }
+            },
+        ],
+    },
+    {
+        id: "4121",
+        name: "Phreeoni Card",
+        type: ItemTypeEnum.CardWeapon,
+        attributeList: [
+            {
+                type: AttributeTypeEnum.Hit,
+                formulaText: "100",
+            },
+        ],
+    },
+    {
+        id: "4537",
+        name: "Sealed Phreeoni Card",
+        type: ItemTypeEnum.CardWeapon,
+        attributeList: [
+            {
+                type: AttributeTypeEnum.Hit,
+                formulaText: "50",
+            },
+            {
+                type: AttributeTypeEnum.Hit,
+                formulaText: "75",
+                condition: {
+                    refireList: [
+                        {
+                            number: 15,
+                            symbol: Symbol.gte,
+                        }
+                    ]
+                }
+            },
+        ],
+    },
+    {
+        id: "27176",
+        name: "Brown Rat Card",
+        type: ItemTypeEnum.CardGarment,
+        attributeList: [
+            {
+                type: AttributeTypeEnum.Atk,
+                formulaText: "<str/10> * 3",
+            },
+            {
+                type: AttributeTypeEnum.AspdPercent,
+                formulaText: "<str/10> * 1",
+            },
+            {
+                type: AttributeTypeEnum.Atk,
+                formulaText: "40",
+                condition: {
+                    statusList: [
+                        {
+                            statusType: AttributeTypeEnum.Str,
+                            number: 120,
+                            symbol: Symbol.gte,
+                        }
+                    ]
+                }
+            },
+        ],
+    },
 ]
+.sort((a, b) => Number.parseInt(a.id) - Number.parseInt(b.id))

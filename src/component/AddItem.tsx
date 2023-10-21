@@ -3,27 +3,28 @@ import { AppApiContext } from "../context/AppApiContext";
 import { AppContext, ViewState } from "../context/AppContext";
 import Box from "./Box";
 import Select from "react-select";
-import { ItemTypeEnum, itemTypeList } from "../data/model/itemType";
+import { ItemTypeEnum } from "../data/model/itemType";
 import { optionStyle } from "../App";
-import { Equipment, Item } from "../data/model/Itemv2";
+import { Equipment } from "../data/model/Itemv2";
 import { CraftEqiupment } from "../data/model/CraftEquipment";
 import { checkMinMax } from "../common/extension";
-import { CardPrefixSearch, ItemDescriptionSearch } from "../data/DividePride";
+import { CardPrefixSearch } from "../data/DividePride";
 import { cardDatabase } from "../data/database/card";
 import { enchantDatabase } from "../data/database/enchant";
 import { itemDatabase } from "../data/database/item";
 import { optionDatabase } from "../data/database/option";
+import { itemTypeList, weaponTypeList } from "../data/constraint/itemType";
 
 const typeOption = Array.from(itemTypeList).map(([key, value]) => {
+    return { value: key, label: value.name }
+})
+const weaponTypeOption = Array.from(weaponTypeList).map(([key, value]) => {
     return { value: key, label: value.name }
 })
 const enchantOption = enchantDatabase.map(item => {
     return { value: item.id, label: item.name }
 })
 const optionOption = optionDatabase.map(item => {
-    return { value: item.id, label: item.name }
-})
-const cardOption = cardDatabase.map(item => {
     return { value: item.id, label: item.name }
 })
 
@@ -33,10 +34,12 @@ export default function AddItem() {
     const context = useContext(AppContext);
     const api = useContext(AppApiContext);
     const [type, setType] = useState<ItemTypeEnum>()
+    const [weaponType, setWeaponType] = useState<ItemTypeEnum>()
     const [item, setItem] = useState<Equipment>()
     const [craftEquipment, setCraftEquipment] = useState<CraftEqiupment>()
     const [refineable, setRefineable] = useState<boolean>(false)
-    const [itemOption, setItemList] = useState<{ value: Equipment, label: string }[]>([])
+    const [itemOption, setItemOption] = useState<{ value: Equipment, label: string }[]>([])
+    const [cardOption, setCardOption] = useState<{ value: string, label: string }[]>([])
 
     const cardView = craftEquipment?.cardList.map((item, index) => {
         return (
@@ -48,7 +51,7 @@ export default function AddItem() {
                     <Select jc-center
                         key={index}
                         options={cardOption}
-                        // value={itemOption.filter(option => option.value.id === item?.id)}
+                        value={cardOption.filter(option => option.value === craftEquipment.cardList[index])}
                         classNames={optionStyle}
                         onChange={option => handleCardChange(option, index)}
                     />
@@ -66,7 +69,7 @@ export default function AddItem() {
                 <div className="col">
                     <Select jc-center
                         options={enchantOption}
-                        // value={itemOption.filter(option => option.value.id === item?.id)}
+                        value={enchantOption.filter(option => option.value === craftEquipment.enchantList[index])}
                         classNames={optionStyle}
                         onChange={option => handleEnchantChange(option, index)}
                     />
@@ -84,7 +87,7 @@ export default function AddItem() {
                 <div className="col">
                     <Select jc-center
                         options={optionOption}
-                        // value={itemOption.filter(option => option.value.id === item?.id)}
+                        value={optionOption.filter(option => option.value === craftEquipment.optionList[index])}
                         classNames={optionStyle}
                         onChange={option => handleOptionChange(option, index)}
                     />
@@ -93,28 +96,28 @@ export default function AddItem() {
         )
     })
 
-    console.log("handleRefineChange start", craftEquipment?.refineLevel)
+    console.log("AddItem handleRefineChange start", craftEquipment?.refineLevel)
 
     function handleTypeChange(option: any) {
-        console.log("type", option.value)
+        console.log("AddItem handleTypeChange", option.value)
         if (type === option.value) return
         setType(option.value);
-        setItem(undefined)
-        setRefineable(false)
+        setWeaponType(undefined)
+    };
 
-        const optionList = itemDatabase.filter(item => item.type === option.value).map(item => {
-            return { value: item, label: item.name }
-        })
-        setItemList(optionList)
+    function handleWeaponTypeChange(option: any) {
+        console.log("AddItem handleTypeChange", option.value)
+        if (weaponType === option.value) return
+        setWeaponType(option.value);
     };
 
     function handleItemChange(option: any) {
-        console.log("item", option.value)
+        console.log("AddItem item", option.value)
         setItem(option.value);
     };
 
     function handleRefineChange(event: React.ChangeEvent<HTMLInputElement>) {
-        console.log("handleRefineChange", craftEquipment?.id, craftEquipment?.refineLevel)
+        console.log("AddItem handleRefineChange", craftEquipment?.id, craftEquipment?.refineLevel)
         if (!craftEquipment) return
         let { value, min, max } = event.target;
         let newValue = checkMinMax(Number(value), Number(min), Number(max));
@@ -122,22 +125,22 @@ export default function AddItem() {
     };
 
     function handleCardChange(option: any, index: number) {
-        console.log("card", index)
+        console.log("AddItem card", index)
         if (!craftEquipment) return
-        console.log("handleRefineChange card", craftEquipment?.refineLevel)
+        console.log("AddItem handleRefineChange card", craftEquipment?.refineLevel)
         craftEquipment.cardList[index] = option.value
         setCraftEquipment({ ...craftEquipment });
     };
 
     function handleEnchantChange(option: any, index: number) {
-        console.log("enchant", index)
+        console.log("AddItem enchant", index)
         if (!craftEquipment) return
         craftEquipment.enchantList[index] = option.value
         setCraftEquipment({ ...craftEquipment });
     };
 
     function handleOptionChange(option: any, index: number) {
-        console.log("card", index)
+        console.log("AddItem card", index)
         if (!craftEquipment) return
         craftEquipment.optionList[index] = option.value
         setCraftEquipment({ ...craftEquipment });
@@ -186,7 +189,18 @@ export default function AddItem() {
             }
 
             craftEquipment.name = refineText + cardText + item?.name + cardSlotText + optionText
-            api.addItem(craftEquipment)
+            if (context.editItem) {
+                const equip = Array.from(context.character.equipmentMap).find(([key, value]) => {
+                    return value?.id === context.editItem?.id
+                })
+                api.deleteItemStorage(context.editItem.id)
+                api.addItem(craftEquipment)
+                if (equip) {
+                    api.equip(craftEquipment)
+                }
+            } else {
+                api.addItem(craftEquipment)
+            }
             clearClick()
         }
     }
@@ -200,22 +214,51 @@ export default function AddItem() {
 
     function clearClick() {
         setType(undefined);
+        setWeaponType(undefined)
         setItem(undefined);
         setCraftEquipment(undefined);
         setRefineable(false);
+        api.setEditItem(undefined)
+        api.setViewItem(undefined)
     }
 
     useEffect(() => {
-        console.log("useEffect item")
+        const finalType = weaponType ?? type
+        if (finalType === undefined) {
+            setItemOption([])
+            setCardOption([])
+            return
+        }
+        if (finalType !== craftEquipment?.item?.type) {
+            setItem(undefined)
+            setRefineable(false)
+        }
+
+        const optionList = itemDatabase.filter(item => item.type === finalType).map(item => {
+            return { value: item, label: item.name }
+        })
+        setItemOption(optionList)
+
+        const typeObject = itemTypeList.get(finalType) ?? weaponTypeList.get(finalType)
+        const cardOptionList = cardDatabase.filter(item => typeObject?.cardTypeList?.includes(item.type)).map(item => {
+            return { value: item.id, label: item.name }
+        })
+        setCardOption(cardOptionList)
+    }, [type, weaponType])
+
+    useEffect(() => {
+        console.log("AddItem useEffect item")
         if (!item) return
-        setCraftEquipment(new CraftEqiupment(item, 0))
-        if (itemTypeList.get(item.type)?.refineable) {
+        const type = itemTypeList.get(item.type) ?? weaponTypeList.get(item.type)
+        if (type?.refineable) {
             setRefineable(true)
         }
+        if (item.id === craftEquipment?.itemId) return
+        setCraftEquipment(new CraftEqiupment(item, 0))
     }, [item])
 
     useEffect(() => {
-        console.log("useEffect refineLevel", craftEquipment?.refineLevel)
+        console.log("AddItem useEffect refineLevel", craftEquipment?.refineLevel)
         if (craftEquipment) {
             let refineText = ""
             if (craftEquipment.refineLevel > 0) {
@@ -235,11 +278,38 @@ export default function AddItem() {
         }
     }, [craftEquipment])
 
-    console.log("handleRefineChange ens", craftEquipment?.refineLevel)
+    useEffect(() => {
+        if (context.editItem) {
+            console.log("AddItem editItem", context.editItem)
+            const type = context.editItem?.item?.type
+            if (type) {
+                const weaponType = weaponTypeList.get(type)
+                if (weaponType) {
+                    setType(ItemTypeEnum.Weapon)
+                    setWeaponType(type)
+                } else {
+                    setType(type)
+                }
+            }
+            setItem(context.editItem?.item)
+            const copy = { ...context.editItem }
+            copy.id = crypto.randomUUID();
+            setCraftEquipment(copy)
+        }
+    }, [context.editItem])
+
+    useEffect(() => {
+        if (context.viewState !== ViewState.AddItem && context.viewState !== ViewState.EditItem) {
+            clearClick()
+        }
+    }, [context.viewState])
+
+    console.log("AddItem handleRefineChange ens", craftEquipment?.refineLevel)
+    console.log("AddItem", itemOption, craftEquipment?.itemId, itemOption.filter(option => option.value.id === item?.id || option.value.id === craftEquipment?.itemId))
 
     return (
         <div className="d-flex flex-column h-100 pt-4">
-            <Box className="flex-grow-1" title="Craft Equipment" buttonText="Clear" onClick={clearClick}>
+            <Box className="flex-grow-1" title={context.editItem ? "Edit Equipment" : "Craft Equipment"} buttonText="Clear" onClick={clearClick}>
                 <div>
                     <div className="row">
                         <div className="col-3 jc-center">
@@ -251,6 +321,21 @@ export default function AddItem() {
                                 value={typeOption.filter(option => option.value === type)}
                                 classNames={optionStyle}
                                 onChange={handleTypeChange}
+                                isDisabled={context.editItem !== undefined}
+                            />
+                        </div>
+                    </div>
+                    <div className={"row" + (type === ItemTypeEnum.Weapon ? '' : ' d-none')}>
+                        <div className="col-3 jc-center">
+                            Weapon Type
+                        </div>
+                        <div className="col">
+                            <Select jc-center
+                                options={weaponTypeOption}
+                                value={weaponTypeOption.filter(option => option.value === weaponType)}
+                                classNames={optionStyle}
+                                onChange={handleWeaponTypeChange}
+                                isDisabled={context.editItem !== undefined}
                             />
                         </div>
                     </div>
@@ -261,9 +346,10 @@ export default function AddItem() {
                         <div className="col">
                             <Select jc-center
                                 options={itemOption}
-                                value={itemOption.filter(option => option.value.id === item?.id)}
+                                value={itemOption.filter(option => option.value.id === item?.id || option.value.id === craftEquipment?.item?.id)}
                                 classNames={optionStyle}
                                 onChange={handleItemChange}
+                                isDisabled={context.editItem !== undefined}
                             />
                         </div>
                     </div>
@@ -286,8 +372,8 @@ export default function AddItem() {
                     {enchantView}
                     {optionView}
                     <div className={craftEquipment ? 'd-flex justify-content-around mt-4' : ' d-none'} >
-                        <button onClick={saveClick}>Save</button>
-                        <button onClick={equipClick}>Equip</button>
+                        <button onClick={saveClick}>{context.editItem ? "Done" : "Save"}</button>
+                        <button className={context.editItem ? 'd-none' : ''} onClick={equipClick}>Equip</button>
                     </div>
                 </div>
             </Box>

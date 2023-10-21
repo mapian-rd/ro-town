@@ -13,6 +13,7 @@ import { Pet, PetFriendly, PetFriendlyEnum } from "./Petv2"
 import { ActiveSkill, Skill, SkillEnum } from "./skill"
 import { Status } from "./status"
 import { Storage } from "./storage"
+import { debuffDatabase } from "../database/debuff"
 
 interface Activable {
     active: boolean
@@ -35,6 +36,7 @@ export class CharacterExport implements Exportable {
     petFriendly?: PetFriendlyEnum;
     itemBuff: Map<string, boolean> = new Map()
     skillBuff: Map<string, Activable> = new Map()
+    debuff: Map<string, Activable> = new Map()
 
     static getCharacter(cExport: CharacterExport, storage: Storage, buffStorage: Item[]): Character {
         const character = new Character()
@@ -60,6 +62,17 @@ export class CharacterExport implements Exportable {
         })
         character.skillBuff = Array.from(cExport.skillBuff).flatMap(([key, value]) => {
             const item = [...skillBuffDatabase, ...skillPassiveDatabase].find(item => item.id === key)
+            if (item) {
+                return {
+                    ...item,
+                    isActive: value.active,
+                    activeLv: value.lv
+                }
+            }
+            return []
+        })
+        character.debuff = Array.from(cExport.debuff ?? new Map()).flatMap(([key, value]) => {
+            const item = debuffDatabase.find(item => item.id === key)
             if (item) {
                 return {
                     ...item,
@@ -98,6 +111,10 @@ export class CharacterExport implements Exportable {
         character.skillBuff.forEach(item => {
             cExport.skillBuff.set(item.id, { active: item.isActive, lv: item.activeLv })
         })
+        cExport.debuff = new Map()
+        character.debuff.forEach(item => {
+            cExport.debuff.set(item.id, { active: item.isActive, lv: item.activeLv })
+        })
         console.log("getExport", cExport)
         return cExport
     }
@@ -114,4 +131,5 @@ export class Character {
     petFriendly?: PetFriendly;
     itemBuff: ItemBuff[] = [];
     skillBuff: SkillBuff[] = [];
+    debuff: SkillBuff[] = [];
 }

@@ -14,7 +14,7 @@ interface State {
 }
 
 export enum ViewState {
-    Normal, MoreStatus, Storage, AddItem, BuffStorage, SkillStorage, AddBuff, MoreCombat
+    Normal, MoreStatus, Storage, AddItem, BuffStorage, SkillStorage, DebuffStorage, AddBuff, MoreCombat, EditItem,
 }
 
 export interface AppState {
@@ -22,6 +22,7 @@ export interface AppState {
     viewItem: Named | undefined;
     viewItem2: Named | undefined;
     dragItem: CraftEqiupment | undefined;
+    editItem?: CraftEqiupment;
 
     character: Character;
     storage: Storage;

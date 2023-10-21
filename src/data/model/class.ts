@@ -1,8 +1,6 @@
-import { getClass } from "../constraint/class";
-import { Bow, OneHandedStaff } from "../constraint/itemType";
 import { skillActiveDatabase, skillBuffDatabase, skillPassiveDatabase } from "../database/skill";
 import { AttributeTypeEnum } from "./attributeType";
-import { ItemType, ItemTypeEnum, WeaponType } from "./itemType";
+import { ItemTypeEnum } from "./itemType";
 import { ActiveSkill, PassiveSkill, Skill, SkillEnum } from "./skill";
 
 export enum JobClassEnum {

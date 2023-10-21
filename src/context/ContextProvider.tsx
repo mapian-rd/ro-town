@@ -1,12 +1,9 @@
 import { useEffect, useState } from "react";
-import { rWeapon, lWeapon } from "../Constraints";
 import { attributeList, getAttributeType, StatusTypeList } from "../data/constraint/attributeType";
-import { classList, getClass, noviceClass } from "../data/constraint/class";
-import { friendly, petFriendlyList } from "../data/constraint/pet";
+import { itemTypeList, weaponTypeList } from "../data/constraint/itemType";
+import { friendly } from "../data/constraint/pet";
 import { itemDatabase } from "../data/database/item";
 import { MonsterList } from "../data/database/monster";
-import { petList } from "../data/database/pet";
-import { skillActiveDatabase } from "../data/database/skill";
 import { MonsterSearch } from "../data/DividePride";
 import { calAspd } from "../data/formula/Aspd";
 import { calCrit } from "../data/formula/Critical";
@@ -17,20 +14,20 @@ import { caljobHp, calHp } from "../data/formula/Hp";
 import { caljobSp } from "../data/formula/Sp";
 import { calRemainStatusPoint } from "../data/formula/StatusPoint";
 import { Attribute, AttributeName } from "../data/model/Attribute";
-import { AttributeType, AttributeTypeEnum } from "../data/model/attributeType";
+import { AttributeTypeEnum } from "../data/model/attributeType";
 import { SkillBuff } from "../data/model/Buff";
 import { CalculatedAttribute } from "../data/model/CalculatedAttribute";
 import { Character, CharacterExport } from "../data/model/Characterv2";
-import { JobClass, JobClassEnum } from "../data/model/class";
+import { JobClass } from "../data/model/class";
 import { CombatStatus } from "../data/model/CombatStatus";
 import { CraftEqiupment, checkCraft, sumCraft } from "../data/model/CraftEquipment";
 import { EquipmentSlot } from "../data/model/EquipmentSlot";
 import { ExportData } from "../data/model/Exportable";
 import { FormulaString, calString, DescriptionNumber } from "../data/model/Formula";
-import { WeaponType, Shield, ItemTypeEnum, itemTypeList } from "../data/model/itemType";
+import { WeaponType, ItemTypeEnum, SizePenalty } from "../data/model/itemType";
 import { Item, Named } from "../data/model/Itemv2";
 import { Monster, MonsterId } from "../data/model/monster";
-import { Pet, PetFriendly } from "../data/model/Petv2";
+import { Pet } from "../data/model/Petv2";
 import { ActiveSkill } from "../data/model/skill";
 import { Status } from "../data/model/status";
 import { Storage } from "../data/model/storage";
@@ -78,6 +75,7 @@ export const ContextProvider = (props: Props): JSX.Element => {
   const [viewItem, setViewItem] = useState<Named>();
   const [viewItem2, setViewItem2] = useState<Named>();
   const [dragItem, setDragItem] = useState<CraftEqiupment>();
+  const [editItem, setEditItem] = useState<CraftEqiupment>();
 
   const [storage, setStorage] = useState<Storage>(data.storage);
   const [buffStorage, setBuffStorage] = useState<Item[]>(data.buffStorage);
@@ -106,6 +104,7 @@ export const ContextProvider = (props: Props): JSX.Element => {
     viewItem,
     viewItem2,
     dragItem,
+    editItem,
     character,
     storage,
     buffStorage,
@@ -204,6 +203,7 @@ export const ContextProvider = (props: Props): JSX.Element => {
     cal.rVarianceMatk = 0
     cal.rOverRefine = 0
     cal.isWeaponRange = false
+    cal.sizePenalty = new SizePenalty()
     cal.weaponPenalty = 0
 
     cal.lWeaponAtk = 0
@@ -290,6 +290,23 @@ export const ContextProvider = (props: Props): JSX.Element => {
         oldValue = []
       }
       cal.formulaList.set(attribute.type, [...oldValue, new FormulaString("skillBuff", attribute.formulaText, attribute.name, attribute.max, attribute.skill)])
+    })
+
+    const debuffAttributes: AttributeName[] = character.debuff
+      .filter(item => item.isActive)
+      .flatMap(item => {
+        return item.attributeList.map(attribute => {
+          return { ...attribute, name: item.name, formulaText: attribute.formulaText[item.activeLv - 1], max: attribute.max ? attribute.max[item.activeLv - 1] : undefined }
+        })
+      })
+    const checkdebuff = debuffAttributes.filter(attribute => Attribute.checkAttribute(attribute, character))
+    cal.checkedAttributeList.set("debuff", checkdebuff)
+    checkdebuff.forEach(attribute => {
+      let oldValue = cal.formulaList.get(attribute.type)
+      if (!oldValue) {
+        oldValue = []
+      }
+      cal.formulaList.set(attribute.type, [...oldValue, new FormulaString("Debuff", attribute.formulaText, attribute.name, attribute.max, attribute.skill)])
     })
 
     cal.rawAttributeList.clear()
@@ -417,7 +434,8 @@ export const ContextProvider = (props: Props): JSX.Element => {
       cal.rVarianceMatk = varianceMATK(cal.rWeaponMatk, cal.rRefineMatk, rWeapon.item!.equipmentLevel)
       cal.rOverRefine = overRefineWeapon(rWeapon.item!.equipmentLevel, rWeapon.refineLevel)
 
-      cal.isWeaponRange = (itemTypeList.get(rWeapon.item!.type) as WeaponType).isRange;
+      cal.isWeaponRange = (weaponTypeList.get(rWeapon.item!.type) as WeaponType).isRange;
+      cal.sizePenalty = (weaponTypeList.get(rWeapon.item!.type) as WeaponType).sizePenalty ?? new SizePenalty();
 
       cal.weaponPenalty = JobClass.getWeaponPenalty(character.clazz, rWeapon.item!.type);
     }
@@ -641,6 +659,8 @@ export const ContextProvider = (props: Props): JSX.Element => {
         number.line(baseLv, "baseLv", 1)
         number.linePlus(raw, getAttributeType(attributeType).name, 1)
         number.linePlus(percent, getAttributeType(AttributeTypeEnum.SoftMdefPercent).name, 1)
+      } else if (attributeType === AttributeTypeEnum.PerfectHit) {
+        number.plus(5, "base", 0)
       } else if (attributeType === AttributeTypeEnum.PhysicalSmall
         || attributeType === AttributeTypeEnum.PhysicalMed
         || attributeType === AttributeTypeEnum.PhysicalLarge) {
@@ -850,7 +870,7 @@ export const ContextProvider = (props: Props): JSX.Element => {
       })
 
       if (CraftEqiupment.is(item) && item.item?.type !== undefined) {
-        const type = itemTypeList.get(item.item?.type)
+        const type = itemTypeList.get(item.item?.type) ?? weaponTypeList.get(item.item?.type)
         if (type && type.equipSlot && type.equipSlot.length > 0) {
           let foundItem: CraftEqiupment | undefined
           type.equipSlot.forEach(slot => {
@@ -894,6 +914,7 @@ export const ContextProvider = (props: Props): JSX.Element => {
       })
     },
     setDragItem,
+    setEditItem,
     updateCharacter: (newState: Partial<Character>) => {
       setCharacter({ ...character, ...newState });
     },
@@ -922,7 +943,7 @@ export const ContextProvider = (props: Props): JSX.Element => {
       item.item = itemDatabase.find(data => data.id === item.itemId)
       console.log("equip", item.item?.type)
       if (item.item?.type !== undefined) {
-        const type = itemTypeList.get(item.item?.type)
+        const type = itemTypeList.get(item.item?.type) ?? weaponTypeList.get(item.item?.type)
         console.log("equip type", type)
         if (type && type.equipSlot && type.equipSlot.length > 0) {
           if (type.equipSlotType) {
@@ -995,6 +1016,14 @@ export const ContextProvider = (props: Props): JSX.Element => {
         character.itemBuff.splice(item, 1)
       }
       api.updateCharacter({ itemBuff: character.itemBuff });
+    },
+    deleteDebuffStorage: (id: string) => {
+      // Delete on Character
+      const item = character.debuff.findIndex(item => item.id === id)
+      if (item !== -1) {
+        character.debuff.splice(item, 1)
+      }
+      api.updateCharacter({ debuff: character.debuff });
     },
   }
 

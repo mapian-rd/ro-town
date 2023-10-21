@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { AppApiContext } from "../context/AppApiContext";
-import { AppContext } from "../context/AppContext";
+import { AppContext, ViewState } from "../context/AppContext";
 import { attributeList } from "../data/constraint/attributeType";
 import { cardDatabase } from "../data/database/card";
 import { enchantDatabase } from "../data/database/enchant";
@@ -38,6 +38,16 @@ export default function ItemDescription(props: Props) {
         api.setViewItem2(item)
     }
 
+    function onEditClick(craftId?: string) {
+        if (props.item1 && CraftEqiupment.is(props.item1) &&props.item1?.id === craftId) {
+            api.setEditItem(props.item1)
+            api.setViewState(ViewState.EditItem)
+        } else if (props.item2 && CraftEqiupment.is(props.item2) &&props.item2?.id === craftId) {
+            api.setEditItem(props.item2)
+            api.setViewState(ViewState.EditItem)
+        }
+    }
+
     function getItemBox(item: Named, description: JSX.Element[]): JSX.Element {
         if (CraftEqiupment.is(item)) {
             const option = item.optionList.flatMap(option => optionDatabase.find(data => {
@@ -55,6 +65,8 @@ export default function ItemDescription(props: Props) {
                     enchant={item.enchantList.flatMap(option => enchantDatabase.find(data => data.id === option) ?? [])}
                     option={option}
                     onClickCard={onClickCard}
+                    buttonText="Edit"
+                    onClick={onEditClick}
                 >
                 </ItemBox>
             )

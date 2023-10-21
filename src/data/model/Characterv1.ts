@@ -55,7 +55,7 @@ export class CharacterModel {
         })
         let petAttribute: Attribute[] = []
         if (character.pet) {
-            petAttribute = Pet.findPetAttribute(character.pet, character.petFriendly ?? friendly, type, equipmentArray)
+            // petAttribute = Pet.findPetAttribute(character.pet, character.petFriendly ?? friendly, type, equipmentArray)
         }
         return [...equipmentAttribute, ...petAttribute]
 

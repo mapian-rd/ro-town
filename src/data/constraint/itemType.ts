@@ -1,13 +1,316 @@
-import { AttributeTypeEnum } from "../model/attributeType";
-import { ItemType, WeaponType } from "../model/itemType";
+import { EquipmentSlot } from "../model/EquipmentSlot";
+import { ItemTypeEnum, EquipableType } from "../model/itemType";
 
-export const PetItemType = new ItemType("Pet")
+export const itemTypeList: Map<ItemTypeEnum, EquipableType> = new Map([
+    [ItemTypeEnum.Upper, {
+        name: "Headgear Upper",
+        refineable: true,
+        equipSlot: [EquipmentSlot.upper],
+        cardTypeList: [ItemTypeEnum.CardHeadgear],
+    }],
+    [ItemTypeEnum.Middle, {
+        name: "Headgear Middle",
+        equipSlot: [EquipmentSlot.middle],
+        cardTypeList: [ItemTypeEnum.CardHeadgear],
+    }],
+    [ItemTypeEnum.Lower, {
+        name: "Headgear Lower",
+        equipSlot: [EquipmentSlot.lower],
+        cardTypeList: [ItemTypeEnum.CardHeadgear],
+    }],
+    [ItemTypeEnum.UM, {
+        name: "Headgear Upper-Middle",
+        refineable: true,
+        equipSlot: [EquipmentSlot.upper, EquipmentSlot.middle],
+        cardTypeList: [ItemTypeEnum.CardHeadgear],
+    }],
+    [ItemTypeEnum.ML, {
+        name: "Headgear Middle-Lower",
+        equipSlot: [EquipmentSlot.middle, EquipmentSlot.lower],
+        cardTypeList: [ItemTypeEnum.CardHeadgear],
+    }],
+    [ItemTypeEnum.UML, {
+        name: "Headgear Upper-Middle-Lower",
+        refineable: true,
+        equipSlot: [EquipmentSlot.upper, EquipmentSlot.middle, EquipmentSlot.lower],
+        cardTypeList: [ItemTypeEnum.CardHeadgear],
+    }],
+    [ItemTypeEnum.Armor, {
+        name: "Armor",
+        refineable: true,
+        equipSlot: [EquipmentSlot.armor],
+        cardTypeList: [ItemTypeEnum.CardArmor],
+    }],
+    [ItemTypeEnum.Weapon, {
+        name: "Weapon",
+        cardTypeList: [ItemTypeEnum.CardWeapon],
+    }],
+    [ItemTypeEnum.Shield, {
+        name: "Sheid",
+        refineable: true,
+        equipSlot: [EquipmentSlot.lWeapon],
+        cardTypeList: [ItemTypeEnum.CardShield],
+    }],
+    [ItemTypeEnum.Garment, {
+        name: "Garment",
+        refineable: true,
+        equipSlot: [EquipmentSlot.garment],
+        cardTypeList: [ItemTypeEnum.CardGarment],
+    }],
+    [ItemTypeEnum.Shoes, {
+        name: "Shoes",
+        refineable: true,
+        equipSlot: [EquipmentSlot.shoes],
+        cardTypeList: [ItemTypeEnum.CardShoes],
+    }],
+    [ItemTypeEnum.Accessery, {
+        name: "Accessery",
+        equipSlot: [EquipmentSlot.rAccessery, EquipmentSlot.lAccessery],
+        equipSlotType: true,
+        cardTypeList: [ItemTypeEnum.CardAccessery],
+    }],
+    [ItemTypeEnum.AccesseryLeft, {
+        name: "AccesseryLeft",
+        equipSlot: [EquipmentSlot.lAccessery],
+        cardTypeList: [ItemTypeEnum.CardAccessery, ItemTypeEnum.CardAccesseryLeft],
+    }],
+    [ItemTypeEnum.AccesseryRight, {
+        name: "AccesseryRight",
+        equipSlot: [EquipmentSlot.rAccessery],
+        cardTypeList: [ItemTypeEnum.CardAccessery, ItemTypeEnum.CardAccesseryRight],
+    }],
+    [ItemTypeEnum.CostumeUpper, { name: "Costume Upper", equipSlot: [EquipmentSlot.upperCostume] }],
+    [ItemTypeEnum.CostumeMiddle, { name: "Costume Middle", equipSlot: [EquipmentSlot.middleCostume] }],
+    [ItemTypeEnum.CostumeLower, { name: "Costume Lower", equipSlot: [EquipmentSlot.lowerCostume] }],
+    [ItemTypeEnum.CostumeUM, { name: "Costume Upper-Middle", equipSlot: [EquipmentSlot.upperCostume, EquipmentSlot.middleCostume] }],
+    [ItemTypeEnum.CostumeML, { name: "Costume Middle-Lower", equipSlot: [EquipmentSlot.middleCostume, EquipmentSlot.lowerCostume] }],
+    [ItemTypeEnum.CostumeUML, { name: "Costume Upper-Middle-Lower", equipSlot: [EquipmentSlot.upperCostume, EquipmentSlot.middleCostume, EquipmentSlot.lowerCostume] }],
+    [ItemTypeEnum.CostumeGarment, { name: "CostumeGarment", equipSlot: [EquipmentSlot.garmentCostume] }],
+    [ItemTypeEnum.ShadowWeapon, { name: "Shadow Weapon", refineable: true, equipSlot: [EquipmentSlot.weaponShadow] }],
+    [ItemTypeEnum.ShadowArmor, { name: "Shadow Armor", refineable: true, equipSlot: [EquipmentSlot.armorShadow] }],
+    [ItemTypeEnum.ShadowShield, { name: "Shadow Shield", refineable: true, equipSlot: [EquipmentSlot.sheidShadow] }],
+    [ItemTypeEnum.ShadowShoes, { name: "Shadow Shoes", refineable: true, equipSlot: [EquipmentSlot.shoesShadow] }],
+    [ItemTypeEnum.ShadowEarring, { name: "Shadow Earring", refineable: true, equipSlot: [EquipmentSlot.earringShadow] }],
+    [ItemTypeEnum.ShadowPendent, { name: "Shadow Pendent", refineable: true, equipSlot: [EquipmentSlot.pendantShadow] }],
+])
 
-export const CardWeapon = new ItemType("Card Weapon")
-
-export const Bow = new WeaponType("Bow", AttributeTypeEnum.Dex, true)
-export const Instrument = new WeaponType("Instrument", AttributeTypeEnum.Dex, false)
-export const Whip = new WeaponType("Whip", AttributeTypeEnum.Dex, false)
-export const Gun = new WeaponType("Gun", AttributeTypeEnum.Dex, true)
-export const BareHanded = new WeaponType("Bare Handed", AttributeTypeEnum.Str, false)
-export const OneHandedStaff = new WeaponType("One-Handed Staff", AttributeTypeEnum.Str, false)
+export const weaponTypeList: Map<ItemTypeEnum, EquipableType> = new Map([
+    [ItemTypeEnum.Dagger, {
+        name: "Dagger",
+        refineable: true,
+        equipSlot: [EquipmentSlot.rWeapon, EquipmentSlot.lWeapon],
+        equipSlotType: true,
+        sizePenalty: {
+            small: 100,
+            medium: 75,
+            large: 50,
+        },
+        parentType: ItemTypeEnum.Weapon,
+        cardTypeList: [ItemTypeEnum.CardWeapon],
+    }],
+    [ItemTypeEnum.OneHandSword, {
+        name: "One-Handed Sword",
+        refineable: true,
+        equipSlot: [EquipmentSlot.rWeapon],
+        sizePenalty: {
+            small: 75,
+            medium: 100,
+            large: 75,
+        },
+        parentType: ItemTypeEnum.Weapon,
+        cardTypeList: [ItemTypeEnum.CardWeapon],
+    }],
+    [ItemTypeEnum.TwoHandSword, {
+        name: "Two-Handed Sword",
+        refineable: true,
+        equipSlot: [EquipmentSlot.rWeapon, EquipmentSlot.lWeapon],
+        sizePenalty: {
+            small: 75,
+            medium: 75,
+            large: 100,
+        },
+        parentType: ItemTypeEnum.Weapon,
+        cardTypeList: [ItemTypeEnum.CardWeapon],
+    }],
+    [ItemTypeEnum.Katar, {
+        name: "Katar",
+        refineable: true,
+        equipSlot: [EquipmentSlot.rWeapon, EquipmentSlot.lWeapon],
+        sizePenalty: {
+            small: 75,
+            medium: 100,
+            large: 75,
+        },
+        parentType: ItemTypeEnum.Weapon,
+        cardTypeList: [ItemTypeEnum.CardWeapon],
+    }],
+    [ItemTypeEnum.OneHandSpear, {
+        name: "One-Handed Spear",
+        refineable: true,
+        equipSlot: [EquipmentSlot.rWeapon],
+        sizePenalty: {
+            small: 75,
+            medium: 75,
+            large: 100,
+        },
+        parentType: ItemTypeEnum.Weapon,
+        cardTypeList: [ItemTypeEnum.CardWeapon],
+    }],
+    [ItemTypeEnum.TwoHandSpear, {
+        name: "Two-Handed Spear",
+        refineable: true,
+        equipSlot: [EquipmentSlot.rWeapon, EquipmentSlot.lWeapon],
+        sizePenalty: {
+            small: 75,
+            medium: 75,
+            large: 100,
+        },
+        parentType: ItemTypeEnum.Weapon,
+        cardTypeList: [ItemTypeEnum.CardWeapon],
+    }],
+    [ItemTypeEnum.OneHandAxe, {
+        name: "One-Handed Axe",
+        refineable: true,
+        equipSlot: [EquipmentSlot.rWeapon],
+        sizePenalty: {
+            small: 50,
+            medium: 75,
+            large: 100,
+        },
+        parentType: ItemTypeEnum.Weapon,
+        cardTypeList: [ItemTypeEnum.CardWeapon],
+    }],
+    [ItemTypeEnum.TwoHandAxe, {
+        name: "Two-Handed Axe",
+        refineable: true,
+        equipSlot: [EquipmentSlot.rWeapon, EquipmentSlot.lWeapon],
+        sizePenalty: {
+            small: 50,
+            medium: 75,
+            large: 100,
+        },
+        parentType: ItemTypeEnum.Weapon,
+        cardTypeList: [ItemTypeEnum.CardWeapon],
+    }],
+    [ItemTypeEnum.Mace, {
+        name: "Mace",
+        refineable: true,
+        equipSlot: [EquipmentSlot.rWeapon],
+        sizePenalty: {
+            small: 75,
+            medium: 100,
+            large: 100,
+        },
+        parentType: ItemTypeEnum.Weapon,
+        cardTypeList: [ItemTypeEnum.CardWeapon],
+    }],
+    [ItemTypeEnum.Knuckle, {
+        name: "Knuckle",
+        refineable: true,
+        equipSlot: [EquipmentSlot.rWeapon],
+        sizePenalty: {
+            small: 100,
+            medium: 100,
+            large: 75,
+        },
+        parentType: ItemTypeEnum.Weapon,
+        cardTypeList: [ItemTypeEnum.CardWeapon],
+    }],
+    [ItemTypeEnum.OneHandRod, {
+        name: "One-Handed Staff",
+        refineable: true,
+        equipSlot: [EquipmentSlot.rWeapon],
+        sizePenalty: {
+            small: 100,
+            medium: 100,
+            large: 100,
+        },
+        parentType: ItemTypeEnum.Weapon,
+        cardTypeList: [ItemTypeEnum.CardWeapon],
+    }],
+    [ItemTypeEnum.TwoHandRod, {
+        name: "Two-Handed Staff",
+        refineable: true,
+        equipSlot: [EquipmentSlot.rWeapon, EquipmentSlot.lWeapon],
+        sizePenalty: {
+            small: 100,
+            medium: 100,
+            large: 100,
+        },
+        parentType: ItemTypeEnum.Weapon,
+        cardTypeList: [ItemTypeEnum.CardWeapon],
+    }],
+    [ItemTypeEnum.Book, {
+        name: "Book",
+        refineable: true,
+        equipSlot: [EquipmentSlot.rWeapon],
+        sizePenalty: {
+            small: 100,
+            medium: 100,
+            large: 50,
+        },
+        parentType: ItemTypeEnum.Weapon,
+        cardTypeList: [ItemTypeEnum.CardWeapon],
+    }],
+    [ItemTypeEnum.Bow, {
+        name: "Bow",
+        isRange: true,
+        refineable: true,
+        equipSlot: [EquipmentSlot.rWeapon, EquipmentSlot.lWeapon],
+        sizePenalty: {
+            small: 100,
+            medium: 100,
+            large: 75,
+        },
+        parentType: ItemTypeEnum.Weapon,
+        cardTypeList: [ItemTypeEnum.CardWeapon],
+    }],
+    [ItemTypeEnum.Instrument, {
+        name: "Instrument",
+        refineable: true,
+        equipSlot: [EquipmentSlot.rWeapon],
+        sizePenalty: {
+            small: 75,
+            medium: 100,
+            large: 75,
+        },
+        parentType: ItemTypeEnum.Weapon,
+        cardTypeList: [ItemTypeEnum.CardWeapon],
+    }],
+    [ItemTypeEnum.Whip, {
+        name: "Whip",
+        refineable: true,
+        equipSlot: [EquipmentSlot.rWeapon],
+        sizePenalty: {
+            small: 75,
+            medium: 100,
+            large: 50,
+        },
+        parentType: ItemTypeEnum.Weapon,
+        cardTypeList: [ItemTypeEnum.CardWeapon],
+    }],
+    [ItemTypeEnum.Gun, {
+        name: "Gun",
+        refineable: true,
+        equipSlot: [EquipmentSlot.rWeapon, EquipmentSlot.lWeapon],
+        sizePenalty: {
+            small: 100,
+            medium: 100,
+            large: 100,
+        },
+        parentType: ItemTypeEnum.Weapon,
+        cardTypeList: [ItemTypeEnum.CardWeapon],
+    }],
+    [ItemTypeEnum.Fuuma, {
+        name: "Fuuma",
+        refineable: true,
+        equipSlot: [EquipmentSlot.rWeapon],
+        sizePenalty: {
+            small: 75,
+            medium: 75,
+            large: 100,
+        },
+        parentType: ItemTypeEnum.Weapon,
+        cardTypeList: [ItemTypeEnum.CardWeapon],
+    }],
+])

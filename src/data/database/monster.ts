@@ -21,4 +21,4 @@ export const MonsterList: MonsterId[] = [
         id: 20573,
         name: "Phantom of Amdarais",
     }
-]
+].sort((a, b) => a.id - b.id)

@@ -1,4 +1,3 @@
-import { PetItemType } from "../constraint/itemType";
 import { ally, friendly } from "../constraint/pet";
 import { AttributeTypeEnum } from "../model/attributeType";
 import { ItemTypeEnum } from "../model/itemType";
@@ -119,4 +118,4 @@ export const petList: Pet[] = [
         type: ItemTypeEnum.Pet,
         attributeList: [],
     },
-]
+].sort((a,b) => Number.parseInt(a.id)-Number.parseInt(b.id))

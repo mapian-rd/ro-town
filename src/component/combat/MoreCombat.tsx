@@ -142,14 +142,14 @@ export default function MoreCombat(prop: MoreCombatProps) {
                     undefined
                 )}
 
-                {prop.combatStatus.type === AttributeTypeEnum.Atk && prop.combatStatus.darkClawLv ? (
+                {!prop.combatStatus.isSkillRange && prop.combatStatus.type === AttributeTypeEnum.Atk ? (
                     <div>
-                        {getItem(prop.combatStatus.darkClawLv, "Dark Claw Lv", "darkClawLv")}
                         {getItem(prop.combatStatus.darkClawM, "Dark Claw Multiplier", "darkClawM")}
                     </div>
                 ) : (
                     undefined
                 )}
+                {getItemNumber(prop.combatStatus.mulAP, "Other Multipier", "mulAP")}
 
                 <div className="mb-2"></div>
 

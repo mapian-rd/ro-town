@@ -532,4 +532,4 @@ export const itemBuffDatabase: Item[] = [
             },
         ]
     },
-]
+].sort((a,b) => Number.parseInt(a.id)-Number.parseInt(b.id))

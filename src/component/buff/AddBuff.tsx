@@ -1,4 +1,5 @@
 import { useContext, useState, useEffect } from "react";
+import { MdDelete } from "react-icons/md";
 import Select from "react-select";
 import { optionStyle } from "../../App";
 import { AppApiContext } from "../../context/AppApiContext";
@@ -115,8 +116,8 @@ export default function AddBuff() {
         }
         return (
             <div className="row" key={"attribute-" + index}>
-                <div className="col-auto">
-                    <button onClick={() => onDeleteClick(index)}>-</button>
+                <div className="col-auto p-0">
+                    <button className="p-2" onClick={() => onDeleteClick(index)}><MdDelete /></button>
                 </div>
                 <div className="col">
                     <div className="row">

@@ -1,6 +1,7 @@
 import { Attribute, AttributeName } from "./Attribute";
 import { AttributeTypeEnum } from "./attributeType";
 import { DescriptionNumber, FormulaString } from "./Formula";
+import { SizePenalty } from "./itemType";
 import { SkillEnum } from "./skill";
 import { Status } from "./status";
 
@@ -30,6 +31,7 @@ export class CalculatedAttribute {
     statusBonus: number = 0
 
     isWeaponRange: boolean = false;
+    sizePenalty: SizePenalty = new SizePenalty()
 
     minMaxFinalWeaponAtk: number[] = [0, 0]
     minMaxFinalWeaponMatk: number[] = [0, 0]

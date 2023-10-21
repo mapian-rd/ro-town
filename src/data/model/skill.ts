@@ -10,7 +10,11 @@ export enum SkillEnum {
     FreshShrimp, BunchOfShrimp, TunaBelly, TunaParty, PowerOfSea, Grooming, Purring, TastyShrimpParty, SpiritOfSea,
     SilvervineStemSpear, SilvervineRootTwist, CatnipMeteor, CatnipPowdering, PowerOfLand, Chattering, MeowMeow, NyangGrass, SpiritOfLand,
     PickyPeck, ArclouseDash, ScarOfTarou, LunaticCarrotBeat, PowerofLife, Hiss, PowerOfFlock, SpiritOfSavage, SpritOfLife,
-    Greed,
+    Greed, CartCannon,
+    ArrowStrom,
+    StoneCurse, Comet,
+    ShieldSpell,
+    DarkClaw, 
 }
 
 export interface Skill {

@@ -1,17 +1,18 @@
 import { rWeapon } from "../../Constraints"
 import { finalATK, finalMagicDmg, finalMATK, finalPhysicalDmg, finalWeaponAtk, finalWeaponMatk, getMinMaxVarianceTK, pseudoElementAtk, trueWeaponMatk, defAtk, hardDefR, hardMdefR, monsterSoftDef, monsterSoftMdef, finalCritDmg, statusBonus, getMinMaxOverRefine } from "../../formula"
-import { Neutral } from "../constraint/Monster"
+import { MonSizeMedium, MonSizeSmall, Neutral } from "../constraint/Monster"
 import { AttributeType, AttributeTypeEnum } from "./attributeType"
 import { CalculatedAttribute } from "./CalculatedAttribute"
 import { Character } from "./Characterv2"
 import { DescriptionNumber } from "./Formula"
-import { WeaponType } from "./itemType"
-import { Monster } from "./monster"
+import { SizePenalty, WeaponType } from "./itemType"
+import { Monster, MonsterSize } from "./monster"
 import { ActiveSkill, Skill } from "./skill"
 
 export class CombatStatus {
     type: AttributeTypeEnum = AttributeTypeEnum.Atk
     isWeaponRange: boolean = false
+    sizePenaltyP: number = 100
 
     rWeaponAtk: number = 0
     rWeaponMatk: number = 0
@@ -58,6 +59,7 @@ export class CombatStatus {
     mysticalAmpM: number = 1 // 1.5
 
     tkAP: DescriptionNumber = new DescriptionNumber()
+    mulAP: DescriptionNumber = new DescriptionNumber()
 
     skillP: DescriptionNumber = new DescriptionNumber()
     finalSkillP: number = 0
@@ -83,7 +85,6 @@ export class CombatStatus {
     critDmgAP: DescriptionNumber = new DescriptionNumber()
     finalCritDmg: number = 1
 
-    darkClawLv: number = 0
     darkClawM: number = 1
 
     vct: DescriptionNumber = new DescriptionNumber()
@@ -116,6 +117,16 @@ export class CombatStatus {
     finalph: number = 0
 
     killedSec: number = 0
+
+    static getSizePenalty(sizePenalty: SizePenalty, monster: Monster): number {
+        if (monster.size === MonSizeSmall) {
+            return sizePenalty.small
+        } else if (monster.size === MonSizeMedium) {
+            return sizePenalty.medium
+        } else {
+            return sizePenalty.large
+        }
+    }
 
     static getIgnoreed(
         type: AttributeTypeEnum,
@@ -221,8 +232,9 @@ export class CombatStatus {
         }
     }
 
-    static getMultiple(type: AttributeTypeEnum, cal: CalculatedAttribute): number {
-        return 0
+    static getMultiple(type: AttributeTypeEnum, cal: CalculatedAttribute): DescriptionNumber {
+        const resistR = cal.rawAttributeList.get(AttributeTypeEnum.AllPropertyResistR)
+        return resistR ?? new DescriptionNumber()
     }
 
     static getHardefRM(type: AttributeTypeEnum, hardDef: number): number {
@@ -451,6 +463,11 @@ export class CombatStatus {
             combatStatus.ph = cal.finalAttributeList.get(AttributeTypeEnum.PerfectHit) ?? new DescriptionNumber()
             console.log("hit", combatStatus.ph)
             combatStatus.finalHitRaio = (combatStatus.ph.number + (100 - combatStatus.ph.number) * combatStatus.hitRatio / 100)
+        } else {
+            combatStatus.hit = new DescriptionNumber()
+            combatStatus.hitRatio = 100
+            combatStatus.ph = new DescriptionNumber()
+            combatStatus.finalHitRaio = 100
         }
 
         combatStatus.rWeaponAtk = cal.rWeaponAtk
@@ -481,6 +498,8 @@ export class CombatStatus {
         // useDeftk
         if (combatStatus.isThanatos) {
             combatStatus.useDeftk = defAtk(monster.hardDef)
+        } else {
+            combatStatus.useDeftk = 0
         }
         const useDeftk = combatStatus.useDeftk
 
@@ -490,6 +509,8 @@ export class CombatStatus {
         // edp
         if (combatStatus.isEdp) {
             combatStatus.edpM = 4
+        } else {
+            combatStatus.edpM = 1
         }
         const edpM: number = combatStatus.edpM
 
@@ -522,12 +543,15 @@ export class CombatStatus {
         // mysticalAmp
         if (combatStatus.isMysticalAmp) {
             combatStatus.mysticalAmpM = 1.5
+        } else {
+            combatStatus.mysticalAmpM = 1
         }
         const mysticalAmpM: number = combatStatus.mysticalAmpM
 
         combatStatus.tkAP = CombatStatus.getEqiupmenttkPercent(type, cal)
         const tkAP = combatStatus.tkAP.number
         const mulAP = CombatStatus.getMultiple(type, cal)
+        combatStatus.mulAP = mulAP
 
         // skill percent
         combatStatus.skillP = cal.baseSkillAttributeList.get(skill.enum) ?? new DescriptionNumber()
@@ -537,6 +561,8 @@ export class CombatStatus {
         // power thrust
         if (combatStatus.isPowerThrust) {
             combatStatus.powerThrustAP = 25
+        } else {
+            combatStatus.powerThrustAP = 0
         }
         const powerThrustAP = combatStatus.powerThrustAP
 
@@ -550,12 +576,15 @@ export class CombatStatus {
         } else {
             if (type === AttributeTypeEnum.Matk) {
                 combatStatus.elementDmgMulAP = cal.finalAttributeList.get(AttributeTypeEnum.MagicSkillNeutral) ?? new DescriptionNumber()
+            } else {
+                combatStatus.elementDmgMulAP = new DescriptionNumber()
             }
         }
         const elementDmgMulAP = combatStatus.elementDmgMulAP.number
 
         // IgnoreDef
-        combatStatus.ignoreDef = cal.finalAttributeList.get(AttributeTypeEnum.IgnoreDefAllRace) ?? new DescriptionNumber()
+        combatStatus.ignoreDef = new DescriptionNumber()
+        combatStatus.ignoreDef.plusNumber(cal.finalAttributeList.get(AttributeTypeEnum.IgnoreDefAllRace) ?? new DescriptionNumber())
         if (monster.isBoss) {
             combatStatus.ignoreDef.plusNumber(cal.finalAttributeList.get(AttributeTypeEnum.IgnoreDefBoss) ?? new DescriptionNumber())
         } else {
@@ -564,7 +593,8 @@ export class CombatStatus {
         combatStatus.ignoreDef.plusNumber(cal.finalAttributeList.get(monster.race.ignoreDefAttributeType) ?? new DescriptionNumber())
 
         // IgnoreMdef
-        combatStatus.ignoreMdef = cal.finalAttributeList.get(AttributeTypeEnum.IgnoreMdefAllRace) ?? new DescriptionNumber()
+        combatStatus.ignoreMdef = new DescriptionNumber()
+        combatStatus.ignoreMdef.plusNumber(cal.finalAttributeList.get(AttributeTypeEnum.IgnoreMdefAllRace) ?? new DescriptionNumber())
         if (monster.isBoss) {
             combatStatus.ignoreMdef.plusNumber(cal.finalAttributeList.get(AttributeTypeEnum.IgnoreMdefBoss) ?? new DescriptionNumber())
         } else {
@@ -589,6 +619,8 @@ export class CombatStatus {
         // range mul
         if (combatStatus.isSkillRange) {
             combatStatus.rangeMulAP = cal.rawAttributeList.get(AttributeTypeEnum.RangeMul) ?? new DescriptionNumber()
+        } else {
+            combatStatus.rangeMulAP = new DescriptionNumber()
         }
         const rangeMulAP = combatStatus.rangeMulAP.number
 
@@ -596,12 +628,17 @@ export class CombatStatus {
         if (combatStatus.isCrit) {
             combatStatus.critDmgAP = cal.rawAttributeList.get(AttributeTypeEnum.CritDmg) ?? new DescriptionNumber()
             combatStatus.finalCritDmg = finalCritDmg(combatStatus.critDmgAP.number)
+        } else {
+            combatStatus.critDmgAP = new DescriptionNumber()
+            combatStatus.finalCritDmg = 1
         }
         const finalCritDmgM = combatStatus.finalCritDmg
 
         // dark claw
-        if (combatStatus.darkClawLv) {
-            combatStatus.darkClawM = [1.3, 1.6, 1.9, 2.2, 2.5][combatStatus.darkClawLv - 1]
+        if (!combatStatus.isSkillRange) {
+            combatStatus.darkClawM = cal.rawAttributeList.get(AttributeTypeEnum.DarkClaw)?.number ?? 1
+        } else {
+            combatStatus.darkClawM = 1
         }
         const darkClawM = combatStatus.darkClawM
 
@@ -622,7 +659,8 @@ export class CombatStatus {
         // const lHighRefine = highRefine[1]
 
         // const statusBonusV = cal.statusBonus
-        const sizePenaltyP: number = 100
+        combatStatus.sizePenaltyP = CombatStatus.getSizePenalty(cal.sizePenalty, monster)
+        const sizePenaltyP: number = combatStatus.sizePenaltyP
         // const dmg = CombatStatus.getTrueMinMaxWeapontk(type, cal.isWeaponRange, rWeapontk, rVariancetk, rRefinetk, rOverRefine, rHighRefine, lWeapontk, lVariancetk, lRefinetk, lOverRefine, lHighRefine, statusBonusV)
         combatStatus.finalWeapontk = CombatStatus.getFinalWeapontkCal(type, cal)
         combatStatus.finaltk = []
@@ -632,7 +670,7 @@ export class CombatStatus {
                 combatStatus.finaltk.push(finaltk)
                 return finaltk
             })
-            .map(finaltk => CombatStatus.getFinalDmg(type, finaltk, tkAP, mulAP, skillP, powerThrustAP, skillMulAP, elementDmgMulAP, hardefRM, softef, rangeMulAP, finalCritDmgM, darkClawM, elementMulP));
+            .map(finaltk => CombatStatus.getFinalDmg(type, finaltk, tkAP, mulAP.number, skillP, powerThrustAP, skillMulAP, elementDmgMulAP, hardefRM, softef, rangeMulAP, finalCritDmgM, darkClawM, elementMulP));
         console.log("finalDmg", dmg)
         combatStatus.minDmgph = Math.floor(dmg[0] / combatStatus.skillHit)
         combatStatus.maxDmgph = Math.floor(dmg[1] / combatStatus.skillHit)

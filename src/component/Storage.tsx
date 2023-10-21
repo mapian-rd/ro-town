@@ -1,15 +1,15 @@
 import { createRef, useContext, useEffect, useRef, useState } from "react";
 import { AppApiContext } from "../context/AppApiContext";
 import { AppContext, ViewState } from "../context/AppContext";
-import { Instrument } from "../data/constraint/itemType";
 import { CraftEqiupment } from "../data/model/CraftEquipment";
-import { ItemTypeEnum, itemTypeList } from "../data/model/itemType";
-import { Equipment, Item } from "../data/model/Itemv2";
-import classNames from 'classnames';
+import { ItemTypeEnum } from "../data/model/itemType";
+import { Item } from "../data/model/Itemv2";
 import Box from "./Box";
 import { MdDelete } from "react-icons/md";
+import { itemTypeList, weaponTypeList } from "../data/constraint/itemType";
 
-const searchDropdownList = Array.from(itemTypeList).map(([key, value]) => {
+const searchDropdownList = [...Array.from(weaponTypeList), ...Array.from(itemTypeList)].flatMap(([key, value]) => {
+    if (key === ItemTypeEnum.Weapon) return []
     return { label: value.name, value: key }
 })
 

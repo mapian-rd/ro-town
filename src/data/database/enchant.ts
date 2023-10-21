@@ -2276,4 +2276,4 @@ export const enchantDatabase: Item[] = [
             },
         ],
     },
-]
+].sort((a,b) => Number.parseInt(a.id)-Number.parseInt(b.id))

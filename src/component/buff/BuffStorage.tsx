@@ -9,6 +9,7 @@ import { itemBuffDatabase } from "../../data/database/buff";
 import { SkillBuff } from "../../data/model/Buff";
 
 interface Props {
+    title: string;
     list: Named[];
     storage: Named[];
     addClick: (list: Named[], found: boolean, id: string) => void;
@@ -130,7 +131,7 @@ export default function BuffStorage(props: Props) {
 
     return (
         <div className="d-flex flex-column flex-grow-1 h-100 mh-0">
-            <Box className="flex-grow-1 h-100" searchable overflow title="Buff Storage"
+            <Box className="flex-grow-1 h-100" searchable overflow title={props.title}
                 onSearchChange={onSearchChange}
             >
                 <div className="mh-0" >

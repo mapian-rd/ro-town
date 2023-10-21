@@ -157,7 +157,7 @@ export const skillActiveDatabase: ActiveSkill[] = [
         type: AttributeTypeEnum.Atk,
         isRange: true,
     },
-]
+].sort((a,b) => Number.parseInt(a.id)-Number.parseInt(b.id))
 
 export const skillPassiveDatabase: PassiveSkill[] = [
     {
@@ -276,7 +276,7 @@ export const skillPassiveDatabase: PassiveSkill[] = [
         attributeList: [
         ]
     },
-]
+].sort((a,b) => Number.parseInt(a.id)-Number.parseInt(b.id))
 
 export const skillBuffDatabase: PassiveSkill[] = [
     {
@@ -517,4 +517,4 @@ export const skillBuffDatabase: PassiveSkill[] = [
         attributeList: [
         ]
     },
-]
+].sort((a,b) => Number.parseInt(a.id)-Number.parseInt(b.id))
