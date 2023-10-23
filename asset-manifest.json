@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/ro-town/static/css/main.d263e44e.css",
-    "main.js": "/ro-town/static/js/main.854b5b0f.js",
+    "main.css": "/ro-town/static/css/main.9b43eeb6.css",
+    "main.js": "/ro-town/static/js/main.e94efc29.js",
     "static/js/787.98463d9f.chunk.js": "/ro-town/static/js/787.98463d9f.chunk.js",
     "index.html": "/ro-town/index.html",
-    "main.d263e44e.css.map": "/ro-town/static/css/main.d263e44e.css.map",
-    "main.854b5b0f.js.map": "/ro-town/static/js/main.854b5b0f.js.map",
+    "main.9b43eeb6.css.map": "/ro-town/static/css/main.9b43eeb6.css.map",
+    "main.e94efc29.js.map": "/ro-town/static/js/main.e94efc29.js.map",
     "787.98463d9f.chunk.js.map": "/ro-town/static/js/787.98463d9f.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.d263e44e.css",
-    "static/js/main.854b5b0f.js"
+    "static/css/main.9b43eeb6.css",
+    "static/js/main.e94efc29.js"
   ]
 }
