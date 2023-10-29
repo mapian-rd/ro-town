@@ -5,13 +5,11 @@ import { Exportable } from "./Exportable";
 import { Status } from "./status"
 
 export class MonsterId {
-    id!: number;
+    id!: string;
+    monsterId?: number;
     name!: string;
-
-    constructor(id: number, name: string) {
-        this.id = id;
-        this.name = name;
-    }
+    hp?: number;
+    hit?: number;
 }
 
 export class Monster {

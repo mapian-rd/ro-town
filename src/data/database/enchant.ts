@@ -3,8 +3,10 @@ import { ItemTypeEnum } from "../model/itemType";
 import { Item } from "../model/Itemv2";
 import { SkillEnum } from "../model/skill";
 import { Symbol } from "../model/Symbol";
+import * as itemJson from "./json/enchant.json"
 
 export const enchantDatabase: Item[] = [
+    ...Array.from(itemJson as Item[]),
     {
         id: "29534",
         name: "Modification Orb (ATK)",
@@ -271,10 +273,67 @@ export const enchantDatabase: Item[] = [
         ],
     },
     {
+        id: "4865",
+        name: "Critical Lv.3",
+        type: ItemTypeEnum.Enchant,
+        attributeList: [
+            {
+                type: AttributeTypeEnum.CritDmg,
+                formulaText: "8",
+            },
+            {
+                type: AttributeTypeEnum.Critical,
+                formulaText: "3",
+            },
+        ],
+    },
+    {
         id: "29544",
         name: "Modification Orb (Drain Soul)",
         type: ItemTypeEnum.Enchant,
         attributeList: [],
+    },
+    {
+        id: "29543",
+        name: "Modification Orb (Drain Life)",
+        type: ItemTypeEnum.Enchant,
+        attributeList: [],
+    },
+    {
+        id: "29532",
+        name: "Modification Orb (SP Recovery)",
+        type: ItemTypeEnum.Enchant,
+        attributeList: [
+            {
+                type: AttributeTypeEnum.SpRecoveryP,
+                formulaText: "20",
+            },
+        ],
+    },
+    {
+        id: "29529",
+        name: "Modification Orb (HP Recovery)",
+        type: ItemTypeEnum.Enchant,
+        attributeList: [
+            {
+                type: AttributeTypeEnum.HpRecoveryP,
+                formulaText: "20",
+            },
+        ],
+    },
+    {
+        id: "29546",
+        name: "Modification Orb (Magic Soul)",
+        type: ItemTypeEnum.Enchant,
+        attributeList: [
+        ],
+    },
+    {
+        id: "29545",
+        name: "Modification Orb (Magic Healing)",
+        type: ItemTypeEnum.Enchant,
+        attributeList: [
+        ],
     },
     {
         id: "29550",
@@ -524,154 +583,6 @@ export const enchantDatabase: Item[] = [
                         },
                     ]
                 }
-            },
-        ],
-    },
-    {
-        id: "29668",
-        name: "Doram Stone (Upper)",
-        type: ItemTypeEnum.CostumeEnchant,
-        attributeList: [
-            {
-                type: AttributeTypeEnum.Matk,
-                formulaText: "<S$5021.Lv> * 7",
-            },
-            {
-                type: AttributeTypeEnum.Atk,
-                formulaText: "<S$5021.Lv> * 7",
-            },
-        ],
-    },
-    {
-        id: "29669",
-        name: "Doram Stone (Middle)",
-        type: ItemTypeEnum.CostumeEnchant,
-        attributeList: [
-            {
-                type: AttributeTypeEnum.SkillDmg,
-                skill: SkillEnum.LunaticCarrotBeat,
-                formulaText: "20",
-            },
-        ],
-    },
-    {
-        id: "29670",
-        name: "Doram Stone (Lower)",
-        type: ItemTypeEnum.CostumeEnchant,
-        attributeList: [
-            {
-                type: AttributeTypeEnum.SkillDmg,
-                skill: SkillEnum.SilvervineStemSpear,
-                formulaText: "20",
-            },
-        ],
-    },
-    {
-        id: "29671",
-        name: "Doram Stone (Garment)",
-        type: ItemTypeEnum.CostumeEnchant,
-        attributeList: [
-            {
-                type: AttributeTypeEnum.SkillDmg,
-                skill: SkillEnum.PickyPeck,
-                formulaText: "20",
-            },
-            {
-                type: AttributeTypeEnum.SkillDmg,
-                skill: SkillEnum.CatnipMeteor,
-                formulaText: "20",
-            },
-            {
-                type: AttributeTypeEnum.SkillDmg,
-                skill: SkillEnum.LunaticCarrotBeat,
-                formulaText: "20",
-                condition: {
-                    itemList: [
-                        {
-                            itemId: "29668"
-                        }
-                    ]
-                }
-            },
-            {
-                type: AttributeTypeEnum.SkillDmg,
-                skill: SkillEnum.SilvervineStemSpear,
-                formulaText: "20",
-                condition: {
-                    itemList: [
-                        {
-                            itemId: "29668"
-                        }
-                    ]
-                }
-            },
-            {
-                type: AttributeTypeEnum.Cooldown,
-                skill: SkillEnum.SpiritOfSavage,
-                formulaText: "1",
-                condition: {
-                    itemList: [
-                        {
-                            itemId: "29669"
-                        }
-                    ]
-                }
-            },
-            {
-                type: AttributeTypeEnum.Cooldown,
-                skill: SkillEnum.CatnipMeteor,
-                formulaText: "1",
-                condition: {
-                    itemList: [
-                        {
-                            itemId: "29670"
-                        }
-                    ]
-                }
-            },
-        ],
-    },
-    {
-        id: "29055",
-        name: "Reload Stone (Lower)",
-        type: ItemTypeEnum.CostumeEnchant,
-        attributeList: [
-            {
-                type: AttributeTypeEnum.Delay,
-                formulaText: "1",
-            },
-        ],
-    },
-    {
-        id: "29054",
-        name: "Reload Stone (Middle)",
-        type: ItemTypeEnum.CostumeEnchant,
-        attributeList: [
-            {
-                type: AttributeTypeEnum.Delay,
-                formulaText: "1",
-            },
-        ],
-    },
-    {
-        id: "29053",
-        name: "Reload Stone (Upper)",
-        type: ItemTypeEnum.CostumeEnchant,
-        attributeList: [
-            {
-                type: AttributeTypeEnum.Delay,
-                formulaText: "1",
-            },
-        ],
-    },
-    {
-        id: "29056",
-        name: "Fixed Casting Stone",
-        type: ItemTypeEnum.CostumeEnchant,
-        attributeList: [
-            {
-                type: AttributeTypeEnum.Fct,
-                formulaText: "0.5",
             },
         ],
     },
@@ -2276,4 +2187,175 @@ export const enchantDatabase: Item[] = [
             },
         ],
     },
-].sort((a,b) => Number.parseInt(a.id)-Number.parseInt(b.id))
+    {
+        id: "29668",
+        name: "Doram Stone (Upper)",
+        type: ItemTypeEnum.CostumeEnchantUpper,
+        imgId: 29668,
+        attributeList: [
+            {
+                type: AttributeTypeEnum.Matk,
+                formulaText: "<S$5021.Lv> * 7",
+            },
+            {
+                type: AttributeTypeEnum.Atk,
+                formulaText: "<S$5021.Lv> * 7",
+            },
+        ],
+    },
+    {
+        id: "29669",
+        name: "Doram Stone (Middle)",
+        type: ItemTypeEnum.CostumeEnchantMiddle,
+        imgId: 29669,
+        attributeList: [
+            {
+                type: AttributeTypeEnum.SkillDmg,
+                skill: SkillEnum.LunaticCarrotBeat,
+                formulaText: "20",
+            },
+        ],
+    },
+    {
+        id: "29670",
+        name: "Doram Stone (Lower)",
+        type: ItemTypeEnum.CostumeEnchantLower,
+        imgId: 29670,
+        attributeList: [
+            {
+                type: AttributeTypeEnum.SkillDmg,
+                skill: SkillEnum.SilvervineStemSpear,
+                formulaText: "20",
+            },
+        ],
+    },
+    {
+        id: "29671",
+        name: "Doram Stone (Garment)",
+        type: ItemTypeEnum.CostumeEnchantGarment,
+        imgId: 29671,
+        attributeList: [
+            {
+                type: AttributeTypeEnum.SkillDmg,
+                skill: SkillEnum.PickyPeck,
+                formulaText: "20",
+            },
+            {
+                type: AttributeTypeEnum.SkillDmg,
+                skill: SkillEnum.CatnipMeteor,
+                formulaText: "20",
+            },
+            {
+                type: AttributeTypeEnum.SkillDmg,
+                skill: SkillEnum.LunaticCarrotBeat,
+                formulaText: "20",
+                condition: {
+                    itemList: [
+                        {
+                            itemId: "29668"
+                        }
+                    ]
+                }
+            },
+            {
+                type: AttributeTypeEnum.SkillDmg,
+                skill: SkillEnum.SilvervineStemSpear,
+                formulaText: "20",
+                condition: {
+                    itemList: [
+                        {
+                            itemId: "29668"
+                        }
+                    ]
+                }
+            },
+            {
+                type: AttributeTypeEnum.Cooldown,
+                skill: SkillEnum.SpiritOfSavage,
+                formulaText: "1",
+                condition: {
+                    itemList: [
+                        {
+                            itemId: "29669"
+                        }
+                    ]
+                }
+            },
+            {
+                type: AttributeTypeEnum.Cooldown,
+                skill: SkillEnum.CatnipMeteor,
+                formulaText: "1",
+                condition: {
+                    itemList: [
+                        {
+                            itemId: "29670"
+                        }
+                    ]
+                }
+            },
+        ],
+    },
+    {
+        id: "29055",
+        name: "Reload Stone (Lower)",
+        type: ItemTypeEnum.CostumeEnchantLower,
+        imgId: 29055,
+        attributeList: [
+            {
+                type: AttributeTypeEnum.Delay,
+                formulaText: "1",
+            },
+        ],
+    },
+    {
+        id: "29054",
+        name: "Reload Stone (Middle)",
+        type: ItemTypeEnum.CostumeEnchantMiddle,
+        imgId: 29054,
+        attributeList: [
+            {
+                type: AttributeTypeEnum.Delay,
+                formulaText: "1",
+            },
+        ],
+    },
+    {
+        id: "29053",
+        name: "Reload Stone (Upper)",
+        type: ItemTypeEnum.CostumeEnchantUpper,
+        imgId: 29053,
+        attributeList: [
+            {
+                type: AttributeTypeEnum.Delay,
+                formulaText: "1",
+            },
+            {
+                type: AttributeTypeEnum.Delay,
+                formulaText: "2",
+                condition: {
+                    itemList: [
+                        {
+                            itemId: "29054"
+                        },
+                        {
+                            itemId: "29055"
+                        },
+                    ]
+                }
+            },
+        ],
+    },
+    {
+        id: "29056",
+        name: "Fixed Casting Stone",
+        type: ItemTypeEnum.CostumeEnchantGarment,
+        imgId: 29056,
+        attributeList: [
+            {
+                type: AttributeTypeEnum.Fct,
+                formulaText: "0.5",
+            },
+        ],
+    },
+]
+    .sort((a, b) => Number.parseInt(a.id) - Number.parseInt(b.id))

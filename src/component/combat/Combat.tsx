@@ -30,7 +30,7 @@ export function Combat() {
     return (
         <Box className="flex-grow-1" title="Combat" buttonText="More Info" onClick={() => api.setViewState(ViewState.MoreCombat)}>
             <div className="row m-0">
-                <div className="col-7 px-0">
+                <div className="col-7 col-xl-12 col-xxl-7 px-0">
                     <div className="d-flex">
                         <span className="me-1 jc-center">Skill</span>
                         <Select jc-center
@@ -41,7 +41,7 @@ export function Combat() {
                         />
                     </div>
                 </div>
-                <div className="col-5 px-0">
+                <div className="col-5 col-xl-12 col-xxl-5 px-0">
                     <div className="d-flex">
                         <span className="me-1 jc-center text-nowrap">Skill Lv</span>
                         <Select jc-center
@@ -96,21 +96,21 @@ export function Combat() {
 
                 <div className="d-flex px-0">
                     <span className="me-1 jc-center text-nowrap">Min Dmg</span>
-                    <span className="w-100 text-end">{context.combatStatus.minDmg} ({context.combatStatus.minDmgph} x {context.combatStatus.skillHit})</span>
+                    <span className="w-100 text-end">{context.combatStatus.skillN !== 1 ? context.combatStatus.skillN + " x " : ""}{context.combatStatus.minDmg} ({context.combatStatus.minDmgph} x {context.combatStatus.skillHit})</span>
                 </div>
                 <div className="d-flex px-0">
                     <span className="me-1 jc-center text-nowrap">Max Dmg</span>
-                    <span className="w-100 text-end">{context.combatStatus.maxDmg} ({context.combatStatus.maxDmgph} x {context.combatStatus.skillHit})</span>
+                    <span className="w-100 text-end">{context.combatStatus.skillN !== 1 ? context.combatStatus.skillN + " x " : ""}{context.combatStatus.maxDmg} ({context.combatStatus.maxDmgph} x {context.combatStatus.skillHit})</span>
                 </div>
                 <div className="d-flex final-dps px-0">
-                    <span className="me-1 jc-center text-nowrap">Average Dmg</span>
-                    <span className="w-100 text-end final-dps-value">{context.combatStatus.avgDmg} ({context.combatStatus.avgDmgph} x {context.combatStatus.skillHit})</span>
+                    <span className="me-1 jc-center text-nowrap">Avg Dmg</span>
+                    <span className="w-100 text-end final-dps-value">{context.combatStatus.skillN !== 1 ? context.combatStatus.skillN + " x " : ""}{context.combatStatus.avgDmg} ({context.combatStatus.avgDmgph} x {context.combatStatus.skillHit})</span>
                 </div>
 
                 <div className="col-12 px-0">
                     <div className="d-flex">
                         <span className="me-1 jc-center text-nowrap">Final Cast Time</span>
-                        <span className="w-100 text-end">{(context.combatStatus.remainVct + context.combatStatus.remainFct).toFixed(2)}</span>
+                        <span className="w-100 text-end">{(context.combatStatus.remainVct + context.combatStatus.remainFct).toFixed(2).replace(/[.,]00$/, "")}</span>
                     </div>
                 </div>
 
@@ -145,7 +145,7 @@ export function Combat() {
                 </div> */}
                 <div className="d-flex px-0">
                     <span className="me-1 jc-center text-nowrap">Final After Cast Time</span>
-                    <span className="w-100 text-end">{Math.max(context.combatStatus.remainCooldown, context.combatStatus.remainDelay, context.combatStatus.secph).toFixed(2)}</span>
+                    <span className="w-100 text-end">{Math.max(context.combatStatus.remainCooldown, context.combatStatus.remainDelay, context.combatStatus.secph).toFixed(2).replace(/[.,]00$/, "")}</span>
                 </div>
                 <div className="d-flex px-0">
                     <span className="me-1 jc-center text-nowrap">Hit Ratio</span>
@@ -154,7 +154,7 @@ export function Combat() {
                 <div className="d-flex flex-column final-dps px-0">
                     <div className="d-flex">
                         <span className="me-1 jc-center text-nowrap">Final Dps</span>
-                        <span className="w-100 text-end final-dps-value">{context.combatStatus.final.toFixed(2)} ({context.combatStatus.finalph.toFixed(2)} x 5)</span>
+                        <span className="w-100 text-end final-dps-value">{context.combatStatus.final.toFixed(2).replace(/[.,]00$/, "")}</span>
                     </div>
                     <span className="text-end text-nowrap remark w-100">* Ignore Ping & Computer Performance</span>
                 </div>

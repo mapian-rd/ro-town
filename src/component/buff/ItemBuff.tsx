@@ -18,7 +18,7 @@ interface Props {
     buttonText?: string;
     onClick?: () => void;
     handleBuffChange?: (event: React.ChangeEvent<HTMLInputElement>, id: string) => void
-    handleLvChange?: (event: React.ChangeEvent<HTMLInputElement>, id: string) => void
+    handleLvChange?: (event: React.ChangeEvent<HTMLInputElement>, id: string) => number
     onClickBuff: (id: string) => void;
 }
 
@@ -54,8 +54,14 @@ export default function ItemBuff(props: Props) {
                         type="number"
                         min="1"
                         max={item.maxLv}
-                        value={item.activeLv}
+                        defaultValue={item.activeLv}
                         onChange={event => props.handleLvChange ? props.handleLvChange(event, item.id) : undefined}
+                        onBlur={event => {
+                            if (props.handleLvChange) {
+                                const result = props.handleLvChange(event, item.id)
+                                event.target.value = result.toString()
+                            }
+                        }}
                     />
                 </div>
                 <div className='col-auto jc-center px-0'>

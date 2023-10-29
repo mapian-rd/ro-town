@@ -1,5 +1,6 @@
 import { rWeapon } from "../../Constraints"
 import { finalATK, finalMagicDmg, finalMATK, finalPhysicalDmg, finalWeaponAtk, finalWeaponMatk, getMinMaxVarianceTK, pseudoElementAtk, trueWeaponMatk, defAtk, hardDefR, hardMdefR, monsterSoftDef, monsterSoftMdef, finalCritDmg, statusBonus, getMinMaxOverRefine } from "../../formula"
+import { attributeList, magicalAttributeList } from "../constraint/attributeType"
 import { MonSizeMedium, MonSizeSmall, Neutral } from "../constraint/Monster"
 import { AttributeType, AttributeTypeEnum } from "./attributeType"
 import { CalculatedAttribute } from "./CalculatedAttribute"
@@ -50,8 +51,8 @@ export class CombatStatus {
     elementMulP: number = 100
 
     statustk: number = 0
-    elementSkillMulP: number | undefined
-    elementMildWindMulP: number | undefined
+    elementSkillMulP: number = 100
+    elementMildWindMulP: number = 100
 
     finaltk: number[] = []
 
@@ -87,6 +88,7 @@ export class CombatStatus {
 
     darkClawM: number = 1
 
+    vct530: DescriptionNumber = new DescriptionNumber()
     vct: DescriptionNumber = new DescriptionNumber()
     skillVct: DescriptionNumber = new DescriptionNumber()
     fct: DescriptionNumber = new DescriptionNumber()
@@ -98,7 +100,8 @@ export class CombatStatus {
     minDmg: number = 0
     maxDmg: number = 0
     avgDmg: number = 0
-    skillHit: number = 1
+    skillHit: number = 0
+    skillN: number = 0
     minDmgph: number = 0
     maxDmgph: number = 0
     avgDmgph: number = 0
@@ -202,7 +205,7 @@ export class CombatStatus {
         if (type === AttributeTypeEnum.Atk) {
             attributeType = monster.isBoss ? AttributeTypeEnum.PhysicalBoss : AttributeTypeEnum.PhysicalMon
         } else {
-            attributeType = monster.isBoss ? AttributeTypeEnum.PhysicalBoss : AttributeTypeEnum.PhysicalMon
+            attributeType = monster.isBoss ? AttributeTypeEnum.MagicBoss : AttributeTypeEnum.MagicMon
         }
         return cal.finalAttributeList.get(attributeType) ?? new DescriptionNumber()
     }
@@ -411,13 +414,18 @@ export class CombatStatus {
         skillLevel: number = 1
     ): number[] {
         // Vct
+        combatStatus.vct530 = cal.vct530
         combatStatus.vct = cal.rawAttributeList.get(AttributeTypeEnum.VctPercent) ?? new DescriptionNumber()
         combatStatus.skillVct = cal.vctAttributeList.get(skill.enum) ?? new DescriptionNumber()
         const vct = Math.min(100, combatStatus.vct.number)
         const skillVct = Math.min(100, combatStatus.skillVct.number)
-        combatStatus.remainVct = [skill.vct[skillLevel - 1]]
+        const vct530 = Math.min(100, combatStatus.vct530.number)
+        const requireVct = skill.vct[skillLevel - 1]
+        combatStatus.remainVct = [requireVct]
             .map(value => value - value * vct / 100)
+            .map(value => value - value * vct530 / 100)
             .map(value => value - value * skillVct / 100)
+            .map(value => Math.max(0, value))
         [0]
 
         // Fct
@@ -453,6 +461,7 @@ export class CombatStatus {
         const type = skill.type
         const isSkillRange = skill.isRange
         combatStatus.skillHit = skill.hit[skillLevel - 1]
+        combatStatus.skillN = skill.n ? skill.n[skillLevel - 1] : 1
         combatStatus.type = type
         combatStatus.isSkillRange = isSkillRange ?? false
 
@@ -535,9 +544,9 @@ export class CombatStatus {
         const statustk = CombatStatus.getStatustk(type, cal)
         combatStatus.statustk = statustk
         const masterytk: number = 0 // already in equipmenttk
-        const elementSkillMulP: number | undefined = undefined
+        const elementSkillMulP: number = 100
         combatStatus.elementSkillMulP = elementSkillMulP
-        const elementMildWindMulP: number | undefined = undefined
+        const elementMildWindMulP: number = 100
         combatStatus.elementMildWindMulP = elementMildWindMulP
 
         // mysticalAmp
@@ -681,10 +690,12 @@ export class CombatStatus {
 
         // vct + fct -> motion(secph) & cooldown & delay
         combatStatus.final = [combatStatus.avgDmg]
+            .map(value => value * combatStatus.skillN)
             .map(value => value * combatStatus.finalHitRaio / 100)
             .map(value => value / (combatStatus.remainVct + combatStatus.remainFct + Math.max(combatStatus.remainCooldown, combatStatus.remainDelay, combatStatus.secph)))
         [0]
         combatStatus.finalph = [combatStatus.avgDmgph]
+            .map(value => value * combatStatus.skillN)
             .map(value => value * combatStatus.finalHitRaio / 100)
             .map(value => value / (combatStatus.remainVct + combatStatus.remainFct + Math.max(combatStatus.remainCooldown, combatStatus.remainDelay, combatStatus.secph)))
         [0]

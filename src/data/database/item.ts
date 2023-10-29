@@ -3,112 +3,10 @@ import { ItemTypeEnum } from "../model/itemType";
 import { Equipment } from "../model/Itemv2";
 import { SkillEnum } from "../model/skill";
 import { Symbol } from "../model/Symbol";
+import * as itemJson from "./json/item.json"
 
 export const itemDatabase: Equipment[] = [
-    {
-        id: "26155",
-        name: "Meowmeow Foxtail",
-        type: ItemTypeEnum.OneHandRod,
-        equipmentLevel: 4,
-        cardSlot: 2,
-        optionSlot: 2,
-        atk: 300,
-        matk: 300,
-        attributeList: [
-            {
-                type: AttributeTypeEnum.Atk,
-                formulaText: "<this.Rf/2> * 10"
-            },
-            {
-                type: AttributeTypeEnum.AtkPercent,
-                formulaText: "<this.Rf/3> * 2"
-            },
-            {
-                type: AttributeTypeEnum.Matk,
-                formulaText: "<this.Rf/2> * 10"
-            },
-            {
-                type: AttributeTypeEnum.MatkPercent,
-                formulaText: "<this.Rf/3> * 2"
-            },
-            {
-                type: AttributeTypeEnum.SkillDmg,
-                skill: SkillEnum.LunaticCarrotBeat,
-                formulaText: "15",
-                condition: {
-                    refireList: [
-                        {
-                            number: 7,
-                            symbol: Symbol.gte
-                        }
-                    ]
-                }
-            },
-            {
-                type: AttributeTypeEnum.SkillDmg,
-                skill: SkillEnum.SilvervineStemSpear,
-                formulaText: "15",
-                condition: {
-                    refireList: [
-                        {
-                            number: 7,
-                            symbol: Symbol.gte
-                        }
-                    ]
-                }
-            },
-            {
-                type: AttributeTypeEnum.VctPercent,
-                formulaText: "10",
-                condition: {
-                    refireList: [
-                        {
-                            number: 9,
-                            symbol: Symbol.gte
-                        }
-                    ]
-                }
-            },
-            {
-                type: AttributeTypeEnum.AspdPercent,
-                formulaText: "10",
-                condition: {
-                    refireList: [
-                        {
-                            number: 9,
-                            symbol: Symbol.gte
-                        }
-                    ]
-                }
-            },
-            {
-                type: AttributeTypeEnum.SkillDmg,
-                skill: SkillEnum.PickyPeck,
-                formulaText: "20",
-                condition: {
-                    refireList: [
-                        {
-                            number: 11,
-                            symbol: Symbol.gte
-                        }
-                    ]
-                }
-            },
-            {
-                type: AttributeTypeEnum.SkillDmg,
-                skill: SkillEnum.CatnipMeteor,
-                formulaText: "20",
-                condition: {
-                    refireList: [
-                        {
-                            number: 11,
-                            symbol: Symbol.gte
-                        }
-                    ]
-                }
-            },
-        ],
-    },
+    ...Array.from(itemJson as Equipment[]),
     {
         id: "19296",
         name: "Fancy Feather Hat",
@@ -557,6 +455,24 @@ export const itemDatabase: Equipment[] = [
         type: ItemTypeEnum.Lower,
         equipmentLevel: 1,
         enchantSlot: 3,
+        enchantSpecified: [
+            "4702",
+            "4712",
+            "4722",
+            "4732",
+            "4742",
+            "4752",
+            "29532",
+            "29529",
+            "4834",
+            "4865",
+            "4812",
+            "4873",
+            "29546",
+            "29545",
+            "29544",
+            "29543",
+        ],
         attributeList: [
             {
                 type: AttributeTypeEnum.Delay,
@@ -918,7 +834,6 @@ export const itemDatabase: Equipment[] = [
         type: ItemTypeEnum.CostumeUML,
         equipmentLevel: 1,
         def: 0,
-        enchantSlot: 3,
         attributeList: [
         ],
     },
@@ -928,7 +843,6 @@ export const itemDatabase: Equipment[] = [
         type: ItemTypeEnum.CostumeGarment,
         equipmentLevel: 1,
         def: 0,
-        enchantSlot: 1,
         attributeList: [
         ],
     },
@@ -1181,7 +1095,6 @@ export const itemDatabase: Equipment[] = [
         type: ItemTypeEnum.CostumeLower,
         equipmentLevel: 1,
         def: 0,
-        enchantSlot: 1,
         attributeList: [
         ],
     },
@@ -1191,7 +1104,6 @@ export const itemDatabase: Equipment[] = [
         type: ItemTypeEnum.CostumeUpper,
         equipmentLevel: 1,
         def: 0,
-        enchantSlot: 1,
         attributeList: [
         ],
     },
@@ -1727,7 +1639,6 @@ export const itemDatabase: Equipment[] = [
         type: ItemTypeEnum.CostumeMiddle,
         equipmentLevel: 1,
         def: 0,
-        enchantSlot: 1,
         attributeList: [
         ],
     },
@@ -1737,7 +1648,6 @@ export const itemDatabase: Equipment[] = [
         type: ItemTypeEnum.CostumeUM,
         equipmentLevel: 1,
         def: 0,
-        enchantSlot: 2,
         attributeList: [
         ],
     },
@@ -1747,7 +1657,6 @@ export const itemDatabase: Equipment[] = [
         type: ItemTypeEnum.CostumeML,
         equipmentLevel: 1,
         def: 0,
-        enchantSlot: 2,
         attributeList: [
         ],
     },
@@ -2603,16 +2512,16 @@ export const itemDatabase: Equipment[] = [
                 type: AttributeTypeEnum.Matk,
                 formulaText: "50",
             },
-            // {
-            //     type: AttributeTypeEnum.VctPercent,
-            //     skill: SkillEnum.PickyPeck,
-            //     formulaText: "-15",
-            // },
-            // {
-            //     type: AttributeTypeEnum.VctPercent,
-            //     skill: SkillEnum.SilvervineStemSpear,
-            //     formulaText: "-15",
-            // },
+            {
+                type: AttributeTypeEnum.VctPercent,
+                skill: SkillEnum.PickyPeck,
+                formulaText: "-15",
+            },
+            {
+                type: AttributeTypeEnum.VctPercent,
+                skill: SkillEnum.SilvervineStemSpear,
+                formulaText: "-15",
+            },
             {
                 type: AttributeTypeEnum.Atk,
                 formulaText: "(<this.Rf/1> - 5) * 10",
@@ -3241,7 +3150,7 @@ export const itemDatabase: Equipment[] = [
         ]
     },
     {
-        
+
         id: "550014",
         name: "Patent Meowmeow Foxtail",
         type: ItemTypeEnum.OneHandRod,
@@ -3249,6 +3158,7 @@ export const itemDatabase: Equipment[] = [
         atk: 350,
         matk: 350,
         cardSlot: 2,
+        optionSlot: 2,
         attributeList: [
             {
                 type: AttributeTypeEnum.Atk,
@@ -3365,7 +3275,7 @@ export const itemDatabase: Equipment[] = [
         ],
     },
     {
-        
+
         id: "24634",
         name: "Picky Rush Shadow Weapon",
         type: ItemTypeEnum.ShadowWeapon,
@@ -5382,5 +5292,190 @@ export const itemDatabase: Equipment[] = [
             },
         ],
     },
+    {
+        id: "15968",
+        name: "Orange Rabbit",
+        type: ItemTypeEnum.Middle,
+        equipmentLevel: 1,
+        def: 60,
+        attributeList: [
+            {
+                type: AttributeTypeEnum.HpPercent,
+                formulaText: "5",
+            },
+            {
+                type: AttributeTypeEnum.AspdPercent,
+                formulaText: "5",
+            },
+            {
+                type: AttributeTypeEnum.PhysicalAllClass,
+                formulaText: "6",
+            },
+            {
+                type: AttributeTypeEnum.MagicAllClass,
+                formulaText: "6",
+            },
+        ],
+    },
+    {
+        id: "20963",
+        name: "Temporal Str Manteau",
+        type: ItemTypeEnum.Garment,
+        equipmentLevel: 1,
+        def: 38,
+        cardSlot: 1,
+        optionSlot: 1,
+        attributeList: [
+            {
+                type: AttributeTypeEnum.Atk,
+                formulaText: "<this.Rf/2> * 10",
+            },
+            {
+                type: AttributeTypeEnum.AtkPercent,
+                formulaText: "<this.Rf/2> * 1",
+            },
+            {
+                type: AttributeTypeEnum.PhysicalAllSize,
+                formulaText: "<this.Rf/4> * 5",
+            },
+            {
+                type: AttributeTypeEnum.AtkPercent,
+                formulaText: "7",
+                condition: {
+                    refireList: [
+                        {
+                            number: 7,
+                            symbol: Symbol.gte,
+                        }
+                    ]
+                }
+            },
+            {
+                type: AttributeTypeEnum.IgnoreDefBrute,
+                formulaText: "20",
+                condition: {
+                    refireList: [
+                        {
+                            number: 9,
+                            symbol: Symbol.gte,
+                        }
+                    ]
+                }
+            },
+            {
+                type: AttributeTypeEnum.IgnoreDefDemon,
+                formulaText: "20",
+                condition: {
+                    refireList: [
+                        {
+                            number: 9,
+                            symbol: Symbol.gte,
+                        }
+                    ]
+                }
+            },
+            {
+                type: AttributeTypeEnum.IgnoreDefBrute,
+                formulaText: "10",
+                condition: {
+                    refireList: [
+                        {
+                            number: 11,
+                            symbol: Symbol.gte,
+                        }
+                    ]
+                }
+            },
+            {
+                type: AttributeTypeEnum.IgnoreDefDemon,
+                formulaText: "10",
+                condition: {
+                    refireList: [
+                        {
+                            number: 11,
+                            symbol: Symbol.gte,
+                        }
+                    ]
+                }
+            },
+        ],
+    },
+    {
+        id: "15948",
+        name: "Eye Patch Of Power",
+        type: ItemTypeEnum.Middle,
+        equipmentLevel: 1,
+        def: 0,
+        attributeList: [
+            {
+                type: AttributeTypeEnum.Atk,
+                formulaText: "60",
+            },
+            {
+                type: AttributeTypeEnum.Atk,
+                formulaText: "60",
+                condition: {
+                    baseLv: {
+                        number: 170,
+                        symbol: Symbol.gte,
+                    }
+                }
+            },
+            {
+                type: AttributeTypeEnum.Atk,
+                formulaText: "50",
+                condition: {
+                    itemList: [
+                        {
+                            itemId: "4492"
+                        },
+                    ]
+                }
+            },
+            {
+                type: AttributeTypeEnum.Atk,
+                formulaText: "50",
+                condition: {
+                    itemList: [
+                        {
+                            itemId: "4143"
+                        },
+                    ]
+                }
+            },
+            {
+                type: AttributeTypeEnum.Atk,
+                formulaText: "50",
+                condition: {
+                    baseLv: {
+                        number: 170,
+                        symbol: Symbol.gte,
+                    },
+                    
+                    itemList: [
+                        {
+                            itemId: "4492"
+                        },
+                    ]
+                }
+            },
+            {
+                type: AttributeTypeEnum.Atk,
+                formulaText: "50",
+                condition: {
+                    baseLv: {
+                        number: 170,
+                        symbol: Symbol.gte,
+                    },
+                    
+                    itemList: [
+                        {
+                            itemId: "4143"
+                        },
+                    ]
+                }
+            },
+        ],
+    },
 ]
-.sort((a,b) => Number.parseInt(a.id)-Number.parseInt(b.id)) 
+    // .sort((a, b) => Number.parseInt(a.id) - Number.parseInt(b.id))

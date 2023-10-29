@@ -6,6 +6,7 @@ import { useContext } from "react";
 import { AppContext } from "../context/AppContext";
 import { AppApiContext } from "../context/AppApiContext";
 import { MonsterList } from "../data/database/monster";
+import { Item } from "../data/model/Itemv2";
 
 interface MonsterProps {
     monster?: MonsterModel
@@ -20,19 +21,28 @@ export default function Monster(prop: MonsterProps) {
     })
 
     function handleMonsterChange(option: any) {
-        console.log(option.value)
-        if (context.monsterId?.id === option.value.id) {
-            console.error("same id ignore")
-            return
+        if (option) {
+            if (context.monsterId?.id === option.value.id) {
+                console.error("same id ignore")
+                return
+            }
+            api.setMonsterId(option.value);
+        } else {
+            api.setMonsterId(MonsterList.find(monster => monster.id === "2408") ?? MonsterList[0]);
         }
-        api.setMonsterId(option.value);
     };
+
+    let imgSrc
+    if (context.monsterId) {
+        const imgId = Item.getImgId(context.monsterId.id, context.monsterId.monsterId)
+        imgSrc = `https://static.divine-pride.net/images/mobs/png/${imgId}.png`
+    }
 
     return (
         <Box title="Monster">
             <div className="row">
                 <div className="col-2">
-                    <img className="w-100 my-2" src={`https://static.divine-pride.net/images/mobs/png/${context.monsterId?.id}.png`} alt="Monster" />
+                    <img className="w-100 my-2" src={imgSrc} alt="Monster" />
                 </div>
                 <div className="col-10">
                     <div className="d-flex">
@@ -42,6 +52,7 @@ export default function Monster(prop: MonsterProps) {
                             value={monsterOption.filter(option => option.value.name === context.monsterId?.name)}
                             classNames={optionStyle}
                             onChange={handleMonsterChange}
+                            isClearable
                         />
                     </div>
 
@@ -52,13 +63,13 @@ export default function Monster(prop: MonsterProps) {
                                 <span className="w-100 text-end">{prop.monster?.hp}</span>
                             </div>
                         </div>
-                        <div className="col-xl-6 col-12">
+                        <div className="col-sm-6">
                             <div className="d-flex">
                                 <span className="monster-status me-1 jc-center">Lv</span>
                                 <span className="w-100 text-end">{prop.monster?.level}</span>
                             </div>
                         </div>
-                        <div className="col-xl-6 col-12">
+                        <div className="col-sm-6">
                             <div className="d-flex">
                                 <span className="monster-status me-1 jc-center">Size</span>
                                 <span className="w-100 text-end">{prop.monster?.size.name}</span>
@@ -75,13 +86,13 @@ export default function Monster(prop: MonsterProps) {
                     </div>
 
                     <div className="row">
-                        <div className="col-xl-6 col-12">
+                        <div className="col-sm-6">
                             <div className="d-flex">
                                 <span className="monster-status me-1 jc-center">Def</span>
                                 <span className="w-100 text-end">{prop.monster?.softDef()} + {prop.monster?.hardDef}</span>
                             </div>
                         </div>
-                        <div className="col-xl-6 col-12">
+                        <div className="col-sm-6">
                             <div className="d-flex">
                                 <span className="monster-status me-1 jc-center">MDef</span>
                                 <span className="w-100 text-end">{prop.monster?.softMDef()} + {prop.monster?.hardMdef}</span>
@@ -90,13 +101,13 @@ export default function Monster(prop: MonsterProps) {
                     </div>
 
                     <div className="row">
-                        <div className="col-xl-6 col-12">
+                        <div className="col-sm-6">
                             <div className="d-flex">
                                 <span className="monster-status me-1 jc-center text-nowrap">100% Hit</span>
                                 <span className="w-100 text-end">{prop.monster?.hit}</span>
                             </div>
                         </div>
-                        <div className="col-xl-6 col-12">
+                        <div className="col-sm-6">
                             <div className="d-flex">
                                 <span className="monster-status me-1 jc-center text-nowrap">95% Flee</span>
                                 <span className="w-100 text-end">{prop.monster?.flee}</span>

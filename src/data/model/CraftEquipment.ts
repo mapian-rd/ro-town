@@ -6,6 +6,7 @@ import { itemDatabase } from "../database/item";
 import { cardDatabase } from "../database/card";
 import { enchantDatabase } from "../database/enchant";
 import { optionDatabase } from "../database/option";
+import { itemTypeList } from "../constraint/itemType";
 
 export class CraftEqiupment implements Named {
     itemId: string;
@@ -25,7 +26,16 @@ export class CraftEqiupment implements Named {
         this.id = crypto.randomUUID();
         this.refineLevel = refineLevel;
         this.cardList = Array<string | undefined>(equipment.cardSlot ?? 0).fill(undefined);
-        this.enchantList = Array<string | undefined>(equipment.enchantSlot ?? 0).fill(undefined);
+        this.enchantList = []
+        if (equipment.enchantSlot !== undefined && equipment.enchantSlot > 0) {
+            this.enchantList = Array<string | undefined>(equipment.enchantSlot ?? 0).fill(undefined);
+        } else {
+            const type = itemTypeList.get(equipment.type)
+            if (type !== undefined) {
+                this.enchantList = Array<string | undefined>(type.enchantSlotList?.length ?? 0).fill(undefined);
+            }
+            console.log("CraftEqiupment constructor", equipment.enchantSlot, type, type?.enchantSlotList, this.enchantList)
+        }
         this.optionList = Array<string | undefined>(equipment.optionSlot ?? 0).fill(undefined);
     }
 

@@ -13,6 +13,7 @@ import { calHit } from "../data/formula/Hit";
 import { caljobHp, calHp } from "../data/formula/Hp";
 import { caljobSp } from "../data/formula/Sp";
 import { calRemainStatusPoint } from "../data/formula/StatusPoint";
+import { vct530 } from "../data/formula/Vct";
 import { Attribute, AttributeName } from "../data/model/Attribute";
 import { AttributeTypeEnum } from "../data/model/attributeType";
 import { SkillBuff } from "../data/model/Buff";
@@ -24,7 +25,7 @@ import { CraftEqiupment, checkCraft, sumCraft } from "../data/model/CraftEquipme
 import { EquipmentSlot } from "../data/model/EquipmentSlot";
 import { ExportData } from "../data/model/Exportable";
 import { FormulaString, calString, DescriptionNumber } from "../data/model/Formula";
-import { WeaponType, ItemTypeEnum, SizePenalty } from "../data/model/itemType";
+import { WeaponType, ItemTypeEnum, SizePenalty, EquipableType } from "../data/model/itemType";
 import { Item, Named } from "../data/model/Itemv2";
 import { Monster, MonsterId } from "../data/model/monster";
 import { Pet } from "../data/model/Petv2";
@@ -46,7 +47,6 @@ export function replacer(key: string, value: any) {
 }
 
 export function reviver(key: string, value: any) {
-  console.log("dataType: ", value)
   if (typeof value === 'object' && value !== null) {
     if (value.dataType === 'Map') {
       return new Map(value.value);
@@ -66,7 +66,6 @@ if (json) {
 } else {
   data = new ExportData()
 }
-console.log("getCookie", data.character.clazz)
 
 export const ContextProvider = (props: Props): JSX.Element => {
   console.log("ContextProvider")
@@ -81,10 +80,9 @@ export const ContextProvider = (props: Props): JSX.Element => {
   const [buffStorage, setBuffStorage] = useState<Item[]>(data.buffStorage);
   const [character, setCharacter] = useState<Character>(CharacterExport.getCharacter(data.character, storage, buffStorage));
   const [cal, setAttribute] = useState<CalculatedAttribute>(new CalculatedAttribute())
-  const [monsterId, setMonsterId] = useState<MonsterId>(MonsterList.find(monster => monster.id === data.monsterId) ?? MonsterList[0]);
+  const [monsterId, setMonsterId] = useState<MonsterId>(MonsterList.find(monster => monster.id === data.monsterId) ?? MonsterList.find(monster => monster.id === "2408") ?? MonsterList[0]);
   const [monster, setMonster] = useState<Monster>()
   const [skill, setSkill] = useState<ActiveSkill>(() => {
-    console.log("setSkill", character.clazz)
     return character.clazz.activeSkillItem.find(skill => skill.enum === data.skill) ?? character.clazz.activeSkillItem[0]
   });
   /**
@@ -98,6 +96,10 @@ export const ContextProvider = (props: Props): JSX.Element => {
     return saved
   });
   const [combatStatus, setCombatStatus] = useState<CombatStatus>(new CombatStatus())
+
+  const [theme, setTheme] = useState<string>(localStorage.getItem("theme") ?? "");
+  const [mode, setMode] = useState<string>(localStorage.getItem("mode") ?? "single");
+  const [changeSlot, setChangeSlot] = useState<EquipmentSlot>();
 
   const app = {
     viewState,
@@ -114,15 +116,16 @@ export const ContextProvider = (props: Props): JSX.Element => {
     skill,
     skillLevel,
     combatStatus,
+    theme,
+    mode,
+    changeSlot,
   }
 
   function setCookie() {
     console.log("setCookie")
     data.storage = storage
     data.buffStorage = buffStorage
-    console.log("setCookie", character.clazz)
     data.character = CharacterExport.getExport(character)
-    console.log("setCookie", data.character.clazz.toString())
     data.monsterId = monsterId.id
     data.skill = skill.enum
     data.skillLevel = skillLevel
@@ -131,7 +134,6 @@ export const ContextProvider = (props: Props): JSX.Element => {
 
   function getRaw(cal: CalculatedAttribute, type: AttributeTypeEnum): DescriptionNumber {
     const number = cal.rawAttributeList.get(type) ?? new DescriptionNumber()
-    console.log("getraw", type, number)
     return number
   }
 
@@ -218,12 +220,10 @@ export const ContextProvider = (props: Props): JSX.Element => {
     cal.checkedAttributeList.clear()
     cal.formulaList.clear()
     equipmentList.forEach(equipment => {
-      console.log("calEquipment equipment", equipment)
       if (equipment) {
         const old = cal.checkedAttributeList.get(equipment.id)
         if (!old) {
           const check = checkCraft(equipment, character)
-          console.log("calEquipment checkCraft", check)
           cal.checkedAttributeList.set(equipment.id, check)
 
           check.forEach(attribute => {
@@ -236,10 +236,7 @@ export const ContextProvider = (props: Props): JSX.Element => {
         }
       }
     })
-    console.log("calEquipment checkedAttributeList", cal.checkedAttributeList)
-    console.log("calEquipment formulaList", cal.formulaList)
 
-    console.log("ispet", character.pet)
     if (character.pet) {
       const petAttributes = [...character.pet?.attributeList ?? [], ...Pet.findPetAttribute(character.pet, character.petFriendly ?? friendly)]
         .map(attribute => {
@@ -314,7 +311,6 @@ export const ContextProvider = (props: Props): JSX.Element => {
     cal.baseSkillFormulaList.clear()
     cal.vctFormulaList.clear()
     cal.cooldownFormulaList.clear()
-    console.log("formulaList size", cal.formulaList.size)
     cal.formulaList.forEach((formula, attributeType) => {
       if (attributeType === AttributeTypeEnum.SkillDmg) {
         formula.forEach(f => {
@@ -350,9 +346,7 @@ export const ContextProvider = (props: Props): JSX.Element => {
           }
         })
         const number = calString(allFormula, character.equipmentMap, character.status, character.clazz.getSkill(), character.baseLv)
-        console.log("VctPercent", allFormula, cal.vctFormulaList, number)
         cal.rawAttributeList.set(attributeType, number)
-        console.log("vctPercent 6", cal.rawAttributeList.get(AttributeTypeEnum.VctPercent))
       } else if (attributeType === AttributeTypeEnum.FctPercent) {
         let max = 0
         formula.forEach(f => {
@@ -374,12 +368,9 @@ export const ContextProvider = (props: Props): JSX.Element => {
         })
       } else {
         const number = calString(formula, character.equipmentMap, character.status, character.clazz.getSkill(), character.baseLv)
-        console.log("raw", attributeType, number)
         cal.rawAttributeList.set(attributeType, number)
       }
-      console.log("vctPercent 5", attributeType, cal.rawAttributeList.get(AttributeTypeEnum.VctPercent))
     })
-    console.log("vctPercent 4", cal.rawAttributeList.get(AttributeTypeEnum.VctPercent))
 
     cal.skillAttributeList.clear()
     cal.skillFormulaList.forEach((value, key) => {
@@ -417,7 +408,6 @@ export const ContextProvider = (props: Props): JSX.Element => {
       }
       cal.cooldownAttributeList.set(key, number)
     })
-    console.log("vctPercent 3", cal.rawAttributeList.get(AttributeTypeEnum.VctPercent))
 
 
     const rWeapon = character.equipmentMap.get(EquipmentSlot.rWeapon)
@@ -463,12 +453,8 @@ export const ContextProvider = (props: Props): JSX.Element => {
   }
 
   function calFinal(character: Character, cal: CalculatedAttribute) {
-    console.log("calFinal")
-    console.log("vctPercent 2", cal.rawAttributeList.get(AttributeTypeEnum.VctPercent))
-
     // statusBonus
     cal.statusBonus = statusBonus(cal.rWeaponAtk, cal.isWeaponRange, character.status.str, character.status.dex)
-    console.log("statusBonus", cal.statusBonus)
 
     cal.finalAttributeList.clear()
     StatusTypeList.forEach((_value, attributeType) => {
@@ -495,6 +481,11 @@ export const ContextProvider = (props: Props): JSX.Element => {
     // statusMatk
     cal.statusMatk = statusMATK(character.baseLv, int.number, dex.number, luk.number)
 
+    cal.vct530.number = vct530(int.number, dex.number)
+    cal.vct530.description = ""
+    cal.vct530.linePlus(int, getAttributeType(AttributeTypeEnum.Int).name, 1)
+    cal.vct530.linePlus(dex, getAttributeType(AttributeTypeEnum.Dex).name, 1)
+
     const physicalAllSize = cal.rawAttributeList.get(AttributeTypeEnum.PhysicalAllSize)
     const physicalAllProperty = cal.rawAttributeList.get(AttributeTypeEnum.PhysicalAllProperty)
     const physicalAllRace = cal.rawAttributeList.get(AttributeTypeEnum.PhysicalAllRace)
@@ -504,10 +495,8 @@ export const ContextProvider = (props: Props): JSX.Element => {
     const magicAllRace = cal.rawAttributeList.get(AttributeTypeEnum.MagicAllRace)
     const magicAllClass = cal.rawAttributeList.get(AttributeTypeEnum.MagicAllClass)
     const magicAllElement = cal.rawAttributeList.get(AttributeTypeEnum.MagicAllElement)
-    console.log("final magicAllElement", magicAllElement)
 
     attributeList.forEach((value, attributeType) => {
-      console.log("attributeList.forEach", attributeType)
       const raw = cal.rawAttributeList.get(attributeType) ?? new DescriptionNumber()
       const number = new DescriptionNumber(raw?.number, raw?.description)
       if (Array.from(StatusTypeList.keys()).includes(attributeType)) {
@@ -590,7 +579,6 @@ export const ContextProvider = (props: Props): JSX.Element => {
       } else if (attributeType === AttributeTypeEnum.Hit) {
         const baseLv = character.baseLv
         const final = calHit(character.baseLv, dex.number, luk.number, raw.number)
-        console.log(final)
         number.number = final
         number.description = ""
         number.line(baseLv, "baseLv", 1)
@@ -761,12 +749,22 @@ export const ContextProvider = (props: Props): JSX.Element => {
       ) {
         number.number = -1
       }
-      console.log("final", attributeType, number)
       cal.finalAttributeList.set(attributeType, number)
     })
-    console.log("vctPercent 1", cal.rawAttributeList.get(AttributeTypeEnum.VctPercent))
     cal.calFinalCall = !cal.calFinalCall
   }
+
+  useEffect(() => {
+    localStorage.setItem("theme", theme)
+  }, [theme])
+
+  useEffect(() => {
+    const old = localStorage.getItem("mode")
+    if (old !== mode) {
+      localStorage.setItem("mode", mode)
+      window.location.reload()
+    }
+  }, [mode])
 
   useEffect(() => {
     if (!character.clazz.activeSkill.includes(skill.enum)) {
@@ -792,7 +790,6 @@ export const ContextProvider = (props: Props): JSX.Element => {
   useEffect(() => {
     console.log("useEffect calEquipment")
     calEquipment(character)
-    console.log("useEffect calEquipment setAttribute", cal.finalAttributeList)
     setAttribute({ ...cal })
   }, [character])
 
@@ -807,24 +804,27 @@ export const ContextProvider = (props: Props): JSX.Element => {
   useEffect(() => {
     console.log("useEffect calFinal")
     calFinal(character, cal)
-    console.log("useEffect calFinal setAttribute", cal.finalAttributeList)
     setAttribute({ ...cal })
   }, [cal.calRawCall, skill])
 
   useEffect(() => {
     console.log("useEffect monster" + monsterId?.id)
-    if (!monsterId || monsterId.id === -1) return
-    MonsterSearch(monsterId.id)
+    if (!monsterId || monsterId.id === "") return
+    MonsterSearch(Item.getImgId(monsterId.id, monsterId.monsterId))
       .then((monster) => {
-        console.log("MonsterSearch " + monster.id)
-        setMonster(monster)
+        // if (monsterId.hp) {
+        //   monster.hp = monsterId.hp
+        // }
+        // if (monsterId.hit) {
+        //   monster.hit = monsterId.hit
+        // }
+        setMonster(Object.assign(monster, monsterId))
       })
   }, [monsterId])
 
   useEffect(() => {
     console.log("useEffect finalDmg")
     if (monster && skill && skillLevel) {
-      console.log("useEffect finalDmg 2")
       CombatStatus.finalDmg(combatStatus, cal, monster, skill, skillLevel)
       setCombatStatus({ ...combatStatus })
     }
@@ -837,7 +837,7 @@ export const ContextProvider = (props: Props): JSX.Element => {
   const api = {
     setViewState: (state: ViewState) => {
       console.log("setViewState")
-      if (state !== ViewState.Storage && state !== ViewState.AddItem) {
+      if (state !== ViewState.Storage && state !== ViewState.AddItem && state !== ViewState.EditItem && state !== ViewState.ChangeItem) {
         api.setViewItem(undefined)
       }
       setViewState(state)
@@ -869,21 +869,24 @@ export const ContextProvider = (props: Props): JSX.Element => {
         }
       })
 
-      if (CraftEqiupment.is(item) && item.item?.type !== undefined) {
-        const type = itemTypeList.get(item.item?.type) ?? weaponTypeList.get(item.item?.type)
-        if (type && type.equipSlot && type.equipSlot.length > 0) {
-          let foundItem: CraftEqiupment | undefined
-          type.equipSlot.forEach(slot => {
-            const found = character.equipmentMap.get(slot)
-            if (found && found.id !== item.id) {
-              foundItem = found
-              return
+      if (CraftEqiupment.is(item)) {
+        item.item = itemDatabase.find(itemd => itemd.id === item.itemId)
+        if (item.item) {
+          const type = itemTypeList.get(item.item.type) ?? weaponTypeList.get(item.item.type)
+          if (type && type.equipSlot && type.equipSlot.length > 0) {
+            let foundItem: CraftEqiupment | undefined
+            type.equipSlot.forEach(slot => {
+              const found = character.equipmentMap.get(slot)
+              if (found && found.id !== item.id) {
+                foundItem = found
+                return
+              }
+            })
+            if (foundItem) {
+              api.setViewItem2(foundItem)
+            } else {
+              api.setViewItem2(undefined)
             }
-          })
-          if (foundItem) {
-            api.setViewItem2(foundItem)
-          } else {
-            api.setViewItem2(undefined)
           }
         }
       }
@@ -934,38 +937,36 @@ export const ContextProvider = (props: Props): JSX.Element => {
       setBuffStorage([...buffStorage, item])
     },
     equip: (item: CraftEqiupment) => {
-      console.log("equip")
       const equiped = Array.from(character.equipmentMap).find(([key, value]) => {
         return item.id === value?.id
       })
-      console.log("equip", equiped)
       if (equiped) return
       item.item = itemDatabase.find(data => data.id === item.itemId)
-      console.log("equip", item.item?.type)
       if (item.item?.type !== undefined) {
         const type = itemTypeList.get(item.item?.type) ?? weaponTypeList.get(item.item?.type)
-        console.log("equip type", type)
         if (type && type.equipSlot && type.equipSlot.length > 0) {
           if (type.equipSlotType) {
             // eqiup some available
-            // Find empty
-            let slot = type.equipSlot.find(slot => {
-              console.log("equip slot", slot)
-              const old = character.equipmentMap.get(slot)
-              return !old
-            })
-            if (slot === undefined) {
-              slot = type.equipSlot[0]
-              const old = character.equipmentMap.get(slot)
-              if (old) {
-                api.unequip(old)
+            if (changeSlot) {
+              character.equipmentMap.set(changeSlot, item)
+            } else {
+              // Find empty
+              let slot = type.equipSlot.find(slot => {
+                const old = character.equipmentMap.get(slot)
+                return !old
+              })
+              if (slot === undefined) {
+                slot = type.equipSlot[0]
+                const old = character.equipmentMap.get(slot)
+                if (old) {
+                  api.unequip(old)
+                }
               }
+              character.equipmentMap.set(slot, item)
             }
-            character.equipmentMap.set(slot, item)
           } else {
             // eqiup all
             type.equipSlot.forEach(slot => {
-              console.log("equip slot", slot)
               const old = character.equipmentMap.get(slot)
               if (old) {
                 api.unequip(old)
@@ -1025,6 +1026,9 @@ export const ContextProvider = (props: Props): JSX.Element => {
       }
       api.updateCharacter({ debuff: character.debuff });
     },
+    setTheme,
+    setMode,
+    setChangeSlot,
   }
 
   return (

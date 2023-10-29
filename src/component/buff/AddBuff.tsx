@@ -43,13 +43,12 @@ export default function AddBuff() {
 
     function onChangeImgId(event: React.ChangeEvent<HTMLInputElement>) {
         let { value } = event.target;
-        console.log("onChangeImgId", value)
         if (value === undefined) {
             setImgId(undefined);
         } else {
-            console.log("onChangeImgId", Number.parseInt(value))
             setImgId(Number.parseInt(value));
         }
+        console.log("onChangeImgId", value)
     };
 
     function handleTypeChange(option: any, index: number) {

@@ -33,7 +33,6 @@ export default function StatusBox() {
     const [mdef, setMdef] = useState<DescriptionNumber>(new DescriptionNumber())
     const [flee, setFlee] = useState<DescriptionNumber>(new DescriptionNumber())
     const [aspd, setAspd] = useState<DescriptionNumber>(new DescriptionNumber())
-    console.log("StatusBox", statusList)
 
     function getStatusList(): JSX.Element[] {
         return Array.from(StatusTypeList).map(([key, statusType]) => {
@@ -49,13 +48,14 @@ export default function StatusBox() {
         })
     }
 
-    function updateStatus(statusType: AttributeTypeEnum, event: React.ChangeEvent<HTMLInputElement>) {
+    function updateStatus(statusType: AttributeTypeEnum, event: React.ChangeEvent<HTMLInputElement>): number {
         console.debug("updateStatus");
         let { value, min, max } = event.target;
         let newValue = checkMinMax(Number(value), Number(min), Number(max));
         let status = context.character.status
         Status.set(status, statusType, newValue)
         api.updateCharacter({ status })
+        return newValue
     }
 
     function onClick() {
@@ -90,26 +90,22 @@ export default function StatusBox() {
         setAspd(api.getFinal(AttributeTypeEnum.Aspd))
     }, [context.calculatedAttribute])
 
-    useEffect(() => {
-        console.log("useEffect finalAttributeList")
-    }, [context.calculatedAttribute])
-
     return (
         <Box title="Status">
             <div>
                 <div className="row mx-0">
-                    <div className="col-md-12 col-xl-5 ps-0 pe-1">
+                    <div className="col-5 col-xl-6 col-xxl-5 ps-0 pe-1">
                         {statusList}
                     </div>
-                    <div className="col-md-12 col-xl-7 px-0">
+                    <div className="col-7 col-xl-6 col-xxl-7 px-0">
                         <div className="row mx-0">
-                            <div className="col-md-12 col-xl-6 px-1">
+                            <div className="col-12 col-sm-6 col-lg-12 col-xxl-6 px-1">
                                 <Attribute name="Atk" value={context.calculatedAttribute.statusAtk + " + " + atk} />
                                 <Attribute name="MAtk" value={context.calculatedAttribute.statusMatk + " + " + matk} />
                                 <Attribute name="Hit" value={hit.number} />
                                 <Attribute name="Critical" value={critical.number} />
                             </div>
-                            <div className="col-md-12 col-xl-6 ps-1 pe-0">
+                            <div className="col-12 col-sm-6 col-lg-12 col-xxl-6 ps-1 pe-0">
                                 <Attribute name="Def" value={softDef.number + " + " + def.number} />
                                 <Attribute name="MDef" value={softMdef.number + " + " + mdef.number} />
                                 <Attribute name="Flee" value={flee.number} />

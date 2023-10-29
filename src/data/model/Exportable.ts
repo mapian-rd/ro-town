@@ -12,7 +12,7 @@ export class ExportData {
     storage: Storage = new Storage()
     buffStorage: Item[] = []
     character: CharacterExport = new CharacterExport()
-    monsterId: number = -1
+    monsterId: string = ""
     skill: SkillEnum = SkillEnum.NormalAttack
     skillLevel: number = 1
 

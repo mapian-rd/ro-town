@@ -2,6 +2,10 @@ import { EquipmentSlot } from "../model/EquipmentSlot";
 import { ItemTypeEnum, EquipableType } from "../model/itemType";
 
 export const itemTypeList: Map<ItemTypeEnum, EquipableType> = new Map([
+    [ItemTypeEnum.Weapon, {
+        name: "Weapon",
+        cardTypeList: [ItemTypeEnum.CardWeapon],
+    }],
     [ItemTypeEnum.Upper, {
         name: "Headgear Upper",
         refineable: true,
@@ -41,10 +45,6 @@ export const itemTypeList: Map<ItemTypeEnum, EquipableType> = new Map([
         equipSlot: [EquipmentSlot.armor],
         cardTypeList: [ItemTypeEnum.CardArmor],
     }],
-    [ItemTypeEnum.Weapon, {
-        name: "Weapon",
-        cardTypeList: [ItemTypeEnum.CardWeapon],
-    }],
     [ItemTypeEnum.Shield, {
         name: "Sheid",
         refineable: true,
@@ -79,19 +79,19 @@ export const itemTypeList: Map<ItemTypeEnum, EquipableType> = new Map([
         equipSlot: [EquipmentSlot.rAccessery],
         cardTypeList: [ItemTypeEnum.CardAccessery, ItemTypeEnum.CardAccesseryRight],
     }],
-    [ItemTypeEnum.CostumeUpper, { name: "Costume Upper", equipSlot: [EquipmentSlot.upperCostume] }],
-    [ItemTypeEnum.CostumeMiddle, { name: "Costume Middle", equipSlot: [EquipmentSlot.middleCostume] }],
-    [ItemTypeEnum.CostumeLower, { name: "Costume Lower", equipSlot: [EquipmentSlot.lowerCostume] }],
-    [ItemTypeEnum.CostumeUM, { name: "Costume Upper-Middle", equipSlot: [EquipmentSlot.upperCostume, EquipmentSlot.middleCostume] }],
-    [ItemTypeEnum.CostumeML, { name: "Costume Middle-Lower", equipSlot: [EquipmentSlot.middleCostume, EquipmentSlot.lowerCostume] }],
-    [ItemTypeEnum.CostumeUML, { name: "Costume Upper-Middle-Lower", equipSlot: [EquipmentSlot.upperCostume, EquipmentSlot.middleCostume, EquipmentSlot.lowerCostume] }],
-    [ItemTypeEnum.CostumeGarment, { name: "CostumeGarment", equipSlot: [EquipmentSlot.garmentCostume] }],
-    [ItemTypeEnum.ShadowWeapon, { name: "Shadow Weapon", refineable: true, equipSlot: [EquipmentSlot.weaponShadow] }],
-    [ItemTypeEnum.ShadowArmor, { name: "Shadow Armor", refineable: true, equipSlot: [EquipmentSlot.armorShadow] }],
-    [ItemTypeEnum.ShadowShield, { name: "Shadow Shield", refineable: true, equipSlot: [EquipmentSlot.sheidShadow] }],
-    [ItemTypeEnum.ShadowShoes, { name: "Shadow Shoes", refineable: true, equipSlot: [EquipmentSlot.shoesShadow] }],
-    [ItemTypeEnum.ShadowEarring, { name: "Shadow Earring", refineable: true, equipSlot: [EquipmentSlot.earringShadow] }],
-    [ItemTypeEnum.ShadowPendent, { name: "Shadow Pendent", refineable: true, equipSlot: [EquipmentSlot.pendantShadow] }],
+    [ItemTypeEnum.CostumeUpper, { name: "Costume Upper", equipSlot: [EquipmentSlot.upperCostume], enchantSlotList: [ItemTypeEnum.CostumeEnchantUpper] }],
+    [ItemTypeEnum.CostumeMiddle, { name: "Costume Middle", equipSlot: [EquipmentSlot.middleCostume], enchantSlotList: [ItemTypeEnum.CostumeEnchantMiddle] }],
+    [ItemTypeEnum.CostumeLower, { name: "Costume Lower", equipSlot: [EquipmentSlot.lowerCostume], enchantSlotList: [ItemTypeEnum.CostumeEnchantLower] }],
+    [ItemTypeEnum.CostumeUM, { name: "Costume Upper-Middle", equipSlot: [EquipmentSlot.upperCostume, EquipmentSlot.middleCostume], enchantSlotList: [ItemTypeEnum.CostumeEnchantUpper, ItemTypeEnum.CostumeEnchantMiddle] }],
+    [ItemTypeEnum.CostumeML, { name: "Costume Middle-Lower", equipSlot: [EquipmentSlot.middleCostume, EquipmentSlot.lowerCostume], enchantSlotList: [ItemTypeEnum.CostumeEnchantMiddle, ItemTypeEnum.CostumeEnchantLower] }],
+    [ItemTypeEnum.CostumeUML, { name: "Costume Upper-Middle-Lower", equipSlot: [EquipmentSlot.upperCostume, EquipmentSlot.middleCostume, EquipmentSlot.lowerCostume], enchantSlotList: [ItemTypeEnum.CostumeEnchantUpper, ItemTypeEnum.CostumeEnchantMiddle, ItemTypeEnum.CostumeEnchantLower] }],
+    [ItemTypeEnum.CostumeGarment, { name: "Costume Garment", equipSlot: [EquipmentSlot.garmentCostume], enchantSlotList: [ItemTypeEnum.CostumeEnchantGarment] }],
+    [ItemTypeEnum.ShadowWeapon, { name: "Shadow Weapon", refineable: true, equipSlot: [EquipmentSlot.weaponShadow], refineMax: 10 }],
+    [ItemTypeEnum.ShadowArmor, { name: "Shadow Armor", refineable: true, equipSlot: [EquipmentSlot.armorShadow], refineMax: 10 }],
+    [ItemTypeEnum.ShadowShield, { name: "Shadow Shield", refineable: true, equipSlot: [EquipmentSlot.sheidShadow], refineMax: 10 }],
+    [ItemTypeEnum.ShadowShoes, { name: "Shadow Shoes", refineable: true, equipSlot: [EquipmentSlot.shoesShadow], refineMax: 10 }],
+    [ItemTypeEnum.ShadowEarring, { name: "Shadow Earring", refineable: true, equipSlot: [EquipmentSlot.earringShadow], refineMax: 10 }],
+    [ItemTypeEnum.ShadowPendent, { name: "Shadow Pendent", refineable: true, equipSlot: [EquipmentSlot.pendantShadow], refineMax: 10 }],
 ])
 
 export const weaponTypeList: Map<ItemTypeEnum, EquipableType> = new Map([
@@ -313,4 +313,11 @@ export const weaponTypeList: Map<ItemTypeEnum, EquipableType> = new Map([
         parentType: ItemTypeEnum.Weapon,
         cardTypeList: [ItemTypeEnum.CardWeapon],
     }],
+])
+
+export const costumeEnchantTypeList: Map<ItemTypeEnum, EquipableType> = new Map([
+    [ItemTypeEnum.CostumeEnchantUpper, { name: "Enchant Upper" }],
+    [ItemTypeEnum.CostumeEnchantMiddle, { name: "Enchant Middle" }],
+    [ItemTypeEnum.CostumeEnchantLower, { name: "Enchant Lower" }],
+    [ItemTypeEnum.CostumeEnchantGarment, { name: "Enchant Garment" }],
 ])

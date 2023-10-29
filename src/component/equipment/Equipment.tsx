@@ -17,18 +17,26 @@ export function Equipment(props: EquipmentProps) {
     const context = useContext(AppContext);
     const api = useContext(AppApiContext);
 
-    function onClick(item?: CraftEqiupment) {
-        if (item) {
-            api.setViewItem(item)
+    function onClick(slot: EquipmentSlot, item?: CraftEqiupment) {
+        if (context.viewState === ViewState.AddItem || context.viewState === ViewState.EditItem) {
+            api.setViewItem2(item)
         } else {
-            api.setViewState(ViewState.AddItem)
+            api.setViewItem(item)
+        }
+        if (context.mode === "storage") {
+            if (!item) {
+                api.setViewState(ViewState.AddItem)
+            }
+        } else {
+            api.setChangeSlot(slot)
+            api.setEditItem(item) // set undefined
+            api.setViewState(ViewState.ChangeItem)
         }
     }
 
     function onDrop(event: React.DragEvent<HTMLDivElement>) {
         console.log("onDrop")
         event.preventDefault();
-        console.log("onDrop", context.dragItem)
         if (context.dragItem) {
             event.preventDefault();
             api.equip(context.dragItem)
@@ -47,19 +55,24 @@ export function Equipment(props: EquipmentProps) {
     }
 
     function onEditClearClick() {
-        if (context.viewState === ViewState.Storage) {
-            const ids = new Map<string, boolean>()
-            Array.from(props.type).forEach(([key, value]) => {
-                let equipment = context.character.equipmentMap.get(key)
-                if (equipment) {
-                    if (!ids.get(equipment.id)) {
+        const ids = new Map<string, boolean>()
+        Array.from(props.type).forEach(([key, value]) => {
+            let equipment = context.character.equipmentMap.get(key)
+            if (equipment) {
+                if (!ids.get(equipment.id)) {
+                    if (context.mode === "storage") {
                         api.unequip(equipment)
-                        ids.set(equipment.id, true)
+                    } else {
+                        api.deleteItemStorage(equipment.id)
                     }
+                    ids.set(equipment.id, true)
                 }
-            })
-        } else {
-            api.setViewState(ViewState.AddItem)
+            }
+        })
+
+        if (context.changeSlot && Array.from(props.type.keys()).includes(context.changeSlot)) {
+            api.setEditItem(undefined)
+            api.setViewItem(undefined)
         }
     }
 
@@ -72,13 +85,22 @@ export function Equipment(props: EquipmentProps) {
             type={value}
             equipment={equipment}
             onDrag={onDrag}
-            onClick={onClick}
+            onClick={() => onClick(key, equipment)}
         />
     })
 
+    let buttonText: string | undefined
+    if (context.viewState === ViewState.AddItem || context.viewState === ViewState.EditItem || context.viewState === ViewState.ChangeItem) {
+        if (context.mode === 'storage') {
+            buttonText = "Unequip All"
+        } else {
+            buttonText = "Remove All"
+        }
+    }
+
     return (
         <div onDrop={onDrop} onDragOver={allowDrop}>
-            <Box title={props.title} buttonText={context.viewState === ViewState.AddItem ? "Unequip All" : undefined} onClick={onEditClearClick}>
+            <Box title={props.title} buttonText={buttonText} onClick={onEditClearClick}>
                 <div className="row row-cols-2 justify-content-between">
                     {eqipmentList}
                 </div>

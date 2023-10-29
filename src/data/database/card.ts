@@ -2,9 +2,12 @@ import { AttributeTypeEnum } from "../model/attributeType";
 import { JobClassEnum } from "../model/class";
 import { ItemTypeEnum } from "../model/itemType";
 import { Item } from "../model/Itemv2";
+import { SkillEnum } from "../model/skill";
 import { Symbol } from "../model/Symbol";
+import * as itemJson from "./json/card.json"
 
 export const cardDatabase: Item[] = [
+    ...Array.from(itemJson as Item[]),
     {
         id: "27361",
         name: "Corrupted Wanderer Card",
@@ -492,5 +495,62 @@ export const cardDatabase: Item[] = [
             },
         ],
     },
+    {
+        id: "4505",
+        name: "Scaraba Card",
+        type: ItemTypeEnum.CardAccessery,
+        attributeList: [
+            {
+                type: AttributeTypeEnum.Matk,
+                formulaText: "20",
+            },
+            {
+                type: AttributeTypeEnum.SpPercent,
+                formulaText: "-1",
+            },
+        ],
+    },
+    {
+        id: "27423",
+        name: "Shard of Dexterity Jewel",
+        imgId: 27423,
+        type: ItemTypeEnum.CardHeadgear,
+        attributeList: [
+            {
+                type: AttributeTypeEnum.RangeMul,
+                formulaText: "<this.Rf/2> * 3",
+            },
+            {
+                type: AttributeTypeEnum.Hit,
+                formulaText: "<this.Rf/2> * 7",
+            },
+            {
+                type: AttributeTypeEnum.AtkPercent,
+                formulaText: "<this.Rf/5> * 3",
+            },
+        ],
+    },
+    {
+        id: "4492",
+        name: "Sealed Orc Hero Card",
+        type: ItemTypeEnum.CardHeadgear,
+        attributeList: [
+            {
+                type: AttributeTypeEnum.Vit,
+                formulaText: "3",
+            },
+        ],
+    },
+    {
+        id: "4143",
+        name: "Orc Hero Card",
+        type: ItemTypeEnum.CardHeadgear,
+        attributeList: [
+            {
+                type: AttributeTypeEnum.Vit,
+                formulaText: "3",
+            },
+        ],
+    },
 ]
-.sort((a, b) => Number.parseInt(a.id) - Number.parseInt(b.id))
+// .sort((a, b) => Number.parseInt(a.id) - Number.parseInt(b.id))

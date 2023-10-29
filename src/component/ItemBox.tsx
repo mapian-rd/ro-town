@@ -22,29 +22,34 @@ interface BoxProps {
 export default function ItemBox(props: BoxProps) {
 
     const optionView = (props.option ?? []).map((option, index) => {
-        console.log("optionView")
         return (
-            <div className="itembox-card mt-1" key={index}>
+            <div className="itembox-card mt-1" key={`option-${props.id}-${index}`}>
                 {option.name}
             </div>
         )
     })
 
     const cardView: JSX.Element[] = Array(4).fill(0).map((_, index) => {
-        console.log("cardView", props.cardSlot)
         if (props.card) {
             if (props.card.length > index) {
                 const card = props.card[index]
+                let imgSrc: string
+                if (card.imgId !== undefined) {
+                    imgSrc = `https://static.divine-pride.net/images/items/item/${card.imgId}.png`
+                } else {
+                    imgSrc = process.env.PUBLIC_URL + "/4140.png"
+                }
                 return (
                     <OverlayTrigger
                         placement="top"
+                        key={`card-${props.id}-${index}`}
                         overlay={<Tooltip>{card.name}</Tooltip>}
                     >
                         {({ ref, ...triggerHandler }) => (
                             <img
-                                src={process.env.PUBLIC_URL + "/4140.png"}
+                                src={imgSrc}
                                 alt="card"
-                                key={"card-" + card.id}
+                                key={"cardView-" + card.id}
                                 id={"card-" + card.id}
                                 ref={ref} {...triggerHandler}
                                 onClick={() => props.onClickCard ? props.onClickCard(card, props.id) : undefined}
@@ -57,7 +62,7 @@ export default function ItemBox(props: BoxProps) {
         if (props.cardSlot) {
             if (props.cardSlot > index) {
                 return (
-                    <img src={process.env.PUBLIC_URL + "/nocard.png"} alt="card" key={`${props.id}-${index}`} />
+                    <img src={process.env.PUBLIC_URL + "/nocard.png"} alt="card" key={`card-${props.id}-${index}`} />
                 )
             }
         }
@@ -68,6 +73,7 @@ export default function ItemBox(props: BoxProps) {
                 return (
                     <OverlayTrigger
                         placement="top"
+                        key={`card-${props.id}-${index}`}
                         overlay={<Tooltip>{enchant.name}</Tooltip>}
                     >
                         {({ ref, ...triggerHandler }) => (
@@ -86,7 +92,7 @@ export default function ItemBox(props: BoxProps) {
             }
         }
         return (
-            <img src={process.env.PUBLIC_URL + "/none.png"} alt="card" key={`${props.id}-${index}`} />
+            <img src={process.env.PUBLIC_URL + "/none.png"} alt="card" key={`card-${props.id}-${index}`} />
         )
     })
 
@@ -105,7 +111,7 @@ export default function ItemBox(props: BoxProps) {
             <div className="itembox-body">
                 <div className="offset-4">
                     {props.children}
-                    <p>{props.description}</p>
+                    <p key={`description-${props.id}`}>{props.description}</p>
                 </div>
             </div>
             {optionView}

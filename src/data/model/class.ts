@@ -4,7 +4,7 @@ import { ItemTypeEnum } from "./itemType";
 import { ActiveSkill, PassiveSkill, Skill, SkillEnum } from "./skill";
 
 export enum JobClassEnum {
-    Novice, Doram, Mage,
+    Novice = "Novice", Doram = "Doram", Mage = "Mage",
 }
 
 export abstract class JobClass {
@@ -41,6 +41,8 @@ export abstract class JobClass {
     activeSkillItem: ActiveSkill[] = []
     buffSkillItem: PassiveSkill[] = []
     passiveSkillItem: PassiveSkill[] = []
+
+    weaponType: ItemTypeEnum[] = []
 
     getActiveSkill(): ActiveSkill[] {
         return this.activeSkill.flatMap(item => skillActiveDatabase.find(skill => skill.enum === item) ?? [])

@@ -9,40 +9,34 @@ import { Status } from "./status";
 let stringMath = require('string-math');
 
 function getParameter(text: string, equipmentMap: Map<EquipmentSlot, CraftEqiupment | undefined>, status: Status, skill: Skill[], baseLv: number, craftEqiupment?: CraftEqiupment): string {
-    console.log("getParameter", text)
     if (craftEqiupment && text.includes("this.Rf")) {
-        console.log("refine", text)
         const slash = text.indexOf("/")
         const step = Number.parseInt(text.substring(slash + 1))
-        console.log("getParameter", craftEqiupment.refineLevel, step)
         return Math.floor(craftEqiupment.refineLevel / step).toString()
     }
     if (text.includes("I$")) {
         const dotIndex = text.indexOf(".Rf/")
-        const id = text.substring(2, dotIndex - 1)
-        const item = Array.from(equipmentMap.values()).find(item => item?.id === id)
+        const id = text.substring(3, dotIndex)
+        const item = Array.from(equipmentMap.values()).find(item => item?.itemId === id)
         if (item) {
-            const step = Number.parseInt(text.charAt(text.length - 1))
+            const slash = text.indexOf("/")
+            const step = Number.parseInt(text.substring(slash + 1))
             return Math.floor(item.refineLevel / step).toString()
         }
         return "0"
     }
     if (text.includes("S$")) {
-        console.log("skill")
         const dotIndex = text.indexOf(".Lv")
         const id = text.substring(3, dotIndex)
         const item = skill.find(item => item?.id === id)
-        console.log("skill", id, item)
         if (item) {
             return item.maxLv.toString()
         }
-        console.log("skill 0")
         return "0"
     }
     if (text.includes("BaseLv")) {
         const slash = text.indexOf("/")
         const step = Number.parseInt(text.substring(slash + 1))
-        console.log("calString stringMath", baseLv, step)
         return Math.floor(baseLv / step).toString()
     }
     const match = text.match(/str|agi|vit|int|dex|luk/)
@@ -74,25 +68,20 @@ function getParameter(text: string, equipmentMap: Map<EquipmentSlot, CraftEqiupm
 export function calString(array: FormulaString[], equipmentMap: Map<EquipmentSlot, CraftEqiupment | undefined>, status: Status, skill: Skill[] = [], baseLv: number): DescriptionNumber {
     let number = 0
     let description = ""
-    console.log("calString", array)
     array.forEach(item => {
         const craftEqiupment = Array.from(equipmentMap.values()).find(equipment => equipment?.id === item.id) ?? item.item
         const text = Array.from(item.text.matchAll(/(<([^<>]*)>)?([^<]*)/g)).flatMap(item => {
             let s = ""
             if (item[1] && item[1] !== "") {
                 s += getParameter(item[1], equipmentMap, status, skill, baseLv, craftEqiupment)
-                console.log("calString stringMath", s)
             }
             if (item[3] && item[3] !== "") {
                 s += item[3]
             }
             return s
         }).join('')
-        console.log("calString stringMath", text)
         let cal = stringMath(text)
-        console.log("calString stringMath", cal)
 
-        console.log("calString max", item.max)
         let max: number | undefined
         if (item.max) {
             const maxText = Array.from(item.max.matchAll(/(<([^<>]*)>)?([^<]*)/g)).flatMap(item => {
@@ -107,7 +96,6 @@ export function calString(array: FormulaString[], equipmentMap: Map<EquipmentSlo
             }).join('')
             max = stringMath(maxText)
             cal = Math.min(cal, Number(max))
-            console.log("calString max", max, cal)
         }
 
         number += cal
@@ -116,7 +104,6 @@ export function calString(array: FormulaString[], equipmentMap: Map<EquipmentSlo
         }
         description += `${cal}(${item.name})`
     })
-    console.log("calString", number, description)
     return new DescriptionNumber(number, description);
 }
 

@@ -27,15 +27,6 @@ export default function Storage() {
     const [list, setList] = useState<JSX.Element[]>([])
     const [refMap, setRefMap] = useState<Map<string, React.RefObject<HTMLDivElement>>>(new Map())
 
-    function onClick(item: CraftEqiupment) {
-        console.log("onClick", item.id)
-        if (context.viewState === ViewState.AddItem) {
-            api.setViewItem2(item)
-        } else {
-            api.setViewItem(item)
-        }
-    }
-
     function onEquip(found: boolean, item: CraftEqiupment) {
         if (found) {
             api.unequip(item)
@@ -107,16 +98,22 @@ export default function Storage() {
     // context.storage.items
     useEffect(() => {
         console.log("Storage list")
+        function onClick(item: CraftEqiupment) {
+            console.log("onClick", item.id)
+            if (context.viewState === ViewState.AddItem || context.viewState === ViewState.EditItem) {
+                api.setViewItem2(item)
+            } else {
+                api.setViewItem(item)
+            }
+        }
+        
         setList(filteredItemList.map(item => {
             const itemRef = createRef<HTMLDivElement>();
             refMap.set(item.id, itemRef)
 
-            console.log("Storage list", item.id)
-
             const found = Array.from(context.character.equipmentMap).findIndex(([key, value]) => {
                 return value?.id === item.id
             }) !== -1
-            console.log("Storage", item, item.id, item.name, context.viewItem)
 
             return (
                 <div className={"row p-1" + (found ? ' storage-equiped' : '')} key={'storage-' + item.id} ref={itemRef}>
@@ -149,10 +146,10 @@ export default function Storage() {
                 </div>
             )
         }))
-    }, [filteredItemList, context.character])
+    }, [filteredItemList, context.character, context.viewState])
 
     useEffect(() => {
-        if (scrollToLast && lastItemRef) {
+        if (scrollToLast && lastItemRef && list.length === filteredItemList.length) {
             lastItemRef?.current?.scrollIntoView()
             scrollToLast = false
         }
@@ -173,9 +170,9 @@ export default function Storage() {
                 handleSearchDropdownChange={handleSearchDropdownChange}
             >
                 <div className={"position-relative top-50 start-50 translate-middle text-center" + (list.length > 0 ? ' d-none' : '')}>
-                    <h5>Nothing here?</h5>
-                    <p>Feel free to create your item</p>
-                    <p>{"on the right side  ------->"}</p>
+                    <h5>ไม่มีไอเท็มที่หาหรอ?</h5>
+                    <p>กดสร้างไอเท็มเองได้เลย</p>
+                    <p>{"-------------->"}</p>
                 </div>
                 <div className={"mh-0" + (list.length > 0 ? '' : ' d-none')} >
                     {list}

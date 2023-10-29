@@ -1,8 +1,10 @@
 import { AttributeTypeEnum } from "../model/attributeType";
 import { Item } from "../model/Itemv2";
 import { PassiveSkill, SkillEnum } from "../model/skill";
+import * as itemJson from "./json/debuff.json"
 
 export const debuffDatabase: PassiveSkill[] = [
+    ...Array.from(itemJson as PassiveSkill[]),
     {
         id: "5001",
         name: "Dark Claw",
@@ -28,3 +30,4 @@ export const debuffDatabase: PassiveSkill[] = [
         ],
     },
 ]
+    .sort((a, b) => Number.parseInt(a.id) - Number.parseInt(b.id))

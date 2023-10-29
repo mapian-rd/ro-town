@@ -15,6 +15,7 @@ interface MoreStatusProps {
     baseSkillDmg: Map<SkillEnum, DescriptionNumber>,
     vct: Map<SkillEnum, DescriptionNumber>,
     allVct: DescriptionNumber,
+    vct530: DescriptionNumber,
     cooldown: Map<SkillEnum, DescriptionNumber>,
     fct: DescriptionNumber,
     fctP: DescriptionNumber,
@@ -24,11 +25,11 @@ interface MoreStatusProps {
 function getItem(number: DescriptionNumber, name: string, key: string, minimum: number = 0) {
     const min = number?.min
     const max = number?.max
-    let text = number?.number.toString()
+    let text = number?.number.toFixed(2).replace(/[.,]00$/, "");
     if (min && max) {
         text = `${min}~${max}`
     }
-    if (number?.number < minimum) return null
+    if (number?.number < minimum && number?.number >= 0) return null
     return (
         <div className="row" key={key}>
             <div className="col">
@@ -89,7 +90,7 @@ export default function MoreStatus(prop: MoreStatusProps) {
     const skillDmgList = Array.from(prop.skillDmg).map(([key, value]) => {
         return getItem(value, value.name ?? key.toString(), key.toString(), isAll ? 0 : 1)
     })
-
+    const vct530 = getItem(prop.vct530, prop.vct530.name ?? "530", "vct530", isAll ? 0 : 1)
     const allVct = getItem(prop.allVct, prop.allVct.name ?? "all", "allVct", isAll ? 0 : 1)
 
     const vct = Array.from(prop.vct).map(([key, value]) => {
@@ -174,6 +175,7 @@ export default function MoreStatus(prop: MoreStatusProps) {
                         Vct
                     </div>
                 </div>
+                {vct530}
                 {allVct}
                 {vct}
                 <div className="row mt-2">

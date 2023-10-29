@@ -6,7 +6,7 @@ interface EquipmentColProps {
     type: EquipableType;
     equipment?: CraftEqiupment;
     onDrag?: (event: React.DragEvent<HTMLDivElement>, item: CraftEqiupment) => void;
-    onClick?: (item?: CraftEqiupment) => void;
+    onClick?: () => void;
 }
 
 export function EqiupmentCol(props: EquipmentColProps) {
@@ -18,7 +18,7 @@ export function EqiupmentCol(props: EquipmentColProps) {
                 className="col-5 equipment-col cursor-pointer"
                 draggable
                 onDragStart={(event) => (props.onDrag && props.equipment) ? props.onDrag(event, props.equipment) : undefined}
-                onClick={() => props.onClick ? props.onClick(props.equipment) : undefined}
+                onClick={() => props.onClick ? props.onClick() : undefined}
             >
                 <div className="row">
                     <div className="col-auto my-2 equipment-img">
@@ -32,7 +32,7 @@ export function EqiupmentCol(props: EquipmentColProps) {
         )
     } else {
         element = (
-            <div className="col-5 equipment-col cursor-pointer" onClick={() => props.onClick ? props.onClick(props.equipment) : undefined}>
+            <div className="col-5 equipment-col cursor-pointer" onClick={() => props.onClick ? props.onClick() : undefined}>
                 <div className="row">
                     <div className="col-auto my-2 equipment-img">
                         <img className="w-100" src={process.env.PUBLIC_URL + "/item_invert.png"} alt="Item" />

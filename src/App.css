@@ -10,9 +10,20 @@
   --ro-item-shadow: #6153CC;
   --prompt-equipment: #9CBAFC;
   --link: #A60067;
-  --header-drop: rgba(89, 89, 92, 0.20);
+  --header-drop: #59595c33;
   --header-title: var(--ro-item-shadow);
   --status-name: var(--ro-item-shadow);
+  --dialog-backdrop: #1b1c2281;
+}
+
+::backdrop {
+  --color-backdrop: #1b1c2281;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
 .dark {
@@ -27,15 +38,13 @@
   --ro-item-shadow: #c4d4f7;
   --prompt-equipment: #F9F2F0;
   --link: #779ef2;
-  --header-drop: #59595c33;
+  --header-drop: #1B1C2233;
   --header-title: var(--ro-item-shadow);
   --status-name: var(--ro-item-shadow);
 }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+.dark * {
+  font-weight: 300;
 }
 
 html,
@@ -52,7 +61,7 @@ div {
 
 .App {
   background-color: var(--snow);
-  font-family: Kanit;
+  font-family: 'Kanit', sans-serif;
 }
 
 .App-logo {
@@ -75,7 +84,7 @@ div {
   justify-content: center;
   font-size: 24px;
   color: var(--header-title);
-  font-weight: bold;
+  font-weight: bolder;
   box-shadow: 0px 1px 1px var(--header-drop);
   padding: 0 48px;
 }
@@ -109,7 +118,7 @@ div {
   background-color: var(--equipment-header);
   border-radius: 3px 3px 0 0;
   border: 1px solid var(--gray);
-  font-weight: bold;
+  font-weight: bolder;
   line-height: 22px;
   min-height: auto;
 }
@@ -213,7 +222,7 @@ button {
   background-color: transparent;
   border: none;
   color: var(--link);
-  font-weight: bold;
+  font-weight: bolder;
   line-height: 22px;
   padding: 0 8px;
 }
@@ -224,7 +233,7 @@ button {
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  font-weight: bold;
+  font-weight: bolder;
   color: var(--status-name);
 }
 
@@ -235,7 +244,7 @@ button {
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-end;
-  font-weight: bold;
+  font-weight: bolder;
   color: var(--status-name);
 }
 
@@ -263,7 +272,7 @@ button {
 
 .equipment-no {
   font-size: 16px;
-  font-weight: bold;
+  font-weight: bolder;
   color: var(--prompt-equipment);
 }
 
@@ -308,6 +317,36 @@ button {
 .remark {
   color: var(--link);
   font-size: 12px;
+}
+
+.new-backdrop {
+  position: fixed;
+  background-color: var(--dialog-backdrop);
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
+.new-model {
+  position: absolute;
+  border: 0;
+  box-shadow: 0px 16px 16px var(--header-drop);
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  max-width: 60rem;
+  background-color: transparent;
+  color: var(--black);
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.new-box {
+  min-height: 50vh;
 }
 
 .jc-center {
@@ -396,12 +435,33 @@ input:focus {
 }
 
 img {
-  -webkit-filter:
+  /* -webkit-filter:
     drop-shadow(1px 2px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(0px 0px 0 white);
 
   filter:
-    drop-shadow(1px 2px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(0px 0px 0 white);
+    drop-shadow(1px 2px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(0px 0px 0 white); */
+}
 
+dialog {
+  position: absolute;
+  border: 0;
+  box-shadow: 0px 16px 16px var(--header-drop);
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  max-width: 60rem;
+  background-color: transparent;
+  color: var(--black);
+  width: 100%;
+  height: 100%;
+}
+
+dialog::backdrop {
+  background: var(--color-backdrop);
+}
+
+h3 {
+  color: var(--header-title) !important;
 }
 
 *::-webkit-scrollbar-track {

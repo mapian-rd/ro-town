@@ -41,7 +41,7 @@ export class Attribute {
                 const equipmentList = Array.from(character.equipmentMap.values());
                 const item = equipmentList.find(item => {
                     if (!item) return false
-                    return CraftEqiupment.getIdList(item).includes(condition.itemId) 
+                    return CraftEqiupment.getIdList(item).includes(condition.itemId)
                 }
                 );
                 if (!item) return false;
@@ -73,6 +73,24 @@ export class Attribute {
         console.log("checkAttribute baseLv", attribute.condition.baseLv)
         if (attribute.condition.baseLv) {
             const result = NumberCondition.check(attribute.condition.baseLv, character.baseLv)
+            if (!result) return false;
+        }
+
+        if (attribute.condition.equip) {
+            const result = Array.from(character.equipmentMap).find(([key, value]) => {
+                return value?.item?.type === attribute.condition?.equip
+            })
+            if (!result) return false;
+        }
+        if (attribute.condition.refineSum) {
+            let sum = 0
+            attribute.condition.refineSum.items.forEach(id => {
+                const item = Array.from(character.equipmentMap.values()).find(value => value?.itemId === id)
+                if (item) {
+                    sum += item.refineLevel
+                }
+            })
+            const result = NumberCondition.check(attribute.condition.refineSum, sum)
             if (!result) return false;
         }
         return true

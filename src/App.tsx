@@ -26,11 +26,13 @@ import AddBuff from './component/buff/AddBuff';
 import { replacer } from './context/ContextProvider';
 import { ExportData } from './data/model/Exportable';
 import { AttributeTypeEnum } from './data/model/attributeType';
-import { MdDarkMode, MdLightMode } from "react-icons/md";
+import { MdDarkMode, MdLightMode, MdSettings } from "react-icons/md";
 import MoreCombat from './component/combat/MoreCombat';
 import { checkMinMax } from './common/extension';
 import BuffStorageView from './component/buff/BuffStorageView';
 import { debuffDatabase } from './data/database/debuff';
+import Box from './component/Box';
+import { NewsModel } from './component/NewsModel';
 
 export const optionStyle = {
   container: ({ data, isDisabled, isFocused, isSelected }: any) =>
@@ -79,9 +81,7 @@ function App() {
   console.log("App")
   const context = useContext(AppContext);
   const api = useContext(AppApiContext);
-  console.log("App", context.viewItem)
 
-  const [theme, setTheme] = useState<string>("")
   const [showCharacter, setShowCharacter] = useState<boolean>(true)
   const [showBuff, setShowBuff] = useState<boolean>(true)
   const [showMonster, setShowMonster] = useState<boolean>(true)
@@ -97,8 +97,11 @@ function App() {
   const [showAddBuff, setShowAddBuff] = useState<boolean>(false)
   const [showEditItem, setShowEditItem] = useState<boolean>(false)
 
+  const [showSetting, setShowSetting] = useState<boolean>(false)
+
   const moreCombatRef = useRef<HTMLInputElement | null>(null)
   const itemInfoRef = useRef<HTMLInputElement | null>(null)
+  const settingRef = useRef<HTMLDialogElement | null>(null)
 
   const inputFile = useRef<HTMLInputElement | null>(null)
 
@@ -152,13 +155,12 @@ function App() {
   function onSaveClick() {
     const element = document.createElement("a");
     const data = ExportData.getExportData(context)
-    console.log("onSaveClick", data)
     const textFile = new Blob([JSON.stringify(data, replacer)], { type: 'text/plain' });
-    console.log("onSaveClick", textFile)
     element.href = URL.createObjectURL(textFile);
     element.download = context.character.name + ".json";
     document.body.appendChild(element);
     element.click();
+    console.log("onSaveClick", data, textFile)
   }
 
   function onClearClick() {
@@ -202,12 +204,11 @@ function App() {
   function handleItemBuffChange(event: React.ChangeEvent<HTMLInputElement>, id: string) {
     let { checked } = event.target;
     const item = context.character.itemBuff.find(item => item.id === id)
-    console.log("handleItemBuffChange", item, checked)
     if (item) {
       item.isActive = Boolean(checked)
-      console.log("handleItemBuffChange", context.character.itemBuff)
       api.updateCharacter({ itemBuff: context.character.itemBuff });
     }
+    console.log("handleItemBuffChange", item, checked, context.character.itemBuff)
   };
 
   function onClickBuff(id: string) {
@@ -237,7 +238,7 @@ function App() {
     }
   };
 
-  function handleLvSkillChange(event: React.ChangeEvent<HTMLInputElement>, id: string) {
+  function handleLvSkillChange(event: React.ChangeEvent<HTMLInputElement>, id: string): number {
     let { value, max, min } = event.target;
     let newValue = checkMinMax(Number(value), Number(min), Number(max));
     const item = context.character.skillBuff.find(item => item.id === id)
@@ -245,6 +246,7 @@ function App() {
       item.activeLv = newValue
       api.updateCharacter({ skillBuff: context.character.skillBuff });
     }
+    return newValue
   };
 
   function handleDebuffChange(event: React.ChangeEvent<HTMLInputElement>, id: string) {
@@ -256,7 +258,7 @@ function App() {
     }
   };
 
-  function handleLvDebuffChange(event: React.ChangeEvent<HTMLInputElement>, id: string) {
+  function handleLvDebuffChange(event: React.ChangeEvent<HTMLInputElement>, id: string): number {
     let { value, max, min } = event.target;
     let newValue = checkMinMax(Number(value), Number(min), Number(max));
     const item = context.character.debuff.find(item => item.id === id)
@@ -264,6 +266,7 @@ function App() {
       item.activeLv = newValue
       api.updateCharacter({ debuff: context.character.debuff });
     }
+    return newValue
   };
 
   function addItemBuffClick(list: Named[], found: boolean, id: string) {
@@ -347,11 +350,12 @@ function App() {
     setShowDebuffStorage(false)
     setShowEditItem(false)
     if (context.viewState === ViewState.MoreStatus) {
-    } else if (context.viewState === ViewState.Storage) {
-    } else if (context.viewState === ViewState.AddItem) {
+    } else if (context.viewState === ViewState.Storage
+      || context.viewState === ViewState.AddItem) {
       setShowCharacter(true)
       setShowStorage(true)
       setShowAddItem(true)
+      setShowCombat(true)
     } else if (context.viewState === ViewState.BuffStorage) {
       setShowBuffStorage(true)
     } else if (context.viewState === ViewState.SkillStorage) {
@@ -373,18 +377,23 @@ function App() {
       setShowMonster(true)
       setShowCombat(true)
       setShowMoreCombatf(true)
-    } else if (context.viewState === ViewState.EditItem) {
+    } else if (context.viewState === ViewState.EditItem
+      || context.viewState === ViewState.ChangeItem) {
       setShowCharacter(true)
       setShowStorage(true)
       setShowAddItem(true)
       setShowEditItem(true)
+      setShowCombat(true)
     } else {
       setShowCharacter(true)
       setShowBuff(true)
       setShowMonster(true)
       setShowCombat(true)
     }
-  }, [context.viewState])
+    if (context.mode === "single") {
+      setShowStorage(false)
+    }
+  }, [context.viewState, context.mode])
 
   useEffect(() => {
     console.log("viewItem", context.viewItem)
@@ -404,40 +413,53 @@ function App() {
     itemInfoRef.current?.scrollIntoView()
   }, [showItemInfo])
 
+  useEffect(() => {
+    if (showSetting) {
+      settingRef.current?.showModal()
+    } else {
+      settingRef.current?.close()
+    }
+  }, [showSetting])
+
   return (
-    <div className={'App ' + theme}>
+    <div className={'App ' + context.theme}>
       <header className='App-header'>
         <div className='row'>
           <div className='col'>
             RO Calculator
           </div>
           <div className='col-auto d-flex'>
-            <button className={'header-theme' + (theme === '' ? ' d-none' : '')} onClick={() => setTheme('')}>
+            <button className={'header-theme' + (context.theme === '' ? ' d-none' : '')} onClick={() => api.setTheme('')}>
               <MdLightMode size={24} />
             </button>
-            <button className={'header-theme' + (theme === 'dark' ? ' d-none' : '')} onClick={() => setTheme('dark')}>
+            <button className={'header-theme' + (context.theme === 'dark' ? ' d-none' : '')} onClick={() => api.setTheme('dark')}>
               <MdDarkMode size={24} />
+            </button>
+          </div>
+          <div className='col-auto d-flex'>
+            <button className={'header-theme'} onClick={() => setShowSetting(true)}>
+              <MdSettings size={24} />
             </button>
           </div>
         </div>
       </header>
-      <body className='App-body container-fluid mb-0 vh-100'>
+      <body className='App-body container-fluid mb-0 mt-1 vh-100'>
         <div className='row flex-nowrap h-100 pt-3'>
-          <div className={'col-md-3 h-100 overflow-y-auto' + (showCharacter ? '' : ' d-none')}>
+          <div className={'col-md-6 col-lg-4 col-xl-3 h-100 overflow-y-auto' + (showCharacter ? '' : ' d-none')}>
             <input type='file' id='file' ref={inputFile} style={{ display: 'none' }} accept=".json" onChange={handleFileChange} />
             <button onClick={onLoadClick}>Import</button>
             <button onClick={onSaveClick}>Export</button>
             <button onClick={onClearClick}>Clear</button>
             <Character />
             <StatusBox />
-            <div className='w-100 d-flex justify-content-end'>
-              <button onClick={() => api.setViewState(ViewState.AddItem)}>Add Item</button>
+            <div className={'w-100 d-flex justify-content-end' + (context.mode === 'single' || context.viewState.includes("Item-") ? ' pt-4' : '')}>
+              <button className={(context.mode === 'single' || context.viewState.includes("Item-")) ? 'd-none' : ''} onClick={() => api.setViewState(ViewState.Storage)}>Add Item</button>
             </div>
             <Equipment title='General Equipment' type={eqipmentTypes} />
             <Equipment title='Special Equipment' type={spEqipmentTypes} />
           </div>
 
-          <div className={'col-md-3 d-flex flex-column h-100' + (showStorage ? '' : ' d-none')}>
+          <div className={'col-md-6 col-lg-4 col-xl-3 d-flex flex-column h-100' + (showStorage ? '' : ' d-none')}>
             <div className='row'>
               <div className='col'>
                 <button onClick={() => api.setViewState(ViewState.Normal)}>Back</button>
@@ -449,7 +471,7 @@ function App() {
             <Storage />
           </div>
 
-          <div className={'col-md-3 pt-4 d-flex flex-column mh-0 h-100' + (showBuff ? '' : ' d-none')} >
+          <div className={'col-md-6 col-lg-4 col-xl-3 pt-4 d-flex flex-column mh-0 h-100' + (showBuff ? '' : ' d-none')} >
             <Pet />
             <div className='flex-grow-1 mh-0'>
               <div className={'h-50'}>
@@ -474,11 +496,11 @@ function App() {
             </div>
           </div>
 
-          <div className={'col-md-9 d-flex flex-column h-100' + (showBuffStorage ? '' : ' d-none')}>
+          <div className={'col-sm-6 col-md-8 col-lg-9 d-flex flex-column h-100' + (showBuffStorage ? '' : ' d-none')}>
             <BuffStorageView />
           </div>
 
-          <div className={'col-md-3 d-flex flex-column h-100' + (showSkillStorage ? '' : ' d-none')}>
+          <div className={'col-md-6 col-lg-4 col-xl-3 d-flex flex-column h-100' + (showSkillStorage ? '' : ' d-none')}>
             <div className='row'>
               <div className='col'>
                 <button onClick={() => api.setViewState(ViewState.Normal)}>Back</button>
@@ -494,7 +516,7 @@ function App() {
             />
           </div>
 
-          <div className={'col-md-3 d-flex flex-column h-100' + (showDebuffStorage ? '' : ' d-none')}>
+          <div className={'col-md-6 col-lg-4 col-xl-3 d-flex flex-column h-100' + (showDebuffStorage ? '' : ' d-none')}>
             <div className='row'>
               <div className='col'>
                 <button onClick={() => api.setViewState(ViewState.Normal)}>Back</button>
@@ -510,15 +532,15 @@ function App() {
             />
           </div>
 
-          <div className={'col-md-3  h-100' + (showAddItem ? '' : ' d-none')}>
+          <div className={'col-md-6 col-lg-4 col-xl-3 h-100' + (showAddItem ? '' : ' d-none')}>
             <AddItem />
           </div>
 
-          <div className={'col-md-3  h-100' + (showAddBuff ? '' : ' d-none')}>
+          <div className={'col-md-6 col-lg-4 col-xl-3 h-100' + (showAddBuff ? '' : ' d-none')}>
             <AddBuff />
           </div>
 
-          <div className={'col-md-3 mt-4 d-flex flex-column' + (showMonster ? '' : ' d-none')}>
+          <div className={'col-md-6 col-lg-4 col-xl-3 mt-4 d-flex flex-column' + (showMonster ? '' : ' d-none')}>
             <Monster monster={context.monster} />
             <ItemBuff
               title='Monster Debuff'
@@ -530,18 +552,19 @@ function App() {
             />
           </div>
 
-          <div ref={itemInfoRef} className={'col-md-3 d-flex flex-column h-100 align-items-start' + (showItemInfo ? '' : ' d-none')}>
+          <div ref={itemInfoRef} className={'col-md-6 col-lg-4 col-xl-3 d-flex flex-column h-100 align-items-start' + (showItemInfo ? '' : ' d-none')}>
             <button onClick={() => hideItemDescription()}>Hide</button>
-            <ItemDescription item1={context.viewItem} character={context.character} item2={context.viewItem2} />
+            <ItemDescription item1={context.viewItem} character={context.character} item2={context.viewItem2} buttonText={context.mode === 'storage' ? 'Edit' : undefined} />
           </div>
 
-          <div className={'col-md-3 pt-4 d-flex flex-column h-100 overflow-auto' + (showCombat ? '' : ' d-none')}>
+          <div className={'col-md-6 col-lg-4 col-xl-3 pt-4 d-flex flex-column h-100 overflow-auto' + (showCombat ? '' : ' d-none')}>
             <MoreStatus
               final={context.calculatedAttribute.finalAttributeList}
               baseSkillDmg={context.calculatedAttribute.baseSkillAttributeList}
               skillDmg={context.calculatedAttribute.skillAttributeList}
               vct={context.calculatedAttribute.vctAttributeList}
               allVct={api.getRaw(AttributeTypeEnum.VctPercent)}
+              vct530={context.calculatedAttribute.vct530}
               fct={api.getRaw(AttributeTypeEnum.Fct)}
               fctP={api.getFinal(AttributeTypeEnum.FctPercent)}
               cooldown={context.calculatedAttribute.cooldownAttributeList}
@@ -550,7 +573,7 @@ function App() {
             <Combat />
           </div>
 
-          <div ref={moreCombatRef} className={'col-md-3 d-flex flex-column h-100 align-items-start' + (showMoreCombat ? '' : ' d-none')}>
+          <div ref={moreCombatRef} className={'col-md-6 col-lg-4 col-xl-3 d-flex flex-column h-100 align-items-start' + (showMoreCombat ? '' : ' d-none')}>
             <button onClick={() => api.setViewState(ViewState.Normal)}>Back</button>
             <MoreCombat
               combatStatus={context.combatStatus}
@@ -558,6 +581,76 @@ function App() {
           </div>
         </div>
       </body>
+
+      <dialog ref={settingRef}>
+        <Box id='setting' className='h-100' buttonText='Close' onClick={() => setShowSetting(false)} overflow>
+          <div className='row py-3'>
+            <h4>Setting</h4>
+            <div className='col-2 status-name justify-content-start'>
+              Equipment Mode
+            </div>
+            <div className='col-10 d-flex'>
+              <div className="form-check flex-grow-1">
+                <input className="form-check-input" type="radio" name="equipmentStyle" id="singleStyle" value={"single"} checked={context.mode === "single"} onChange={e => api.setMode(e.target.value)} />
+                <div className="form-check-label d-flex flex-column" >
+                  Single
+                  <img className='w-100' src={process.env.PUBLIC_URL + "/singleStyle.jpg"} alt="Single style" />
+                </div>
+              </div>
+              <div className="form-check flex-grow-1">
+                <input className="form-check-input" type="radio" name="equipmentStyle" id="storageStyle" value={"storage"} checked={context.mode === "storage"} onChange={e => api.setMode(e.target.value)} />
+                <div className="form-check-label d-flex flex-column" >
+                  Storage
+                  <img className='w-100' src={process.env.PUBLIC_URL + "/storageStyle.jpg"} alt="Storage style" />
+                </div>
+              </div>
+            </div>
+
+            <div className='col-2 status-name justify-content-start'>
+              Style
+            </div>
+            <div className='col-10 d-flex'>
+              <div className="form-check me-3">
+                <input className="form-check-input" type="radio" name="dayStyle" id="day" value={""} checked={context.theme === ""} onChange={e => api.setTheme(e.target.value)} />
+                <div className="form-check-label d-flex align-items-center" >
+                  <MdLightMode className='me-2' /> Day
+                </div>
+              </div>
+              <div className="form-check me-3">
+                <input className="form-check-input" type="radio" name="dayStyle" id="night" value={"dark"} checked={context.theme === "dark"} onChange={e => api.setTheme(e.target.value)} />
+                <div className="form-check-label d-flex align-items-center" >
+                  <MdDarkMode className='me-2' /> Night
+                </div>
+              </div>
+            </div>
+
+            <hr className="h-line" />
+
+            <h4>About</h4>
+
+            <div className='col-2'>
+              <img className='w-100' src={process.env.PUBLIC_URL + "/logo192.png"} alt="Author" />
+            </div>
+            <div className='col d-flex flex-column justify-content-center'>
+              <p>Mapian-rd (aka. Ice)</p>
+              <p className='storage-equiped'>เมนแมวทุกสาย แต่ดันไม่มีตังทำของ</p>
+            </div>
+
+            <h5 className='mt-3'>Credit</h5>
+            <div className='col'>
+              Monster Data & Item Description : <a href='https://www.divine-pride.net/'>Divide Pride</a>
+            </div>
+
+            <h6 className='mt-3'>Inspired by</h6>
+            <div className='col d-flex flex-column'>
+              <a href='https://newcalc.irowiki.org/'>IRO's newcalc</a>
+              <a href='https://roprime-simulator.com/'>RO Prime Simulator</a>
+              <a href='https://www.facebook.com/profile.php?id=100081543407330'>The World's Spreadsheets</a>
+            </div>
+          </div>
+        </Box>
+      </dialog>
+      <NewsModel />
     </div>
   );
 }

@@ -107,8 +107,8 @@ export default function BuffStorageView() {
     if (customCom.length === 0) {
         customCom = ([
             <div className={"position-relative top-50 start-50 translate-middle text-center"}>
-                <h5>Need more special Buff?</h5>
-                <p>Feel free to create your item here!</p>
+                <h5>ไม่มีบัพที่หาหรอ?</h5>
+                <p>ลองสร้างดูนะ กดปุ่มด้านขวาบนของกล่องนี้เลย!</p>
             </div>
         ])
     }
@@ -119,7 +119,7 @@ export default function BuffStorageView() {
                 <button onClick={() => api.setViewState(ViewState.Normal)}>Confirm</button>
             </div>
             <div className="row h-100">
-                <div className="col-md-4 d-flex flex-column h-100 overflow-auto">
+                <div className="col-md-6 col-lg-4 d-flex flex-column h-100">
                     <Box title="10 Status Food (Strongest)">
                         {status10Com}
                     </Box>
@@ -136,7 +136,7 @@ export default function BuffStorageView() {
                         {combatPilCom}
                     </Box>
                 </div>
-                <div className="col-md-4 d-flex flex-column h-100 overflow-auto">
+                <div className="col-md-6 col-lg-4 d-flex flex-column h-100 overflow-auto">
                     <Box className="flex-grow-1" title="Food (Strongest)">
                         {atkMatkCom}
                     </Box>
@@ -147,7 +147,7 @@ export default function BuffStorageView() {
                         {scrollCom}
                     </Box>
                 </div>
-                <div className="col-md-4 d-flex flex-column h-100">
+                <div className="col-md-6 col-lg-4 d-flex flex-column h-100">
                     <Box className="flex-grow-1" title="Other">
                         {otherCom}
                     </Box>

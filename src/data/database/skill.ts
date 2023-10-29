@@ -1,7 +1,11 @@
 import { AttributeTypeEnum } from "../model/attributeType";
 import { ActiveSkill, PassiveSkill, SkillEnum } from "../model/skill";
+import * as skillactive from "./json/skillactive.json"
+import * as skillpassive from "./json/skillpassive.json"
+import * as skillbuff from "./json/skillbuff.json"
 
 export const skillActiveDatabase: ActiveSkill[] = [
+    ...Array.from(skillactive as ActiveSkill[]),
     {
         id: "normal",
         enum: SkillEnum.NormalAttack,
@@ -83,8 +87,9 @@ export const skillActiveDatabase: ActiveSkill[] = [
         fct: [3, 3, 3, 3, 3],
         cooldown: [5, 5, 5, 5, 5],
         delay: [1, 1, 1, 1, 1],
-        hit: [3, 4, 5, 6, 7],
-        type: AttributeTypeEnum.Heal,
+        hit: [5, 5, 5, 5, 5],
+        n: [3, 4, 5, 6, 7],
+        type: AttributeTypeEnum.Matk,
         isRange: true,
     },
     {
@@ -157,9 +162,10 @@ export const skillActiveDatabase: ActiveSkill[] = [
         type: AttributeTypeEnum.Atk,
         isRange: true,
     },
-].sort((a,b) => Number.parseInt(a.id)-Number.parseInt(b.id))
+].sort((a, b) => Number.parseInt(a.id) - Number.parseInt(b.id))
 
 export const skillPassiveDatabase: PassiveSkill[] = [
+    ...Array.from(skillpassive as PassiveSkill[]),
     {
         id: "5031",
         enum: SkillEnum.PowerofLife,
@@ -276,9 +282,10 @@ export const skillPassiveDatabase: PassiveSkill[] = [
         attributeList: [
         ]
     },
-].sort((a,b) => Number.parseInt(a.id)-Number.parseInt(b.id))
+].sort((a, b) => Number.parseInt(a.id) - Number.parseInt(b.id))
 
 export const skillBuffDatabase: PassiveSkill[] = [
+    ...Array.from(skillbuff as PassiveSkill[]),
     {
         id: "34",
         name: "Blessing",
@@ -517,4 +524,4 @@ export const skillBuffDatabase: PassiveSkill[] = [
         attributeList: [
         ]
     },
-].sort((a,b) => Number.parseInt(a.id)-Number.parseInt(b.id))
+].sort((a, b) => Number.parseInt(a.id) - Number.parseInt(b.id))

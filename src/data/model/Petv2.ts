@@ -38,5 +38,5 @@ export class PetFriendly {
 }
 
 export enum PetFriendlyEnum {
-    friendly, ally, normal,
+    friendly = "friendly", ally = "ally", normal = "normal",
 }

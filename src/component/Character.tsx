@@ -26,23 +26,24 @@ export function Character() {
         api.updateCharacter({ name: value })
     }
 
-    function handleLvChange(event: React.ChangeEvent<HTMLInputElement>) {
+    function handleLvChange(event: React.ChangeEvent<HTMLInputElement>): number {
         let { value, min, max } = event.target;
         let newValue = checkMinMax(Number(value), Number(min), Number(max));
         api.updateCharacter({ baseLv: newValue });
+        return newValue
     };
 
-    function handleJobLvChange(event: React.ChangeEvent<HTMLInputElement>) {
+    function handleJobLvChange(event: React.ChangeEvent<HTMLInputElement>): number {
         let { value, min, max } = event.target;
         let newValue = checkMinMax(Number(value), Number(min), Number(max));
         api.updateCharacter({ jobLv: newValue });
+        return newValue
     };
 
     function handleClassChange(option: any) {
         let newClass = option.value;
         let baseLv = checkMinMax(context.character.baseLv, newClass.lvMin, newClass.lvMax)
         let jobLv = checkMinMax(context.character.jobLv, 1, newClass.jobMax)
-        console.log(`${baseLv} ${jobLv}`)
         api.updateCharacter({ clazz: option.value, baseLv, jobLv });
     };
 
@@ -55,18 +56,22 @@ export function Character() {
         <Box title={context.character.name} titleEdiable onChangeTitle={onChangeName}>
             <div>
                 <div className="row mx-0">
-                    <div className="col-xl-2 px-0 d-flex">
+                    <div className="col-sm-2 col-lg-12 col-xxl-2 px-0 d-flex">
                         <span className="me-1 jc-center">LV</span>
                         <input
                             type="number"
                             min={context.character.clazz.lvMin}
                             max={context.character.clazz.lvMax}
-                            value={context.character.baseLv}
+                            defaultValue={context.character.baseLv.toString()}
                             onChange={handleLvChange}
+                            onBlur={(event) => {
+                                const result = handleLvChange(event)
+                                event.target.value = result.toString()
+                            }}
                         />
                     </div>
-                    <div className="col-xl-7 px-md-0 px-xl-2 d-flex">
-                        <span className="mx-2 d-md-none d-xl-inline-flex jc-center">/</span>
+                    <div className="col-sm-7 col-lg-12 col-xxl-7 px-md-0 px-xl-2 d-flex">
+                        <span className="mx-2 d-none d-sm-inline-flex d-lg-none d-xxl-inline-flex jc-center">/</span>
                         <Select jc-center
                             options={classOption}
                             value={classOption.filter(option => option.value === context.character.clazz)}
@@ -75,35 +80,39 @@ export function Character() {
                         />
                         {/* <input type="text" value={context.character.clazz?.name} /> */}
                     </div>
-                    <div className="col-xl-3 px-0 d-flex">
-                        <span className="me-1 d-md-none d-xl-inline-flex text-nowrap jc-center">/</span>
+                    <div className="col-sm-3 col-lg-12 col-xxl-3 px-0 d-flex">
+                        <span className="me-1 d-none d-sm-inline-flex d-lg-none d-xxl-inline-flex text-nowrap jc-center">/</span>
                         <span className="me-1 text-nowrap jc-center">Job LV</span>
                         <input
                             type="number"
                             min={1}
                             max={context.character.clazz.jobMax}
-                            value={context.character.jobLv}
+                            defaultValue={context.character.jobLv}
                             onChange={handleJobLvChange}
+                            onBlur={(event) => {
+                                const result = handleJobLvChange(event)
+                                event.target.value = result.toString()
+                            }}
                         />
                     </div>
                 </div>
                 <div className="row">
-                    <div className="col-xl col-md-12">
-                        <p className="d-flex">
+                    <div className="col-sm col-lg-12 col-xxl">
+                        <div className="d-flex">
                             HP
                             <span className="mx-1">
                                 {hp.number} / {hp.number}
                             </span>
-                        </p>
+                        </div>
                     </div>
-                    <div className="d-none d-xl-block col-1 text-center">|</div>
-                    <div className="col-xl col-md-12">
-                        <p className="d-flex">
+                    <div className="d-none d-sm-block d-lg-none d-xxl-block col-1 text-center">|</div>
+                    <div className="col-sm col-lg-12 col-xxl">
+                        <div className="d-flex">
                             SP
                             <span className="mx-1">
                                 {sp.number} / {sp.number}
                             </span>
-                        </p>
+                        </div>
                     </div>
                 </div>
             </div>

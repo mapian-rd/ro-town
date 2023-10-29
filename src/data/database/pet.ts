@@ -2,8 +2,10 @@ import { ally, friendly } from "../constraint/pet";
 import { AttributeTypeEnum } from "../model/attributeType";
 import { ItemTypeEnum } from "../model/itemType";
 import { Pet } from "../model/Petv2";
+import * as itemJson from "./json/pet.json"
 
 export const petList: Pet[] = [
+    ...Array.from(itemJson as Pet[]),
     {
         id: "-1",
         imageId: -1,
@@ -118,4 +120,4 @@ export const petList: Pet[] = [
         type: ItemTypeEnum.Pet,
         attributeList: [],
     },
-].sort((a,b) => Number.parseInt(a.id)-Number.parseInt(b.id))
+].sort((a, b) => Number.parseInt(a.id) - Number.parseInt(b.id))

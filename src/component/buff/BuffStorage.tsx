@@ -57,19 +57,15 @@ export default function BuffStorage(props: Props) {
                 return true
             })
             .sort((a, b) => {
-                console.log("sort list", props.list)
                 for (let i = 0; i < props.list.length; i++) {
                     const buff = props.list[i]
                     if (buff.id === a.id) {
-                        console.log("found a", buff)
                         return -1
                     }
                     if (buff.id === b.id) {
-                        console.log("found b", buff)
                         return 1
                     }
                 }
-                console.log("found 0", props.list)
                 return 0
             })
         setFilteredItemList(itemList)
@@ -82,7 +78,6 @@ export default function BuffStorage(props: Props) {
             const found = props.list.findIndex(buff => {
                 return buff?.id === item.id
             }) !== -1
-            console.log("Storage", found)
               
             let inCommon = true
             let imgSrc

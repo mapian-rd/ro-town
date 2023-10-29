@@ -1,8 +1,10 @@
 import { AttributeTypeEnum } from "../model/attributeType";
 import { ItemTypeEnum } from "../model/itemType";
 import { Item } from "../model/Itemv2";
+import * as itemJson from "./json/buff.json"
 
 export const itemBuffDatabase: Item[] = [
+    ...Array.from(itemJson as Item[]),
     {
         id: "9896",
         name: "Power Booster",
@@ -75,42 +77,42 @@ export const itemBuffDatabase: Item[] = [
                 type: AttributeTypeEnum.MagicSkillWater,
                 formulaText: "5"
             },
-            
+
             {
                 type: AttributeTypeEnum.MagicSkillEarth,
                 formulaText: "5"
             },
-            
+
             {
                 type: AttributeTypeEnum.MagicSkillFire,
                 formulaText: "5"
             },
-            
+
             {
                 type: AttributeTypeEnum.MagicSkillWind,
                 formulaText: "5"
             },
-            
+
             {
                 type: AttributeTypeEnum.MagicSkillPoison,
                 formulaText: "5"
             },
-            
+
             {
                 type: AttributeTypeEnum.MagicSkillHoly,
                 formulaText: "5"
             },
-            
+
             {
                 type: AttributeTypeEnum.MagicSkillDark,
                 formulaText: "5"
             },
-            
+
             {
                 type: AttributeTypeEnum.MagicSkillGhost,
                 formulaText: "5"
             },
-            
+
             {
                 type: AttributeTypeEnum.MagicSkillUndead,
                 formulaText: "5"
@@ -532,4 +534,4 @@ export const itemBuffDatabase: Item[] = [
             },
         ]
     },
-].sort((a,b) => Number.parseInt(a.id)-Number.parseInt(b.id))
+].sort((a, b) => Number.parseInt(a.id) - Number.parseInt(b.id))

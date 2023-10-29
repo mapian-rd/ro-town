@@ -165,22 +165,6 @@ export function finalATK(
     elementMildWindMulP?: number,
 ): number {
     console.log("finalDmg finalWeaponAtk", finalWeaponAtk)
-    console.log("finalDmg sizePenaltyP", sizePenaltyP)
-    console.log("finalDmg equipmentAtk", equipmentAtk)
-    console.log("finalDmg useDefAtk", useDefAtk)
-    console.log("finalDmg consumableAtk", consumableAtk)
-    console.log("finalDmg buffAtk", buffAtk)
-    console.log("finalDmg edpM", edpM)
-    console.log("finalDmg pseudoElementAtk", pseudoElementAtk)
-    console.log("finalDmg sizeAddMulAP", sizeAddMulAP)
-    console.log("finalDmg elementAddMulAP", elementAddMulAP)
-    console.log("finalDmg raceAddMulAP", raceAddMulAP)
-    console.log("finalDmg classAddMulAP", classAddMulAP)
-    console.log("finalDmg elementMulP", elementMulP)
-    console.log("finalDmg finalStatusAtk", finalStatusAtk)
-    console.log("finalDmg masteryAtk", masteryAtk)
-    console.log("finalDmg elementSkillMulP", elementSkillMulP)
-    console.log("finalDmg elementMildWindMulP", elementMildWindMulP)
     const atk = finalWeaponAtk * sizePenaltyP / 100 + equipmentAtk + useDefAtk + consumableAtk + buffAtk
     return [atk]
         .map(value => value * edpM)
@@ -191,7 +175,7 @@ export function finalATK(
         .map(value => value + Math.floor(value * classAddMulAP / 100))
         .map(value => value + Math.floor(atk * (tkAP / 100)))
         .map(value => value * elementMulP / 100)
-        .map(value => value + finalStatusAtk * (elementSkillMulP ?? (elementMildWindMulP ?? 100) / 100))
+        .map(value => value + finalStatusAtk * (elementMildWindMulP ?? 100) / 100)
         .map(value => value + masteryAtk * (elementSkillMulP ?? 100) / 100)
     [0]
 }
@@ -258,27 +242,14 @@ export function finalPhysicalDmg(
     darkClawM: number = 1,
 ) {
     console.log("getFinalDmg finalAtk:", finalAtk)
-    // console.log("getFinalDmg atkAP:", atkAP)
-    console.log("getFinalDmg mulAP:", mulAP)
-    console.log("getFinalDmg skillP:", skillP)
-    console.log("getFinalDmg powerThrustAP:", powerThrustAP)
-    console.log("getFinalDmg skillMulAP:", skillMulAP)
-    console.log("getFinalDmg elementDmgMulAP:", elementDmgMulAP)
-    console.log("getFinalDmg hardDefRM:", hardDefRM)
-    console.log("getFinalDmg softDef:", softDef)
-    console.log("getFinalDmg rangeMulAP:", rangeMulAP)
-    console.log("getFinalDmg finalCritDmgM:", finalCritDmgM)
-    console.log("getFinalDmg darkClawM:", darkClawM)
     return [finalAtk]
         .map(value => value + (value * mulAP / 100))
         .map(value => {
             const add = Math.floor(value * rangeMulAP / 100)
-            console.log("getFinalDmg rangeMulAP add:", add)
             return value + add
         })
         .map(value => {
             const mul = skillP / 100 + powerThrustAP / 100
-            console.log("getFinalDmg skillP", value, mul)
             return value * mul
         }) // check la no floor
         .map(value => value + (value * elementDmgMulAP / 100))
@@ -304,13 +275,13 @@ export function finalMagicDmg(
 ) {
     return [finalMatk]
         // .map(value => value + Math.floor(value * matkAP / 100))
+        .map(value => value + Math.floor(value * elementDmgMulAP / 100))
         .map(value => value + (value * mulAP / 100))
         .map(value => value * skillP / 100)
-        .map(value => value + (value * skillMulAP / 100))
-        .map(value => value + (value * elementDmgMulAP / 100))
         // .map(value => value * skillHit)
         .map(value => Math.floor(value * hardMdefRM))
         .map(value => value - softMdef)
+        .map(value => value + (value * skillMulAP / 100))
         .map(value => value * elementMulP / 100)
     [0]
 }

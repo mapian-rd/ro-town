@@ -1,0 +1,106 @@
+[
+    {
+        "id": "26155",
+        "name": "Meowmeow Foxtail",
+        "type": "OneHandRod",
+        "equipmentLevel": 4,
+        "cardSlot": 2,
+        "optionSlot": 2,
+        "atk": 300,
+        "matk": 300,
+        "attributeList": [
+            {
+                "type": "Atk",
+                "formulaText": "<this.Rf/2> * 10"
+            },
+            {
+                "type": "AtkPercent",
+                "formulaText": "<this.Rf/3> * 2"
+            },
+            {
+                "type": "Matk",
+                "formulaText": "<this.Rf/2> * 10"
+            },
+            {
+                "type": "MatkPercent",
+                "formulaText": "<this.Rf/3> * 2"
+            },
+            {
+                "type": "SkillDmg",
+                "skill": "LunaticCarrotBeat",
+                "formulaText": "15",
+                "condition": {
+                    "refireList": [
+                        {
+                            "number": 7,
+                            "symbol": "gte"
+                        }
+                    ]
+                }
+            },
+            {
+                "type": "SkillDmg",
+                "skill": "SilvervineStemSpear",
+                "formulaText": "15",
+                "condition": {
+                    "refireList": [
+                        {
+                            "number": 7,
+                            "symbol": "gte"
+                        }
+                    ]
+                }
+            },
+            {
+                "type": "VctPercent",
+                "formulaText": "10",
+                "condition": {
+                    "refireList": [
+                        {
+                            "number": 9,
+                            "symbol": "gte"
+                        }
+                    ]
+                }
+            },
+            {
+                "type": "AspdPercent",
+                "formulaText": "10",
+                "condition": {
+                    "refireList": [
+                        {
+                            "number": 9,
+                            "symbol": "gte"
+                        }
+                    ]
+                }
+            },
+            {
+                "type": "SkillDmg",
+                "skill": "PickyPeck",
+                "formulaText": "20",
+                "condition": {
+                    "refireList": [
+                        {
+                            "number": 11,
+                            "symbol": "gte"
+                        }
+                    ]
+                }
+            },
+            {
+                "type": "SkillDmg",
+                "skill": "CatnipMeteor",
+                "formulaText": "20",
+                "condition": {
+                    "refireList": [
+                        {
+                            "number": 11,
+                            "symbol": "gte"
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+]

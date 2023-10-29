@@ -1,3 +1,3 @@
 export enum Symbol {
-    eq, gte, lte
+    eq = "eq", gte = "gte", lte = "lte",
 }

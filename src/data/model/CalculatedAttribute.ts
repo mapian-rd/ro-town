@@ -59,4 +59,6 @@ export class CalculatedAttribute {
 
     statusAtk: number = 0
     statusMatk: number = 0
+
+    vct530: DescriptionNumber = new DescriptionNumber()
 }

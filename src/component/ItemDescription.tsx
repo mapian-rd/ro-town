@@ -18,12 +18,12 @@ interface Props {
     item1?: Named;
     item2?: Named;
     character?: Character;
+    buttonText?: string;
 }
 
 export default function ItemDescription(props: Props) {
     const context = useContext(AppContext);
     const api = useContext(AppApiContext);
-    console.log("ItemDescription", props.item1, props.item2)
     const [item1, setItem1] = useState<JSX.Element>()
     const [item2, setItem2] = useState<JSX.Element>()
     const [description1, setDescription1] = useState<JSX.Element[]>()
@@ -39,10 +39,10 @@ export default function ItemDescription(props: Props) {
     }
 
     function onEditClick(craftId?: string) {
-        if (props.item1 && CraftEqiupment.is(props.item1) &&props.item1?.id === craftId) {
+        if (props.item1 && CraftEqiupment.is(props.item1) && props.item1?.id === craftId) {
             api.setEditItem(props.item1)
             api.setViewState(ViewState.EditItem)
-        } else if (props.item2 && CraftEqiupment.is(props.item2) &&props.item2?.id === craftId) {
+        } else if (props.item2 && CraftEqiupment.is(props.item2) && props.item2?.id === craftId) {
             api.setEditItem(props.item2)
             api.setViewState(ViewState.EditItem)
         }
@@ -55,7 +55,7 @@ export default function ItemDescription(props: Props) {
             }) ?? [])
             return (
                 <ItemBox
-                    key={item.id}
+                    key={"itemBox-" + item.id}
                     imgSrc={`https://www.divine-pride.net/img/items/collection/thROG/${Item.getImgId(item.itemId, item.item?.imgId)}`}
                     id={item.id}
                     title={item.name}
@@ -65,7 +65,7 @@ export default function ItemDescription(props: Props) {
                     enchant={item.enchantList.flatMap(option => enchantDatabase.find(data => data.id === option) ?? [])}
                     option={option}
                     onClickCard={onClickCard}
-                    buttonText="Edit"
+                    buttonText={props.buttonText}
                     onClick={onEditClick}
                 >
                 </ItemBox>
@@ -74,7 +74,7 @@ export default function ItemDescription(props: Props) {
         if (Item.is(item)) {
             return (
                 <ItemBox
-                    key={item.id}
+                    key={"itemBox-" + item.id}
                     imgSrc={`https://www.divine-pride.net/img/items/collection/thROG/${Item.getImgId(item.id, item.imgId)}`}
                     title={item.name}
                     description={description}
@@ -85,7 +85,7 @@ export default function ItemDescription(props: Props) {
         if (SkillBuff.is(item)) {
             return (
                 <ItemBox
-                    key={item.id}
+                    key={"itemBox-" + item.id}
                     imgSrc={`https://static.divine-pride.net/images/skill/${Item.getImgId(item.id, item.imgId)}.png`}
                     title={item.name}
                     description={description}
@@ -93,7 +93,7 @@ export default function ItemDescription(props: Props) {
                 </ItemBox>
             )
         }
-        return (<span></span>)
+        return (<span key={"itemBox-" + item.id}></span>)
     }
 
     function getAttribute(item: Named): JSX.Element[] {
@@ -118,7 +118,7 @@ export default function ItemDescription(props: Props) {
             }
             return Array.from(descriptionNumbers).flatMap(([key, value]) => {
                 const attributeItem = attributeList.get(key)
-                return <p className="App-link">{attributeItem?.name} = {value.number}</p>
+                return <span key={`attribute-${key}`} className="App-link d-block">{attributeItem?.name} = {value.number}</span>
             })
         }
         if (Item.is(item) || SkillBuff.is(item)) {
@@ -138,10 +138,8 @@ export default function ItemDescription(props: Props) {
         } else if (Item.is(item) || SkillBuff.is(item)) {
             itemId = item.id
         }
-        console.log("getDescription", itemId)
         if (itemId) {
             const id = Number.parseInt(itemId)
-            console.log("getDescription", id, !isNaN(id))
             if (!isNaN(id)) {
                 let description
                 if (CraftEqiupment.is(item) || Item.is(item)) {
@@ -149,19 +147,17 @@ export default function ItemDescription(props: Props) {
                 } else {
                     description = await SkillDescriptionSearch(id)
                 }
-                console.log("getDescription", description)
                 const match = Array.from(description.matchAll(/\^?(\d{6})?([^^]*)/g))
-                const arr = match.map((arr) => {
+                const arr = match.map((arr, index) => {
                     let color = arr[1] ?? '000000'
                     if (color === '000000') {
                         color = 'var(--black)'
                     } else {
                         color = '#' + color
                     }
-                    return <span style={{ color: color }}>{arr[2]}</span>
+                    return <span style={{ color: color }} key={`description-${id}-${index}`}>{arr[2]}</span>
                 })
-                console.log("getDescription", arr)
-                return [...arr]
+                return arr
             }
         }
         return []

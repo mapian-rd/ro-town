@@ -3,7 +3,9 @@ import { AttributeType, AttributeTypeEnum } from "../data/model/attributeType";
 import { CalculatedAttribute } from "../data/model/CalculatedAttribute";
 import { Character } from "../data/model/Characterv2";
 import { CraftEqiupment } from "../data/model/CraftEquipment";
+import { EquipmentSlot } from "../data/model/EquipmentSlot";
 import { DescriptionNumber } from "../data/model/Formula";
+import { EquipableType } from "../data/model/itemType";
 import { Item, Named } from "../data/model/Itemv2";
 import { Monster, MonsterId } from "../data/model/monster";
 import { ActiveSkill } from "../data/model/skill";
@@ -28,6 +30,10 @@ export interface AppApi {
     deleteItemStorage: (id: string) => void;
     deleteBuffStorage: (id: string) => void;
     deleteDebuffStorage: (id: string) => void;
+
+    setTheme: (id: string) => void;
+    setMode: (id: string) => void;
+    setChangeSlot: (type?: EquipmentSlot) => void
 }
 
 export const AppApiContext = createContext<AppApi>({} as AppApi)

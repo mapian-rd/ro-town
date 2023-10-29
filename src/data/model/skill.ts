@@ -4,17 +4,17 @@ import { AttributeType, AttributeTypeEnum } from "./attributeType";
 import { Element } from "./Element";
 
 export enum SkillEnum {
-    NormalAttack, NormalRangeAttack, 
-    IncreaseAgi, Blessing, Clementia, Cantocandidus,
-    Scratch,
-    FreshShrimp, BunchOfShrimp, TunaBelly, TunaParty, PowerOfSea, Grooming, Purring, TastyShrimpParty, SpiritOfSea,
-    SilvervineStemSpear, SilvervineRootTwist, CatnipMeteor, CatnipPowdering, PowerOfLand, Chattering, MeowMeow, NyangGrass, SpiritOfLand,
-    PickyPeck, ArclouseDash, ScarOfTarou, LunaticCarrotBeat, PowerofLife, Hiss, PowerOfFlock, SpiritOfSavage, SpritOfLife,
-    Greed, CartCannon,
-    ArrowStrom,
-    StoneCurse, Comet,
-    ShieldSpell,
-    DarkClaw, 
+    NormalAttack = "NormalAttack", NormalRangeAttack = "NormalRangeAttack",
+    IncreaseAgi = "IncreaseAgi", Blessing = "Blessing", Clementia = "Clementia", Cantocandidus = "Cantocandidus",
+    Scratch = "Scratch",
+    FreshShrimp = "FreshShrimp", BunchOfShrimp = "BunchOfShrimp", TunaBelly = "TunaBelly", TunaParty = "TunaParty", PowerOfSea = "PowerOfSea", Grooming = "Grooming", Purring = "Purring", TastyShrimpParty = "TastyShrimpParty", SpiritOfSea = "SpiritOfSea",
+    SilvervineStemSpear = "SilvervineStemSpear", SilvervineRootTwist = "SilvervineRootTwist", CatnipMeteor = "CatnipMeteor", CatnipPowdering = "CatnipPowdering", PowerOfLand = "PowerOfLand", Chattering = "Chattering", MeowMeow = "MeowMeow", NyangGrass = "NyangGrass", SpiritOfLand = "SpiritOfLand",
+    PickyPeck = "PickyPeck", ArclouseDash = "ArclouseDash", ScarOfTarou = "ScarOfTarou", LunaticCarrotBeat = "LunaticCarrotBeat", PowerofLife = "PowerofLife", Hiss = "Hiss", PowerOfFlock = "PowerOfFlock", SpiritOfSavage = "SpiritOfSavage", SpritOfLife = "SpritOfLife",
+    Greed = "Greed", CartCannon = "CartCannon",
+    ArrowStrom = "ArrowStrom",
+    StoneCurse = "StoneCurse", Comet = "Comet",
+    ShieldSpell = "ShieldSpell",
+    DarkClaw = "DarkClaw",
 }
 
 export interface Skill {
@@ -37,6 +37,7 @@ export class ActiveSkill implements Skill {
     cooldown: number[] = [];
     delay: number[] = [];
     hit: number[] = [];
+    n?: number[] = [];
     type: AttributeTypeEnum = AttributeTypeEnum.Atk
     isRange?: boolean = false;
     element?: AttributeTypeEnum[] = [];

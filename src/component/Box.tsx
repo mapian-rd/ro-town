@@ -8,6 +8,7 @@ interface Dropdown {
 }
 
 interface BoxProps {
+    id?: string;
     children: ReactNode;
     className?: string;
     title?: string;
@@ -24,15 +25,15 @@ interface BoxProps {
 
 export default function Box(props: BoxProps) {
     return (
-        <div className={"box-container d-flex flex-column w-100 " + (props.className ?? "")}>
+        <div className={"box-container d-flex flex-column w-100 " + (props.className ?? "")} id={props.id}>
             <div className="box-header d-flex align-items-center">
                 {props.title ? (
                     <div>
                         {props.titleEdiable ? (
-                            <input className="title-input fw-bold mx-2" type="text" value={props.title} onChange={props.onChangeTitle} />
+                            <input className="title-input fw-bolder mx-2" type="text" value={props.title} onChange={props.onChangeTitle} />
                         ) : (
 
-                            <span className="fw-bold mx-2 jc-center text-nowrap">{props.title}</span>
+                            <span className="fw-bolder mx-2 jc-center text-nowrap">{props.title}</span>
                         )}
                     </div>
                 ) : (

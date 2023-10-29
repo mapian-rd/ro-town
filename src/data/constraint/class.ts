@@ -8,7 +8,10 @@ export class Novice extends JobClass {
     activeSkill: SkillEnum[] = [
         SkillEnum.NormalAttack,
     ]
-    
+    weaponType = [
+        ItemTypeEnum.Dagger, ItemTypeEnum.OneHandSword, ItemTypeEnum.TwoHandSword, ItemTypeEnum.OneHandSpear, ItemTypeEnum.TwoHandSpear, ItemTypeEnum.OneHandAxe, ItemTypeEnum.TwoHandAxe, ItemTypeEnum.Mace, ItemTypeEnum.OneHandRod, ItemTypeEnum.TwoHandRod, ItemTypeEnum.Bow,
+    ]
+
     constructor() {
         super()
         this.activeSkillItem = this.getActiveSkill()
@@ -103,6 +106,9 @@ export class Doram extends JobClass {
         SkillEnum.NyangGrass,
         SkillEnum.ArclouseDash,
         SkillEnum.Hiss,
+    ]
+    weaponType = [
+        ItemTypeEnum.OneHandRod
     ]
 
     constructor() {
