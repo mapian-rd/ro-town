@@ -1,3 +1,5 @@
+**This project has been discontinued since [other great calculator websites](https://turugrura.github.io/tong-calc-ro-host) are now available.
+
 # Ro Town
 
 This project was originally designed for RO (Ragnarok Online) damage calculations, and its purpose remains the same.
